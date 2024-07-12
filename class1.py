@@ -10,6 +10,7 @@ height = 540
 screen = pygame.display.set_mode(size=(width,height))
 clock = pygame.time.Clock() 
 rend = Render(screen)
+rend.glclearColor(1,1,1)
 
 isRunning = True
 while isRunning:
@@ -20,9 +21,13 @@ while isRunning:
             if event.type == pygame.K_ESCAPE:
                 isRunning = False
     #rend stuff
-    rend.glPoint(45,500)
-
+    rend.glClear()
+    for i in range(300):
+        rend.glPoint(10+i,220-i,[0.2,0.3,0.3])
+   
     pygame.display.flip()
     clock.tick(60) # 60 frame per second
+
+rend.glGenerateFrameBuffer('output.bmp')
 
 pygame.quit()
