@@ -22,7 +22,7 @@ while isRunning:
     #rend stuff
     rend.glPoint(45,500)
 
-    pygame.display.flip()
+    pygame.display.flip()   
     clock.tick(60) # 60 frame per second
 
 pygame.quit()
