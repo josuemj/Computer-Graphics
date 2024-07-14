@@ -26,7 +26,6 @@ class Render(object):
         color = [int(i*255) for i in self.clearColor]
         self.screen.fill(color)
 
-    
     def glPoint(self, x, y, color = None):
         #pygame renders from top top left corner
         #but  BITMP starts from bottom left corner
@@ -35,4 +34,23 @@ class Render(object):
             #pygame receices color into a range from 0 to 255
             color = [int(i*255) for i in (color or self.currentColor)]
             self.screen.set_at((x, self.height-1-y), color)
+    
+    def glLine(self, v0, v1, color = None):
+        #y = mx + b
+        
+        x0 = int(v0[0])
+        x1 = int(v1[0])
+        y0 = int(v0[1])
+        y1 = int(v1[1])
 
+        #from here on we got the problem that when slope is
+        #too greater than 1, the line jumps pixels
+        #So we will implement a new algorithm
+        m = (y1 - y0) / (x1 - x0)
+        b = y0 - m*x0
+
+        for x in range(x0, x1 + 1):
+            y = m * x + b
+            self.glPoint(round(x), round(y))
+            
+            
