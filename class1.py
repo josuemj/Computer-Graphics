@@ -21,7 +21,20 @@ while isRunning:
     #rend stuff
 
     rend.glClear()
-    rend.glLine((100,100), (150, 450))
+    
+    #To big slope
+    #rend.glLine((100,100), (150, 450))  
+    
+    punto0 = (width / 2, height / 2)
+
+    for x in range(0, width, 20):
+        rend.glColor(0.199,0.117,0.117) #color attempt
+        rend.glLine((0,0), (x,height))
+
+        rend.glLine((0,height - 1), (x,0))
+        rend.glLine((width-1, 0), (x,height))
+        rend.glLine((width - 1,height - 1), (x,0))
+
 
     pygame.display.flip()   
     clock.tick(60) # 60 frame per second

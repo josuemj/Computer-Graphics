@@ -45,12 +45,54 @@ class Render(object):
 
         #from here on we got the problem that when slope is
         #too greater than 1, the line jumps pixels
-        #So we will implement a new algorithm
-        m = (y1 - y0) / (x1 - x0)
-        b = y0 - m*x0
+        #So we will implement a new algorithm 
+        # m = (y1 - y0) / (x1 - x0)
+        # b = y0 - m*x0
+
+        # for x in range(x0, x1 + 1):
+        #     y = m * x + b
+        #     self.glPoint(round(x), round(y))
+
+
+        """
+        Bresenham line's algorithm
+        """ 
+        if x0 == x1 and y0 == y1:
+            self.glPoint(x0, y0)
+            return
+        
+        dy = abs(y1 - y0)
+        dx = abs(x1 - x0)
+
+        steep = dy > dx #To sloped
+        
+        if steep:
+            x0, y0 = y0, x0
+            x1, y1 = y1, x1
+
+        if x0 > x1:
+            x0, x1 = x1, x0
+            y0, y1 = y1, y0
+        
+        dy = abs(y1 - y0)
+        dx = abs(x1 - x0)
+
+        offset = 0
+        limit = 0.75
+        m = dy / dx
+        y = y0
 
         for x in range(x0, x1 + 1):
-            y = m * x + b
-            self.glPoint(round(x), round(y))
-            
+            if steep:
+                self.glPoint(y, x, color or self.currentColor)
+            else:
+                self.glPoint(x, y, color or self.currentColor)
+            offset += m
+            if offset >= limit:
+                if y0 < y1:
+                    y += 1
+                else:
+                    y -= 1
+                
+                limit += 1
             
