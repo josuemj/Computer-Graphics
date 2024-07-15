@@ -138,4 +138,22 @@ class Render(object):
                     color = self.frameBuffer[x][y]
                     color = bytes([color[2], color[1], color[0]]) # on bgr instead of rgb
                     file.write(color)
+    
+    def glFillPolygon(self, points):
+        minY = min(points, key=lambda p: p[1])[1]
+        maxY = max(points, key=lambda p: p[1])[1]
+        
+        for y in range(minY, maxY + 1):
+            nodes = []
+            j = len(points) - 1
+            for i in range(len(points)):
+                if points[i][1] < y and points[j][1] >= y or points[j][1] < y and points[i][1] >= y:
+                    nodes.append(int(points[i][0] + (y - points[i][1]) / (points[j][1] - points[i][1]) * (points[j][0] - points[i][0])))
+                j = i
+            nodes.sort()
+            
+            for n in range(0, len(nodes), 2):
+                if n + 1 < len(nodes):
+                    for x in range(nodes[n], nodes[n + 1] + 1):
+                        self.glPoint(x, y)
 
