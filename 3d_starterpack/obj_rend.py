@@ -13,13 +13,13 @@ clock = pygame.time.Clock()
 rend = Render(screen)
 rend.vertexShader = vertexShader
 
-modelo1 = Model('face.obj')
+modelo1 = Model('coche.obj')
 modelo1.translate[0] = width / 2
 modelo1.translate[1] = height / 4
 
-modelo1.scale[0] = 10
-modelo1.scale[1] = 10
-modelo1.scale[2] = 10
+modelo1.scale[0] = 20
+modelo1.scale[1] = 20
+modelo1.scale[2] = 20
 
 
 rend.models.append(modelo1)
