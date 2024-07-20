@@ -1,6 +1,6 @@
 import pygame
 from pygame.locals import *
-from gl import Render
+from gl import *
 from obj import Obj
 from model import Model
 from shaders import vertexShader
@@ -30,12 +30,27 @@ while isRunning:
         if event.type == pygame.QUIT:
             isRunning = False
         elif event.type == pygame.KEYDOWN: #for keep the keyword down
+
             if event.type == pygame.K_ESCAPE:
                 isRunning = False
             elif event.key == pygame.K_RIGHT:
+
                 modelo1.rotate[1] += 10
             elif event.key == pygame.K_LEFT:
                 modelo1.rotate[1] -= 10
+            
+            elif event.key == pygame.K_UP:
+                modelo1.rotate[0] += 10
+            
+            elif event.key == pygame.K_DOWN:
+                modelo1.rotate[0] -= 10
+
+            elif event.key == pygame.K_1:
+                rend.primitiveType = POINTS
+
+            elif event.key == pygame.K_2:
+                rend.primitiveType = LINES
+                            
     #rend stuff
 
     rend.glClear()
