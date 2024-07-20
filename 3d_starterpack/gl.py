@@ -208,7 +208,7 @@ class Render(object):
                 vertexBuffer.append(v2)
                 if vertCount == 4:
                     vertexBuffer.append(v0)
-                    vertexBuffer.append(v0)
+                    vertexBuffer.append(v2)
                     vertexBuffer.append(v3)
                 
         self.glDrawPrimitives(vertexBuffer)
