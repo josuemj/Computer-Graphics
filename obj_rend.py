@@ -6,7 +6,7 @@ from model import Model
 from shaders import vertexShader
  
 width = 960
-height = 540 
+height = 640 
 
 screen = pygame.display.set_mode(size=(width,height))
 clock = pygame.time.Clock() 
