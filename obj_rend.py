@@ -50,7 +50,17 @@ while isRunning:
 
             elif event.key == pygame.K_2:
                 rend.primitiveType = LINES
-                            
+            
+            elif event.key == pygame.K_3:
+                modelo1.scale[0] += 1
+                modelo1.scale[1] += 1
+                modelo1.scale[2] += 1
+            
+            elif event.key == pygame.K_4:
+                modelo1.scale[0] -= 1
+                modelo1.scale[1] -= 1
+                modelo1.scale[2] -= 1
+                        
     #rend stuff
 
     rend.glClear()
