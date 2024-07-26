@@ -14,7 +14,7 @@ class Obj(object):
             #We go the next line
             try:
                 prefix, value = line.split(" ", 1)
-                print(prefix, value)
+                #print(prefix, value)
             except:
                 continue
 

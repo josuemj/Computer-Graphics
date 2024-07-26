@@ -69,4 +69,3 @@ def inversed_matrix(A):
 
 def magnitud_vector(A):
     return []
-
