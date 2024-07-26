@@ -1,4 +1,5 @@
 from math import pi, sin, cos # sin, cos works on rads
+import numpy as np
 
 def TranslationMatrix(x, y, z):
     return [
@@ -64,8 +65,22 @@ def vector_matrix_multiply(vector, matrix):
     return result
 
 #TO DO
-def inversed_matrix(A):
-    return []
+def inversed_matrix(matrix):
+    
+    inverse_matrix = np.linalg.inv(matrix)
+
+    return inverse_matrix
 
 def magnitud_vector(A):
     return []
+
+matrix = [
+    [2, 5, 7, 6],
+    [1, 3, 4, 5],
+    [3, 4, 5, 6],
+    [5, 7, 8, 9]
+]
+
+inverse = inversed_matrix(matrix)
+for row in inverse:
+    print(row)

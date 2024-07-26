@@ -34,11 +34,10 @@ while isRunning:
             if event.type == pygame.K_ESCAPE:
                 isRunning = False
             elif event.key == pygame.K_RIGHT:
-
-                modelo1.rotate[1] += 10
+                rend.camera.translate[0] += 10                
             elif event.key == pygame.K_LEFT:
-                modelo1.rotate[1] -= 10
-            
+                #modelo1.rotate[1] -= 10
+                rend.camera.translate[1] -= 10
             elif event.key == pygame.K_UP:
                 modelo1.rotate[0] += 10
             

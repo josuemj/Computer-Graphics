@@ -1,5 +1,6 @@
 #gl stands for graphics libraru
 import struct
+from camera import Camera
 
 def char(c):
     return struct.pack("=c", c.encode("ascii"))
@@ -19,6 +20,9 @@ class Render(object):
     def __init__(self, screen):
         self.screen = screen
         _,_, self.width, self.height = screen.get_rect()
+
+        self.camera = Camera()
+
         self.glColor(1,1,1)
         self.glClearColor(0, 0, 0)
         self.glClear()
@@ -177,13 +181,13 @@ class Render(object):
                 #each vertex in transformed
                 #Pass matrixes to use them into shaders
                 if self.vertexShader:
-                    v0 = self.vertexShader(v0, modelMatrix = mMat)
-                    v1 = self.vertexShader(v1, modelMatrix = mMat)
-                    v2 = self.vertexShader(v2, modelMatrix = mMat)
+                    v0 = self.vertexShader(v0, modelMatrix = mMat, viewMatrix = self.camera.GetViewMatrix() )
+                    v1 = self.vertexShader(v1, modelMatrix = mMat, viewMatrix = self.camera.GetViewMatrix() )
+                    v2 = self.vertexShader(v2, modelMatrix = mMat, viewMatrix = self.camera.GetViewMatrix() )
                     
                     if vertCount == 4:
                         
-                        v3 = self.vertexShader(v3, modelMatrix = mMat)
+                        v3 = self.vertexShader(v3, modelMatrix = mMat, viewMatrix = self.camera.GetViewMatrix())
 
                 # points NOT PRIMITIVE
                 # self.glPoint(int(v0[0]), int(v0[1]))
