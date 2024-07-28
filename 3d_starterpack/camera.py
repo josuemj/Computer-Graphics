@@ -1,5 +1,5 @@
 from MathLib import *
-
+import numpy as np
 
 class Camera(object):
     
@@ -16,4 +16,5 @@ class Camera(object):
 
         camMatrix = matrix_multiply(translateMat, rotateMat)
 
-        return inversed_matrix(camMatrix)
+        #To do own inverse
+        return np.linalg.inv(camMatrix)

@@ -64,7 +64,7 @@ def vector_matrix_multiply(vector, matrix):
     
     return result
 
-#TO DO
+#TO DO own funciton
 def inversed_matrix(matrix):
     
     inverse_matrix = np.linalg.inv(matrix)

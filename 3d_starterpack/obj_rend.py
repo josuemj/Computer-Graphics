@@ -6,21 +6,20 @@ from model import Model
 from shaders import vertexShader
  
 width = 960
-height = 540 
+height = 680 
 
 screen = pygame.display.set_mode(size=(width,height))
 clock = pygame.time.Clock() 
 rend = Render(screen)
 rend.vertexShader = vertexShader
 
-modelo1 = Model('coche.obj')
+modelo1 = Model('face.obj')
 modelo1.translate[0] = width / 2
 modelo1.translate[1] = height / 4
 
 modelo1.scale[0] = 20
 modelo1.scale[1] = 20
 modelo1.scale[2] = 20
-
 
 rend.models.append(modelo1)
 
@@ -34,22 +33,36 @@ while isRunning:
             if event.type == pygame.K_ESCAPE:
                 isRunning = False
             elif event.key == pygame.K_RIGHT:
-                rend.camera.translate[0] += 10                
+                rend.camera.translate[0] += 10
+                #modelo1.rotate[1] += 10
             elif event.key == pygame.K_LEFT:
                 #modelo1.rotate[1] -= 10
-                rend.camera.translate[1] -= 10
-            elif event.key == pygame.K_UP:
-                modelo1.rotate[0] += 10
+                rend.camera.translate[0] -= 10
+
             
+            elif event.key == pygame.K_UP:
+                #modelo1.rotate[0] += 10
+                rend.camera.translate[1] += 10
             elif event.key == pygame.K_DOWN:
-                modelo1.rotate[0] -= 10
+                #modelo1.rotate[0] -= 10
+                rend.camera.translate[1] -= 10
 
             elif event.key == pygame.K_1:
                 rend.primitiveType = POINTS
 
             elif event.key == pygame.K_2:
                 rend.primitiveType = LINES
-                            
+            
+            elif event.key == pygame.K_3:
+                modelo1.scale[0] += 1
+                modelo1.scale[1] += 1
+                modelo1.scale[2] += 1
+            
+            elif event.key == pygame.K_:
+                modelo1.scale[0] -= 1
+                modelo1.scale[1] -= 1
+                modelo1.scale[2] -= 1
+                        
     #rend stuff
 
     rend.glClear()

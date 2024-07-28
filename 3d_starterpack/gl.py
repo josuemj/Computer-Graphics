@@ -181,9 +181,9 @@ class Render(object):
                 #each vertex in transformed
                 #Pass matrixes to use them into shaders
                 if self.vertexShader:
-                    v0 = self.vertexShader(v0, modelMatrix = mMat, viewMatrix = self.camera.GetViewMatrix() )
-                    v1 = self.vertexShader(v1, modelMatrix = mMat, viewMatrix = self.camera.GetViewMatrix() )
-                    v2 = self.vertexShader(v2, modelMatrix = mMat, viewMatrix = self.camera.GetViewMatrix() )
+                    v0 = self.vertexShader(v0, modelMatrix = mMat, viewMatrix = self.camera.GetViewMatrix())
+                    v1 = self.vertexShader(v1, modelMatrix = mMat, viewMatrix = self.camera.GetViewMatrix())
+                    v2 = self.vertexShader(v2, modelMatrix = mMat, viewMatrix = self.camera.GetViewMatrix())
                     
                     if vertCount == 4:
                         
@@ -217,6 +217,60 @@ class Render(object):
                 
         self.glDrawPrimitives(vertexBuffer)
             
+    def glTriangle(self, A, B, C, color=None):
+
+        #Algorithm, goal is to get "A" vertex at the top
+
+        if A[1] < B[1]:
+            A, B = B, A
+        if A[1] < C[1]:
+            A, C = C, A
+        if B[1] < C[1]:
+            B, C = C, B
+
+        self.glLine( (A[0], A[1]), (B[0], B[1]))
+        self.glLine( (B[0], B[1]), (C[0], C[1]))
+        self.glLine( (C[0], C[1]), (A[0], A[1]))
+
+        def flatBottom(vA, vB, vC):
+            try:
+                mBA = (vB[0] - vA[0]) / (vB[1] - vA[1])
+                mCA = (vC[0] - vA[0]) / (vC[1] - vA[1])
+            except:
+                pass
+            else:
+                x0 = vA[0]
+                x1 = vC[0]
+                for y in range (int(vB[1]), int(vA[1])):
+                    self.glLine( [x0, y], [x1,y], color )
+                    x0 += mBA
+                    x1 += mCA
+        
+        def flatTop(vA, vB, vC):
+            try:
+                mCA = (vC[0] - vA[0]) / (vC[1] - vA[1])
+                mCB = (vC[0] - vB[0]) / (vC[1] - vB[1])
+            except:
+                pass
+            else:
+                x0 = vA[0]
+                x1 = vB[0]
+                for y in range (int(vA[1]), int(vC[1])):
+                    self.glLine( [x0, y], [x1,y], color )
+                    x0 -= mCA
+                    x1 -= mCB
+
+        if B[1] == C[1]:
+            flatBottom(A, B, C)
+
+        elif A[1] == B[1]:
+            flatTop(A, B, C)
+        else:
+            #Teorema del intercepto
+            D = [ A[0] + ((B[1] - A[1]) / (C[1] - A[1])) * (C[0] - A[0]), B[1]]
+            flatBottom(A, B, D)
+            flatTop(B, D, C)
+
 
     def glDrawPrimitives(self, buffer):
         if self.primitiveType == POINTS:
