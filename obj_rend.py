@@ -14,7 +14,6 @@ rend = Render(screen)
 rend.vertexShader = vertexShader
 
 modelo1 = Model('skull.obj')
-
 #odelo1.translate[0] = width / 2
 #modelo1.translate[1] = height / 3 
 modelo1.translate[2]= -10
@@ -25,6 +24,7 @@ modelo1.scale[2] = 0.4
 rend.camera.translate[1] = rend.camera.translate[1] + 2 
 
 rend.models.append(modelo1)
+
 
 isRunning = True
 while isRunning:
@@ -47,6 +47,24 @@ while isRunning:
             elif event.key == pygame.K_DOWN:
                 #modelo1.rotate[0] -= 10
                 rend.camera.translate[1] -= 1
+
+            elif event.key == pygame.K_5:
+                rend.camera.translate[2] += 1
+            elif event.key == pygame.K_6:
+                rend.camera.translate[2] -= 1
+
+            elif event.key == pygame.K_7:
+                modelo1.rotate[0] += 10
+
+            elif event.key == pygame.K_8:
+                modelo1.rotate[0] -= 10
+            
+            elif event.key == pygame.K_9:
+                modelo1.rotate[1] += 10
+
+            elif event.key == pygame.K_0:
+                modelo1.rotate[2] -= 10
+
 
             elif event.key == pygame.K_1:
                 rend.primitiveType = POINTS
