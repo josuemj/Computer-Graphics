@@ -67,9 +67,30 @@ def vector_matrix_multiply(vector, matrix):
 #TO DO own funciton
 def inversed_matrix(matrix):
     
-    inverse_matrix = np.linalg.inv(matrix)
-
+    n = len(matrix)
+    
+    identity = [[1 if i == j else 0 for j in range(n)] for i in range(n)]
+    
+    augmented_matrix = [row + identity_row for row, identity_row in zip(matrix, identity)]
+    
+    for i in range(n):
+        pivot = augmented_matrix[i][i]
+        if pivot == 0:
+            raise ValueError("Matrix is not invertible.")
+        
+        for j in range(2 * n):
+            augmented_matrix[i][j] /= pivot
+        
+        for k in range(n):
+            if k != i:
+                factor = augmented_matrix[k][i]
+                for j in range(2 * n):
+                    augmented_matrix[k][j] -= factor * augmented_matrix[i][j]
+    
+    inverse_matrix = [row[n:] for row in augmented_matrix]
+    
     return inverse_matrix
+
 
 def magnitud_vector(A):
     return []

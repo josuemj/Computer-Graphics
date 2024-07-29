@@ -63,7 +63,7 @@ while isRunning:
                 modelo1.rotate[1] += 10
 
             elif event.key == pygame.K_0:
-                modelo1.rotate[2] -= 10
+                modelo1.rotate[1] -= 10
 
 
             elif event.key == pygame.K_1:
@@ -77,10 +77,10 @@ while isRunning:
                 modelo1.scale[1] += 1
                 modelo1.scale[2] += 1
             
-            elif event.key == pygame.K_0:
-                modelo1.scale[0] -= 1
-                modelo1.scale[1] -= 1
-                modelo1.scale[2] -= 1
+            # elif event.key == pygame.K_0:
+            #     modelo1.scale[0] -= 1
+            #     modelo1.scale[1] -= 1
+            #     modelo1.scale[2] -= 1
                         
     #rend stuff
 
