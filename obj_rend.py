@@ -5,8 +5,8 @@ from obj import Obj
 from model import Model
 from shaders import vertexShader
  
-width = 1000
-height = 1000 
+width = 960
+height = 560
 
 screen = pygame.display.set_mode(size=(width,height))
 clock = pygame.time.Clock() 
@@ -14,11 +14,15 @@ rend = Render(screen)
 rend.vertexShader = vertexShader
 
 modelo1 = Model('skull.obj')
+
+#odelo1.translate[0] = width / 2
+#modelo1.translate[1] = height / 3 
 modelo1.translate[2]= -10
-modelo1.translate[0] = -2
-modelo1.scale[0] = 0.1
-modelo1.scale[1] = 0.1
-modelo1.scale[2] = 0.1
+#modelo1.translate[0] = -2
+modelo1.scale[0] = 0.4
+modelo1.scale[1] = 0.4
+modelo1.scale[2] = 0.4
+rend.camera.translate[1] = rend.camera.translate[1] + 2 
 
 rend.models.append(modelo1)
 
