@@ -2,6 +2,7 @@
 import struct
 from camera import Camera
 from math import tan, pi
+import random
 
 def char(c):
     return struct.pack("=c", c.encode("ascii"))
@@ -257,9 +258,9 @@ class Render(object):
         if B[1] < C[1]:
             B, C = C, B
 
-        self.glLine( (A[0], A[1]), (B[0], B[1]) )
-        self.glLine( (B[0], B[1]), (C[0], C[1]) )
-        self.glLine( (C[0], C[1]), (A[0], A[1]) ) 
+        # self.glLine( (A[0], A[1]), (B[0], B[1]) )
+        # self.glLine( (B[0], B[1]), (C[0], C[1]) )
+        # self.glLine( (C[0], C[1]), (A[0], A[1]) ) 
 
         def flatBottom(vA, vB, vC):
             try:
@@ -302,7 +303,7 @@ class Render(object):
             D= [ A[0] + ((B[1] - A[1]) / (C[1] - A[1])) * (C[0] - A[0]), B[1]]
             flatBottom(A, B, D)
             flatTop(B, D, C)
-            
+
     def glDrawPrimitives(self, buffer):
         if self.primitiveType == POINTS:
             for point in buffer:
@@ -317,4 +318,15 @@ class Render(object):
                 self.glLine( (p0[0], p0[1]), (p1[0], p1[1]))
                 self.glLine( (p1[0], p1[1]), (p2[0], p2[1]))
                 self.glLine( (p2[0], p2[1]), (p0[0], p0[1]))
-                
+            
+        
+        elif self.primitiveType == TRIANGLES:
+        
+            for i in range(0, len(buffer), 3):
+                p0 = buffer[i]
+                p1 = buffer[i + 1]
+                p2 = buffer[i + 2]
+
+                color = [random.random(), random.random(), random.random()]
+
+                self.glTriangle(p0, p1, p2, color)
