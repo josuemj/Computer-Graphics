@@ -248,9 +248,7 @@ class Render(object):
                 
         self.glDrawPrimitives(vertexBuffer)
             
-    def glTriangle(self, A, B, C, color=None):
-
-        #Algorithm, goal is to get "A" vertex at the top
+    def glTriangle(self, A, B, C, color = None):
 
         if A[1] < B[1]:
             A, B = B, A
@@ -259,9 +257,9 @@ class Render(object):
         if B[1] < C[1]:
             B, C = C, B
 
-        self.glLine( (A[0], A[1]), (B[0], B[1]))
-        self.glLine( (B[0], B[1]), (C[0], C[1]))
-        self.glLine( (C[0], C[1]), (A[0], A[1]))
+        self.glLine( (A[0], A[1]), (B[0], B[1]) )
+        self.glLine( (B[0], B[1]), (C[0], C[1]) )
+        self.glLine( (C[0], C[1]), (A[0], A[1]) ) 
 
         def flatBottom(vA, vB, vC):
             try:
@@ -270,10 +268,10 @@ class Render(object):
             except:
                 pass
             else:
-                x0 = vA[0]
+                x0 = vB[0]
                 x1 = vC[0]
-                for y in range (int(vB[1]), int(vA[1])):
-                    self.glLine( [x0, y], [x1,y], color )
+                for y in range(int(vB[1]), int(vA[1])):
+                    self.glLine( [x0, y], [x1, y], color)
                     x0 += mBA
                     x1 += mCA
         
@@ -286,10 +284,11 @@ class Render(object):
             else:
                 x0 = vA[0]
                 x1 = vB[0]
-                for y in range (int(vA[1]), int(vC[1])):
-                    self.glLine( [x0, y], [x1,y], color )
+                for y in range(int(vA[1]), int(vC[1]), -1):
+                    self.glLine( [x0, y], [x1, y], color)
                     x0 -= mCA
                     x1 -= mCB
+
 
         if B[1] == C[1]:
             flatBottom(A, B, C)
@@ -297,12 +296,13 @@ class Render(object):
         elif A[1] == B[1]:
             flatTop(A, B, C)
         else:
-            #Teorema del intercepto
-            D = [ A[0] + ((B[1] - A[1]) / (C[1] - A[1])) * (C[0] - A[0]), B[1]]
+            #tringle in two
+            
+            # leorema det intercepto
+            D= [ A[0] + ((B[1] - A[1]) / (C[1] - A[1])) * (C[0] - A[0]), B[1]]
             flatBottom(A, B, D)
             flatTop(B, D, C)
-
-
+            
     def glDrawPrimitives(self, buffer):
         if self.primitiveType == POINTS:
             for point in buffer:
