@@ -1,4 +1,3 @@
-import numpy as np
 from math import pi, sin, cos, isclose
 
 def barycentricCoords(A, B, C, P):
@@ -40,41 +39,58 @@ def barycentricCoords(A, B, C, P):
 	
 
 def TranslationMatrix(x, y, z):
-	
-	return np.matrix([[1, 0, 0, x],
-					  [0, 1, 0, y],
-					  [0, 0, 1, z],
-					  [0, 0, 0, 1]])
+    return [
+        [1, 0, 0, x],
+        [0, 1, 0, y],
+        [0, 0, 1, z],
+        [0, 0, 0, 1]
+    ]
 
 def ScaleMatrix(x, y, z):
-	
-	return np.matrix([[x, 0, 0, 0],
-					  [0, y, 0, 0],
-					  [0, 0, z, 0],
-					  [0, 0, 0, 1]])
+    return [
+        [x, 0, 0, 0],
+        [0, y, 0, 0],
+        [0, 0, z, 0],
+        [0, 0, 0, 1]
+    ]
 
 def RotationMatrix(pitch, yaw, roll):
-	
-	# Convertir a radianes
-	pitch *= pi/180
-	yaw *= pi/180
-	roll *= pi/180
-	
-	# Creamos la matriz de rotaci�n para cada eje.
-	pitchMat = np.matrix([[1,0,0,0],
-						  [0,cos(pitch),-sin(pitch),0],
-						  [0,sin(pitch),cos(pitch),0],
-						  [0,0,0,1]])
-	
-	yawMat = np.matrix([[cos(yaw),0,sin(yaw),0],
-						[0,1,0,0],
-						[-sin(yaw),0,cos(yaw),0],
-						[0,0,0,1]])
-	
-	rollMat = np.matrix([[cos(roll),-sin(roll),0,0],
-						 [sin(roll),cos(roll),0,0],
-						 [0,0,1,0],
-						 [0,0,0,1]])
-	
-	return pitchMat * yawMat * rollMat
-	
+    #convert to rads
+    pitch *= pi/180
+    yaw *= pi/180
+    roll *= pi/180
+
+    pitchMat = [[1,0,0,0],
+                      [0,cos(pitch),-sin(pitch),0],
+                      [0,sin(pitch),cos(pitch),0],
+                      [0,0,0,1]]
+
+    yawMat = [[cos(yaw),0,sin(yaw),0],
+                        [0,1,0,0],
+                        [-sin(yaw),0,cos(yaw),0],
+                        [0,0,0,1]]
+
+    rollMat = [[cos(roll),-sin(roll),0,0],
+                        [sin(roll),cos(roll),0,0],
+                        [0,0,1,0],
+                        [0,0,0,1]]
+    
+    return matrix_multiply(matrix_multiply(pitchMat,yawMat), rollMat)
+
+"""
+Operations
+"""
+
+def matrix_multiply(A, B):
+    if len(A[0]) != len(B):
+        raise ValueError("Number of columns in the first matrix must be equal to the number of rows in the second matrix.")
+    
+    result = [[0 for _ in range(len(B[0]))] for _ in range(len(A))]
+
+    for i in range(len(A)):
+        for j in range(len(B[0])):
+            for k in range(len(B)):
+                result[i][j] += A[i][k] * B[k][j]
+    
+    return result
+

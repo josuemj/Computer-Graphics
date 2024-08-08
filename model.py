@@ -22,16 +22,7 @@ class Model(object):
 		self.texture = Texture(filename)
 		
 	def GetModelMatrix(self):
-		translateMat = TranslationMatrix(self.translate[0],
-										 self.translate[1],
-										 self.translate[2])
-		
-		rotateMat = RotationMatrix(self.rotate[0],
-								   self.rotate[1],
-								   self.rotate[2])
-		
-		scaleMat = ScaleMatrix(self.scale[0],
-							   self.scale[1],
-							   self.scale[2]) 
-		
-		return translateMat * rotateMat * scaleMat
+		translateMat = TranslationMatrix(self.translate[0], self.translate[1], self.translate[2])
+		rotateMat = RotationMatrix(self.rotate[0], self.rotate[1], self.rotate[2])
+		scaleMat = ScaleMatrix(self.scale[0], self.scale[1], self.scale[2])
+		return matrix_multiply(matrix_multiply(translateMat, rotateMat), scaleMat)

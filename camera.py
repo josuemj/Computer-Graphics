@@ -16,6 +16,6 @@ class Camera(object):
 								   self.rotate[1],
 								   self.rotate[2])
 		
-		camMatrix = translateMat * rotateMat
+		camMatrix = matrix_multiply(translateMat,rotateMat)
 		
 		return np.linalg.inv(camMatrix)
