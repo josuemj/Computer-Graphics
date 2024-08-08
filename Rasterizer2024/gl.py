@@ -41,7 +41,7 @@ class Renderer(object):
 
 		self.activeTexture = None
 		
-		self.primitiveType = TRIANGLES
+		self.primitiveType = POINTS
 		
 		self.models = []
 

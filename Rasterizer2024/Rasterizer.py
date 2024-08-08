@@ -20,18 +20,20 @@ rend.fragmentShader = fragmentShader
 # puntoB = [250, 500, 0]
 # puntoC = [500, 50, 0]
 
-modelo1 = Model('models/model.obj')
-modelo1.loadTexture('textures/model.bmp')
-modelo1.translate[2] = -5
-modelo1.scale[0] = 2
-modelo1.scale[1] = 2
-modelo1.scale[2] = 2
+modelo1 = Model('models/Apl_.obj')
+modelo1.loadTexture('textures/apple2.bmp')
+modelo1.translate[2] = -10
+
+modelo1.scale[0] = 0.1
+modelo1.scale[1] = 0.1
+modelo1.scale[2] = 0.1
+rend.camera.translate[1] += 3
+
 
 rend.models.append(modelo1)
 
 isRunning = True
 while isRunning:
-	
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			isRunning = False
@@ -47,6 +49,13 @@ while isRunning:
 				
 			elif event.key == pygame.K_3:
 				rend.primitiveType = TRIANGLES
+			
+			elif event.key == pygame.K_4:
+				modelo1.rotate[0] += 5			
+			elif event.key == pygame.K_5:
+				modelo1.rotate[1] += 5
+			elif event.key == pygame.K_6:
+				modelo1.rotate[2] += 5
 				
 
 			elif event.key == pygame.K_RIGHT:
