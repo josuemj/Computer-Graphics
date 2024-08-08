@@ -18,4 +18,4 @@ class Camera(object):
 		
 		camMatrix = matrix_multiply(translateMat,rotateMat)
 		
-		return np.linalg.inv(camMatrix)
+		return inversed_matrix(camMatrix)
