@@ -9,6 +9,7 @@ class Model(object):
 
         self.vertices = objFile.vertices
         self.faces = objFile.faces
+        self.textCoords = objFile.textCoords
 
         self.translate = [0,0,0]
         self.rotate = [0,0,0]

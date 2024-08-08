@@ -3,6 +3,7 @@ import struct
 from camera import Camera
 from math import tan, pi
 import random
+import MathLib
 
 def char(c):
     return struct.pack("=c", c.encode("ascii"))
@@ -32,6 +33,7 @@ class Render(object):
         self.glClear()
 
         self.vertexShader = None
+        self.fragmentShader = None
 
         self.primitiveType = POINTS
 
@@ -202,12 +204,22 @@ class Render(object):
 
                 #Checking verts of the current face
                 vertCount = len(face)
-                v0 = model.vertices[face[0][0]-1]
-                v1 = model.vertices[face[1][0]-1]
-                v2 = model.vertices[face[2][0]-1]
+                v0 = model.textCoords[face[0][0]-1]
+                v1 = model.textCoords[face[1][0]-1]
+                v2 = model.textCoords[face[2][0]-1]
+                if vertCount == 4:
+                    v3 = model.textCoords[face[3][0]-1]
+
+                #texture coords
+                vt0 = model.vertices[face[0][0]-1]
+                vt1 = model.vertices[face[1][0]-1]
+                vt2 = model.vertices[face[2][0]-1]
 
                 if vertCount == 4:
-                    v3 = model.vertices[face[3][0]-1]
+                    vt3 = model.vertices[face[3][0]-1]
+
+
+                
                 
                 #If we do have vertex shader
                 #each vertex in transformed
@@ -263,6 +275,12 @@ class Render(object):
         # self.glLine( (C[0], C[1]), (A[0], A[1]) ) 
 
         def flatBottom(vA, vB, vC):
+
+            colorA = [vA[3], vA[4], vA[5]]
+            colorB = [vB[3], vB[4], vB[5]]
+            colorC = [vC[3], vC[4], vC[5]]
+
+
             try:
                 mBA = (vB[0] - vA[0]) / (vB[1] - vA[1])
                 mCA = (vC[0] - vA[0]) / (vC[1] - vA[1])
@@ -271,8 +289,24 @@ class Render(object):
             else:
                 x0 = vB[0]
                 x1 = vC[0]
-                for y in range(int(vB[1]), int(vA[1])):
-                    self.glLine( [x0, y], [x1, y], color)
+                for y in range(int(vB[1]), int(vA[1] + 1)):
+                    #self.glLine( [x0, y], [x1, y], color)
+                    for x in range(round(x0) , round(x1)):
+                        
+                        if self.fragmentShader:
+
+                            vP = [x,y]
+                            bCoords = MathLib.barycentricCoords(vA, vB, vC, vP)
+                            if bCoords != None:
+                                color = self.fragmentShader(
+                                    bCoords = bCoords,
+                                    vertColors = [colorA, colorB, colorC]
+                                )
+                                self.glPoint(x,y, color)
+                        else:
+                            self.glPoint(x,y, self.currentColor)
+
+
                     x0 += mBA
                     x1 += mCA
         
@@ -285,8 +319,24 @@ class Render(object):
             else:
                 x0 = vA[0]
                 x1 = vB[0]
-                for y in range(int(vA[1]), int(vC[1]), -1):
-                    self.glLine( [x0, y], [x1, y], color)
+                for y in range(int(vA[1]), int(vC[1] -1), -1):
+                    #self.glLine( [x0, y], [x1, y], color)
+
+                    for x in range(round(x0) , round(x1)):
+                        vP = [x,y]
+
+                        bCoords = MathLib.barycentricCoords(vA, vB, vC, vP)
+
+                        if bCoords != None:
+                            u, v, w = bCoords
+
+                            r = u * vA[3] + v * vB[3] + w * vC[3]
+                            g = u * vA[4] + v * vB[4] + w * vC[4]
+                            b = u * vA[5] + v * vB[5] + w * vC[5]
+                            color = [r, g, b]
+
+
+                            self.glPoint(x,y, color)
                     x0 -= mCA
                     x1 -= mCB
 
@@ -329,4 +379,4 @@ class Render(object):
 
                 color = [random.random(), random.random(), random.random()]
 
-                self.glTriangle(p0, p1, p2, color)
+                self.glTriangle(p0, p1, p2) #color out for 

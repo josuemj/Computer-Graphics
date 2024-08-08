@@ -5,7 +5,7 @@ class Obj(object):
         with open(filename, "r") as file:
             lines = file.read().splitlines() #reads each line
         self.vertices = []
-        self.textcoord = []
+        self.textCoords = []
         self.normals = []
         self.faces = []
 
@@ -28,7 +28,7 @@ class Obj(object):
             
             elif prefix == "vt": #texture coords
                 vts = list(map(float, value.split(" ")))
-                self.textcoord.append(vts)
+                self.textCoords.append(vts)
             
             elif prefix == "vn": #normlas
                 norm = list(map(float, value.split(" ")))

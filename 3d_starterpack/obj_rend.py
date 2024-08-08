@@ -3,7 +3,7 @@ from pygame.locals import *
 from gl import *
 from obj import Obj
 from model import Model
-from shaders import vertexShader
+from shaders import vertexShader, fragmentShader
 import random
 
  
@@ -14,6 +14,9 @@ screen = pygame.display.set_mode(size=(width,height))
 clock = pygame.time.Clock() 
 rend = Render(screen)
 rend.vertexShader = vertexShader
+rend.fragmentShader = fragmentShader
+
+
 
 modelo1 = Model('face.obj')
 modelo1.translate[2]= -5
@@ -24,11 +27,15 @@ modelo1.scale[2] = 0.1
 
 rend.models.append(modelo1)
 
-
-# triangle1 = [ [10, 80], [50, 160], [70, 80]]
 # triangle2 = [ [180, 50], [150, 1], [70, 180]]
 # triangle3 = [ [180, 120], [120,160], [150, 160]]
 
+#each vertex neeeds additional informatino
+
+#         POSITION    ,  Vts (texture cords)
+# puntoA = [50,   50, 0,   1,0,0]
+# puntoB = [256, 500, 0,   0,1,0]
+# puntoC = [500,  50, 0,   0,0,1]
 
 isRunning = True
 while isRunning:
@@ -79,7 +86,9 @@ while isRunning:
     # rend.glTriangle(triangle1[0], triangle1[1], triangle1[2])
     # rend.glTriangle(triangle2[0], triangle2[1], triangle2[2])
     # rend.glTriangle(triangle3[0], triangle3[1], triangle3[2])
+    
     rend.glRender()
+    # rend.glTriangle(puntoA, puntoB, puntoC)
     
     #To big slope
     #rend.glLine((100,100), (150, 450))  
