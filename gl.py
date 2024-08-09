@@ -1,6 +1,5 @@
 import struct
 from camera import Camera
-import numpy as np
 from math import tan, pi, isclose
 from MathLib import barycentricCoords
 
@@ -52,10 +51,10 @@ class Renderer(object):
 		self.vpWidth = width
 		self.vpHeight = height
 		
-		self.viewportMatrix = np.matrix([[width/2,0,0,x + width/2],
+		self.viewportMatrix = [[width/2,0,0,x + width/2],
 										 [0,height/2,0,y + height/2],
 										 [0,0,0.5,0.5],
-										 [0,0,0,1]])
+										 [0,0,0,1]]
 		
 
 	def glProjection(self, n = 0.1, f = 1000, fov = 60):
@@ -65,10 +64,10 @@ class Renderer(object):
 		t = tan(fov / 2) * n
 		r = t * aspectRatio
 		
-		self.projectionMatrix = np.matrix([[n/r, 0, 0, 0],
+		self.projectionMatrix = [[n/r, 0, 0, 0],
 										   [0, n/t, 0, 0],
 										   [0, 0, -(f+n)/(f-n), -(2*f*n)/(f-n)],
-										   [0, 0, -1, 0]])
+										   [0, 0, -1, 0]]
 		
 
 	def glColor(self, r, g, b):

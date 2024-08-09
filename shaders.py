@@ -1,29 +1,28 @@
+from MathLib import *
 
 def vertexShader(vertex, **kwargs):
-    # Se lleva a cabo por cada vertice
-    
-    # Recibimos las matrices
     modelMatrix = kwargs["modelMatrix"]
     viewMatrix = kwargs["viewMatrix"]
     projectionMatrix = kwargs["projectionMatrix"]
     viewportMatrix = kwargs["viewportMatrix"]
-    
-    # Agregamos un componente W al vertice
-    vt = [vertex[0],
-          vertex[1],
-          vertex[2],
-          1]
-    
-    # Transformamos el vertices por todas las matrices en el orden correcto
-    vt = viewportMatrix * projectionMatrix * viewMatrix * modelMatrix @ vt
-    
-    vt = vt.tolist()[0]
-    
-    # Dividimos x,y,z por w para regresar el vertices a un tama�o de 3
-    vt = [vt[0] / vt[3],
-          vt[1] / vt[3],
-          vt[2] / vt[3]]
-    
+
+    if len(vertex) + 1 == len(modelMatrix):
+        vt = vertex + [1]
+    else:
+        vt = vertex
+
+
+    vpMatrix_projectMatrix = matrix_multiply(viewportMatrix, projectionMatrix)
+
+    vpMatrix_projectMatrix_viewMatrix = matrix_multiply(vpMatrix_projectMatrix, viewMatrix)
+
+    vpMatrix_projectMatrix_viewMatrix_model = matrix_multiply(vpMatrix_projectMatrix_viewMatrix, modelMatrix)
+
+    vt = vector_matrix_multiply(vt, vpMatrix_projectMatrix_viewMatrix_model)
+
+    if len(vt) > 3:
+        vt = [vt[0]/vt[3], vt[1]/vt[3], vt[2]/vt[3]]
+
     return vt
 
 

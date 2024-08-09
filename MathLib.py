@@ -119,3 +119,14 @@ def inversed_matrix(matrix):
     inverse_matrix = [row[n:] for row in augmented_matrix]
     
     return inverse_matrix
+
+def vector_matrix_multiply(vector, matrix):
+    if len(matrix[0]) != len(vector):
+        raise ValueError("The number of columns in the matrix must match the size of the vector.")
+    
+    result = [0] * len(matrix)
+    for i in range(len(matrix)):
+        for j in range(len(vector)):
+            result[i] += matrix[i][j] * vector[j]
+    
+    return result
