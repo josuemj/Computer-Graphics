@@ -35,10 +35,12 @@ class Renderer(object):
 		self.glClearColor(0,0,0)
 		self.glClear()
 		
-		self.vertexShader = None
-		self.fragmentShader = None
+		self.activeVertexShader = None
+		self.activeFragmentShader = None
 
 		self.activeTexture = None
+
+		self.directionalLight = [1, 0, 0]
 		
 		self.primitiveType = POINTS
 		
@@ -204,9 +206,11 @@ class Renderer(object):
 			# Por cada modelo en la lista, los dibujo
 			# Agarrar su matriz modelo
 			mMat = model.GetModelMatrix()
-
+			self.activeVertexShader = model.vertexShader
+			self.activeFragmentShader = model.fragmentShader
 			#Guardar la referencia a la textura de este modelo
 			self.activeTexture = model.texture
+
 			
 			# Aqui vamos a guardar todos los vertices y su info correspondiente
 			vertexBuffer = [ ]
@@ -229,12 +233,13 @@ class Renderer(object):
 					# Si contamos con un Vertex Shader, se manda cada vertice
 					# para transformalos. Recordar pasar las matrices necesarias
 					# para usarlas dentro del shader
-					if self.vertexShader:
-						pos = self.vertexShader(pos,
+					if self.activeVertexShader:
+						pos = self.activeVertexShader(pos,
 												modelMatrix = mMat,
 												viewMatrix = self.camera.GetViewMatrix(),
 												projectionMatrix = self.projectionMatrix,
-												viewportMatrix = self.viewportMatrix)
+												viewportMatrix = self.viewportMatrix,
+												)
 						 
 					# Agregamos los valores de posicion al contenedor del vertice
 					for value in pos:
@@ -245,6 +250,13 @@ class Renderer(object):
 
 					#agregamos los valores de vts al contenedor del vertice
 					for value in vts:
+						vert.append(value)
+					
+					#obtenemos las normales de la cara actual
+					normal = model.normals[ face[i][2] - 1]
+
+					#Obtenemos los valores de las normales al contenedor de vertices
+					for values in normal:
 						vert.append(value)
 						
 					# Agregamos la informacion de este vertices a la
@@ -263,7 +275,7 @@ class Renderer(object):
 					for value in faceVerts[3]: vertexBuffer.append(value)
 
 			# Mandamos el buffer de vertices de este modelo a ser dibujado
-			self.glDrawPrimitives(vertexBuffer, 5)
+			self.glDrawPrimitives(vertexBuffer, 8)
 				
 
 	def glTriangle(self, A, B, C):
@@ -396,12 +408,13 @@ class Renderer(object):
 		# Si contamos un Fragment Shader, obtener el color de ah�
 		color = self.currColor
 		
-		if self.fragmentShader != None:
+		if self.activeFragmentShader != None:
 			# Mandar los par�metros necesarios al shader
 			verts = (A, B, C)
-			color = self.fragmentShader(verts = verts,
+			color = self.activeFragmentShader(verts = verts,
 										bCoords = bCoords,
-										texture = self.activeTexture)
+										texture = self.activeTexture,
+										dirLight = self.directionalLight)
 
 		self.glPoint(x, y, color)
 

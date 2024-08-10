@@ -10,6 +10,7 @@ class Model(object):
 		self.vertices = objFile.vertices
 		self.faces = objFile.faces
 		self.textCoords = objFile.texcoords # new one 
+		self.normals = objFile.normals
 		
 		self.translate = [0,0,0]
 		self.rotate = [0,0,0]
@@ -17,6 +18,9 @@ class Model(object):
 
 		self.texCoords = objFile.texcoords
 		self.texture = None
+
+		self.vertexShader = None
+		self.fragmentShader = None
 
 	def loadTexture(self, filename):
 		self.texture = Texture(filename)

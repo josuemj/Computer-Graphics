@@ -3,17 +3,16 @@ import pygame
 from pygame.locals import *
 from gl import *
 from model import Model
-from shaders import vertexShader, fragmentShader
+from shaders import *
 
-width = 512
-height = 512
+width = 940
+height = 540
 
 screen = pygame.display.set_mode((width, height), pygame.SCALED  )
 clock = pygame.time.Clock()
 
 rend = Renderer(screen)
-rend.vertexShader = vertexShader
-rend.fragmentShader = fragmentShader
+
 
 
 # puntoA = [50, 50, 0]
@@ -22,14 +21,33 @@ rend.fragmentShader = fragmentShader
 
 modelo1 = Model('models/model.obj')
 modelo1.loadTexture('textures/model.bmp')
+modelo1.vertexShader = vertexShader
+modelo1.fragmentShader = fragmentShader
 modelo1.translate[2] = -5
+modelo1.translate[0] = -2
 
-modelo1.scale[0] = 2
-modelo1.scale[1] = 2
-modelo1.scale[2] = 2
+
+modelo2 = Model('models/model.obj')
+modelo2.loadTexture('textures/model.bmp')
+modelo2.vertexShader = vertexShader
+modelo2.fragmentShader = fragmentShader
+modelo2.translate[2] = -5
+modelo2.translate[0] = 0
+
+
+
+modelo3 = Model('models/model.obj')
+modelo3.loadTexture('textures/model.bmp')
+modelo3.vertexShader = vertexShader
+modelo3.fragmentShader = fragmentShader
+modelo3.translate[2] = -5
+modelo3.translate[0] = 2
 
 
 rend.models.append(modelo1)
+rend.models.append(modelo2)
+rend.models.append(modelo3)
+
 
 isRunning = True
 while isRunning:
