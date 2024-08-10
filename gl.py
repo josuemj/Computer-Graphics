@@ -347,6 +347,20 @@ class Renderer(object):
 			flatTop(B, D, C)
 
 
+	def glTriangle_bc(self, A, B, C):
+
+		# Bounding Box
+		minX = round(min(A[0], B[0], C[0]))
+		minY = round(min(A[1], B[1], C[1]))
+		maxX = round(max(A[0], B[0], C[0]))
+		maxY = round(max(A[1], B[1], C[1]))
+
+		for x in range(minX, maxX + 1):
+			for y in range(minY, maxY + 1):
+				P = [x,y]
+				if barycentricCoords(A, B, C, P) != None:
+					self.glDrawTrianglePoint(A,B,C,P)
+
 	def glDrawTrianglePoint(self, A, B, C, P):
 		
 		x = P[0]
@@ -443,8 +457,8 @@ class Renderer(object):
 				B = [ buffer[i + j + vertexOffset * 1] for j in range(vertexOffset)]
 				C = [ buffer[i + j + vertexOffset * 2] for j in range(vertexOffset)]
 				
-				self.glTriangle(A, B, C)
-				
+				#self.glTriangle(A, B, C)
+				self.glTriangle_bc(A, B, C)
 				
 
 

@@ -20,14 +20,13 @@ rend.fragmentShader = fragmentShader
 # puntoB = [250, 500, 0]
 # puntoC = [500, 50, 0]
 
-modelo1 = Model('models/Apl_.obj')
-modelo1.loadTexture('textures/apple2.bmp')
-modelo1.translate[2] = -10
+modelo1 = Model('models/model.obj')
+modelo1.loadTexture('textures/model.bmp')
+modelo1.translate[2] = -5
 
-modelo1.scale[0] = 0.1
-modelo1.scale[1] = 0.1
-modelo1.scale[2] = 0.1
-rend.camera.translate[1] += 3
+modelo1.scale[0] = 2
+modelo1.scale[1] = 2
+modelo1.scale[2] = 2
 
 
 rend.models.append(modelo1)
