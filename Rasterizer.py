@@ -30,7 +30,7 @@ modelo1.translate[0] = -2
 modelo2 = Model('models/model.obj')
 modelo2.loadTexture('textures/model.bmp')
 modelo2.vertexShader = vertexShader
-modelo2.fragmentShader = fragmentShader
+modelo2.fragmentShader = gouradShader
 modelo2.translate[2] = -5
 modelo2.translate[0] = 0
 
@@ -39,13 +39,14 @@ modelo2.translate[0] = 0
 modelo3 = Model('models/model.obj')
 modelo3.loadTexture('textures/model.bmp')
 modelo3.vertexShader = vertexShader
-modelo3.fragmentShader = fragmentShader
+modelo3.fragmentShader = flatShader
 modelo3.translate[2] = -5
 modelo3.translate[0] = 2
 
 
 rend.models.append(modelo1)
 rend.models.append(modelo2)
+
 rend.models.append(modelo3)
 
 
