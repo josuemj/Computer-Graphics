@@ -147,3 +147,36 @@ def checkerShader(**kwargs):
     else:
         return [0, 0, 0]  # Black
 
+def blueGrayShader(**kwargs):
+    A, B, C = kwargs["verts"]
+    u, v, w = kwargs["bCoords"]
+    texture = kwargs["texture"]
+    dirLight = kwargs["dirLight"]
+
+    vtA, vtB, vtC = [A[3], A[4]], [B[3], B[4]], [C[3], C[4]]
+    nA, nB, nC = A[5:], B[5:], C[5:]
+
+    # Interpolación de las coordenadas de textura y las normales
+    vtP = [u * vtA[0] + v * vtB[0] + w * vtC[0], u * vtA[1] + v * vtB[1] + w * vtC[1]]
+    nP = [u * nA[0] + v * nB[0] + w * nC[0], u * nA[1] + v * nB[1] + w * nC[1], u * nA[2] + v * nB[2] + w * nC[2]]
+
+    # Normalización de la normal interpolada
+    norm_length = (nP[0]**2 + nP[1]**2 + nP[2]**2)**0.5
+    nP = [nP[0]/norm_length, nP[1]/norm_length, nP[2]/norm_length]
+
+    # Calculamos la componente difusa de la iluminación
+    diffuse = max(0, nP[0] * dirLight[0] + nP[1] * dirLight[1] + nP[2] * dirLight[2])
+
+    if texture:
+        texColor = texture.getColor(vtP[0], vtP[1])
+        # Aplicar filtro azul y ajustar por iluminación difusa
+        r = texColor[0] * diffuse * 0.1  # reducir rojos
+        g = texColor[1] * diffuse * 0.2  # reducir verdes
+        b = min(1.0, (texColor[2] * 0.9 + 0.1) * diffuse)  # dominante azul
+    else:
+        # Si no hay textura, aplicamos un color azul-gris
+        r = 0.1 * diffuse  # casi nulo rojo
+        g = 0.2 * diffuse  # bajo verde
+        b = 0.9 * diffuse  # fuerte azul
+
+    return [r, g, b]

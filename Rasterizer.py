@@ -26,7 +26,7 @@ modelo1.scale[2] = 1.5
 modelo2 = Model('models/base.obj')
 modelo2.loadTexture('textures/hearth.bmp')
 modelo2.vertexShader = vertexShader
-modelo2.fragmentShader = fragmentShader
+modelo2.fragmentShader = blueGrayShader
 modelo2.translate[2] = -5
 modelo2.translate[0] = 0
 modelo2.scale[0] = 1.5
