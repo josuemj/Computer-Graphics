@@ -1,5 +1,4 @@
 from MathLib import *
-import numpy as np 
 
 def vertexShader(vertex, **kwargs):
     modelMatrix = kwargs["modelMatrix"]
@@ -100,3 +99,51 @@ def flatShader(**kwargs):
 
     # Se regresa el color
     return [r,g,b]
+
+def vintageYellowShader(**kwargs):
+    A, B, C = kwargs["verts"]
+    u, v, w = kwargs["bCoords"]
+    texture = kwargs["texture"]
+    dirLight = kwargs["dirLight"]
+
+    vtA, vtB, vtC = [A[3], A[4]], [B[3], B[4]], [C[3], C[4]]
+    nA, nB, nC = A[5:], B[5:], C[5:]
+
+    # Interpolación de las coordenadas de textura y las normales
+    vtP = [u * vtA[0] + v * vtB[0] + w * vtC[0], u * vtA[1] + v * vtB[1] + w * vtC[1]]
+    nP = [u * nA[0] + v * nB[0] + w * nC[0], u * nA[1] + v * nB[1] + w * nC[1], u * nA[2] + v * nB[2] + w * nC[2]]
+
+    # Normalización de la normal interpolada
+    norm_length = (nP[0]**2 + nP[1]**2 + nP[2]**2)**0.5
+    nP = [nP[0]/norm_length, nP[1]/norm_length, nP[2]/norm_length]
+
+    # Calculamos la componente difusa de la iluminación
+    diffuse = max(0, nP[0] * dirLight[0] + nP[1] * dirLight[1] + nP[2] * dirLight[2])
+
+    if texture:
+        texColor = texture.getColor(vtP[0], vtP[1])
+        # Aplicar filtro amarillo y ajustar por iluminación difusa
+        r = min(1.0, (texColor[0] * 0.9 + 0.1) * diffuse)  # ligeramente rojizo
+        g = texColor[1] * diffuse * 0.85  # dominante amarillo
+        b = texColor[2] * diffuse * 0.2  # reducir azules
+    else:
+        r = 0.9 * diffuse  # suave amarillo
+        g = 0.85 * diffuse  # dominante amarillo
+        b = 0.2 * diffuse  # casi nulo azul
+
+    return [r, g, b]
+
+def checkerShader(**kwargs):
+    A, B, C = kwargs["verts"]
+    u, v, w = kwargs["bCoords"]
+
+    scale = 15 #square sacal
+    tx = (u * A[3] + v * B[3] + w * C[3]) * scale
+    ty = (u * A[4] + v * B[4] + w * C[4]) * scale
+
+    # Compute the checker pattern
+    if (int(tx) % 2) == (int(ty) % 2):
+        return [1, 1, 1]  # White
+    else:
+        return [0, 0, 0]  # Black
+
