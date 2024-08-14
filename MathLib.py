@@ -130,3 +130,13 @@ def vector_matrix_multiply(vector, matrix):
             result[i] += matrix[i][j] * vector[j]
     
     return result
+
+def normalize_vector(v):
+    magnitud = (v[0]**2 + v[1]**2 + v[2]**2) ** 0.5
+    return [v[0] / magnitud, v[1] / magnitud, v[2] / magnitud]
+
+def dot(v1, v2):
+    return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]
+
+def interpolate(valA, valB, valC, u, v, w):
+    return u * valA + v * valB + w * valC

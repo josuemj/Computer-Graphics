@@ -16,11 +16,11 @@ rend = Renderer(screen)
 modelo1 = Model('models/base.obj')
 modelo1.loadTexture('textures/hearth.bmp')
 modelo1.vertexShader = vertexShader
-modelo1.fragmentShader = vintageYellowShader
+modelo1.fragmentShader = greenShadow
 modelo1.translate[2] = -5
 modelo1.translate[0] = -2
 modelo1.scale[0] = 1.5
-modelo1.scale[1] = 1.5
+modelo1.scale[1] = 1.5 
 modelo1.scale[2] = 1.5
 
 modelo2 = Model('models/base.obj')

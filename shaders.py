@@ -180,3 +180,45 @@ def blueGrayShader(**kwargs):
         b = 0.9 * diffuse  # fuerte azul
 
     return [r, g, b]
+
+def greenShadow(**kwargs):
+    A, B, C = kwargs["verts"]
+    u, v, w = kwargs["bCoords"]  
+    textura = kwargs["texture"]  
+    dirLight = kwargs["dirLight"]  
+
+    dirLight = normalize_vector(dirLight)
+ 
+    intensidadA = max(0, dot(A[5:8], dirLight))
+    intensidadB = max(0, dot(B[5:8], dirLight))
+    intensidadC = max(0, dot(C[5:8], dirLight))
+
+    # Interpolar intensidades
+    intensidad = interpolate(intensidadA, intensidadB, intensidadC, u, v, w)
+
+    # Interpolar coordenadas de textura
+    vtP = [interpolate(A[3], B[3], C[3], u, v, w),
+           interpolate(A[4], B[4], C[4], u, v, w)]
+
+    # Obtener el color de la textura
+    if textura:
+        texColor = textura.getColor(vtP[0], vtP[1])
+        r, g, b = texColor[0], texColor[1], texColor[2]
+    else:
+        r, g, b = 1, 1, 1
+
+    r *= intensidad
+    g *= intensidad
+    b *= intensidad
+
+    verde_r = r * 0.4 + g * 0.6  # Reducir el rojo, mezclar con verde
+    verde_g = g * 0.9 + r * 0.1  # Aumentar ligeramente el verde
+    verde_b = b * 0.4 + g * 0.6  # Reducir el azul, mezclar con verde
+
+    # Asegurarse de que los colores estén dentro del rango válido
+    verde_r = min(1, max(0, verde_r))
+    verde_g = min(1, max(0, verde_g))
+    verde_b = min(1, max(0, verde_b))
+
+    # Devolver el color sombreado con tema verde
+    return [verde_r, verde_g, verde_b]
