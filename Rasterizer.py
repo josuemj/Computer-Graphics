@@ -12,6 +12,7 @@ screen = pygame.display.set_mode((width, height), pygame.SCALED  )
 clock = pygame.time.Clock()
 
 rend = Renderer(screen)
+rend.glLoadBackground('textures/fondo.bmp')
 
 modelo1 = Model('models/base.obj')
 modelo1.loadTexture('textures/hearth.bmp')
@@ -86,6 +87,7 @@ while isRunning:
 				
 					
 	rend.glClear()
+	rend.glClearBackground()
 	
 	rend.glRender()
 	#rend.glTriangle(puntoA, puntoB, puntoC)

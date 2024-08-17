@@ -2,6 +2,7 @@ import struct
 from camera import Camera
 from math import tan, pi, isclose
 from MathLib import barycentricCoords
+from texture import Texture
 
 def char(c):
 	# 1 byte
@@ -45,6 +46,28 @@ class Renderer(object):
 		self.primitiveType = POINTS
 		
 		self.models = []
+
+		self.background = None
+	
+	def glLoadBackground(self, filename):
+		self.background =  Texture(filename)
+	
+	def glClearBackground(self):
+		if self.background == None:
+			return
+		
+		for x in range(self.vpX, self.vpX + self.vpWidth +1):
+			for y in range(self.vpY, self.vpX + self.vpHeight +1):
+				tU = (x - self.vpX) / self.vpWidth
+				tV = (y - self.vpY) / self.vpHeight
+				
+				texColor = self.background.getColor(tU, tV)
+
+				if texColor:
+					self.glPoint(x, y, texColor)
+
+
+
 
 
 	def glViewport(self, x, y, width, height):
