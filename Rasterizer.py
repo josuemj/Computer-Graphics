@@ -17,17 +17,17 @@ rend.glLoadBackground('textures/fondo.bmp')
 modelo1 = Model('models/base.obj')
 modelo1.loadTexture('textures/hearth.bmp')
 modelo1.vertexShader = vertexShader
-modelo1.fragmentShader = fragmentShader
+modelo1.fragmentShader = greenShadow
 modelo1.translate[2] = -5
 modelo1.translate[0] = -2
 modelo1.scale[0] = 1.5
-modelo1.scale[1] = 1.5
+modelo1.scale[1] = 1.5 
 modelo1.scale[2] = 1.5
 
 modelo2 = Model('models/base.obj')
 modelo2.loadTexture('textures/hearth.bmp')
 modelo2.vertexShader = vertexShader
-modelo2.fragmentShader = fragmentShader
+modelo2.fragmentShader = blueGrayShader
 modelo2.translate[2] = -5
 modelo2.translate[0] = 0
 modelo2.scale[0] = 1.5
@@ -37,7 +37,7 @@ modelo2.scale[2] = 1.5
 modelo3 = Model('models/base.obj')
 modelo3.loadTexture('textures/hearth.bmp')
 modelo3.vertexShader = vertexShader
-modelo3.fragmentShader = fragmentShader
+modelo3.fragmentShader = checkerShader
 modelo3.translate[2] = -5
 modelo3.translate[0] = 2
 modelo3.scale[0] = 1.5
