@@ -399,11 +399,12 @@ class Renderer(object):
 		
 		#Se calcula valor de este pixel especifico
 		z = u * A[2] + v * B[2] + w * C[2]
-
-		if z >= self.zbuffer[x][y]:
-			return 
 		
 		self.zbuffer[x][y] = z
+
+		#Si el valor en z para este punto no esta entre -1 y 1 se puede descartar
+		if z < -1 or z > 1:
+			return # no lo dibuijamos
 
 		# Si contamos un Fragment Shader, obtener el color de ah�
 		color = self.currColor
