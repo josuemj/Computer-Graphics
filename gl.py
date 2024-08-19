@@ -43,7 +43,7 @@ class Renderer(object):
 
 		self.directionalLight = [1, 0, 0]
 		
-		self.primitiveType = POINTS
+		self.primitiveType = TRIANGLES
 		
 		self.models = []
 
@@ -65,10 +65,6 @@ class Renderer(object):
 
 				if texColor:
 					self.glPoint(x, y, texColor)
-
-
-
-
 
 	def glViewport(self, x, y, width, height):
 		self.vpX = int(x)
@@ -279,7 +275,7 @@ class Renderer(object):
 					normal = model.normals[ face[i][2] - 1]
 
 					#Obtenemos los valores de las normales al contenedor de vertices
-					for values in normal:
+					for value in normal:
 						vert.append(value)
 						
 					# Agregamos la informacion de este vertices a la
@@ -421,7 +417,12 @@ class Renderer(object):
 			return
 		
 		#Se calcula valor de este pixel especifico
+
+		
 		z = u * A[2] + v * B[2] + w * C[2]
+
+		if z >= self.zbuffer[x][y]:
+			return 
 		
 		self.zbuffer[x][y] = z
 
@@ -438,7 +439,7 @@ class Renderer(object):
 			color = self.activeFragmentShader(verts = verts,
 										bCoords = bCoords,
 										texture = self.activeTexture,
-										dirLight = self.directionalLight)
+										dirLight = self.directionalLight)										
 
 		self.glPoint(x, y, color)
 
