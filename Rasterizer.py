@@ -19,10 +19,12 @@ modelo1.loadTexture('textures/ModelTexture.bmp')
 modelo1.vertexShader = vertexShader
 modelo1.fragmentShader = fragmentShader
 modelo1.translate[2] = -5
-modelo1.translate[0] = -2
-modelo1.scale[0] = 2
-modelo1.scale[1] = 2 
-modelo1.scale[2] = 2
+modelo1.translate[0] = 1.2
+modelo1.translate[1] = -2.1
+modelo1.scale[0] = 1.8
+modelo1.scale[1] = 1.8 
+modelo1.scale[2] = 1.8
+modelo1.rotate[1] += 90
 
 # modelo2 = Model('models/base.obj')
 # modelo2.loadTexture('textures/hearth.bmp')
