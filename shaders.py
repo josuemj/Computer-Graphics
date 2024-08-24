@@ -104,7 +104,7 @@ def vintageYellowShader(**kwargs):
     A, B, C = kwargs["verts"]
     u, v, w = kwargs["bCoords"]
     texture = kwargs["texture"]
-    dirLight = kwargs["dirLight"]
+    dirLight = [0, 0, 1]
 
     vtA, vtB, vtC = [A[3], A[4]], [B[3], B[4]], [C[3], C[4]]
     nA, nB, nC = A[5:], B[5:], C[5:]
@@ -222,3 +222,39 @@ def greenShadow(**kwargs):
 
     # Devolver el color sombreado con tema verde
     return [verde_r, verde_g, verde_b]
+
+def metallicShader(**kwargs):
+    A, B, C = kwargs["verts"]
+    u, v, w = kwargs["bCoords"]
+    texture = kwargs["texture"]
+
+    # Texture coordinates interpolation
+    vtA, vtB, vtC = [A[3], A[4]], [B[3], B[4]], [C[3], C[4]]
+    vtP = [u * vtA[0] + v * vtB[0] + w * vtC[0], u * vtA[1] + v * vtB[1] + w * vtC[1]]
+
+    # Base metallic color (dark silver)
+    r, g, b = 0.4, 0.4, 0.4
+
+    if texture:
+        texColor = texture.getColor(vtP[0], vtP[1])
+        r *= texColor[0] * 0.5 + 0.5  # Adjusted for metallic reflection
+        g *= texColor[1] * 0.5 + 0.5
+        b *= texColor[2] * 0.5 + 0.5
+
+    # Simulate metallic reflection by adding highlights
+    # We simulate this by creating a "fake" specular highlight
+    highlight_intensity = 0.6  # This can be adjusted to make the metal shinier
+    reflection_color = 1.0  # Pure white for strong reflection
+    
+    # Adding fake specular highlights
+    r = min(1.0, r * (1.0 - highlight_intensity) + reflection_color * highlight_intensity)
+    g = min(1.0, g * (1.0 - highlight_intensity) + reflection_color * highlight_intensity)
+    b = min(1.0, b * (1.0 - highlight_intensity) + reflection_color * highlight_intensity)
+
+    # Add a slight variation to simulate surface imperfections (optional)
+    noise = (u * 0.05 + v * 0.05 + w * 0.05) % 0.05
+    r = max(0, r - noise)
+    g = max(0, g - noise)
+    b = max(0, b - noise)
+
+    return [r, g, b]
