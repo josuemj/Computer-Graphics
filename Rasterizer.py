@@ -29,7 +29,7 @@ modelo1.rotate[1] += 90
 modelo2 = Model('models/dino.obj')
 modelo2.loadTexture('textures/dino.bmp')
 modelo2.vertexShader = vertexShader
-modelo2.fragmentShader = metallicShader
+modelo2.fragmentShader = blueGrayShader
 modelo2.translate[2] = -16
 modelo2.translate[0] = -6
 modelo2.translate[1] = 1.5
