@@ -262,3 +262,38 @@ def metallicShader(**kwargs):
     b = max(0, b - noise)
 
     return [r, g, b]
+
+def woodShader(**kwargs):
+    A, B, C = kwargs["verts"]
+    u, v, w = kwargs["bCoords"]
+    texture = kwargs["texture"]
+
+    # Interpolating texture coordinates
+    vtA, vtB, vtC = [A[3], A[4]], [B[3], B[4]], [C[3], C[4]]
+    vtP = [u * vtA[0] + v * vtB[0] + w * vtC[0], u * vtA[1] + v * vtB[1] + w * vtC[1]]
+
+    # Base wood color (a brownish tone)
+    baseColor = [0.55, 0.27, 0.07]  # Brown color resembling wood
+
+    if texture:
+        texColor = texture.getColor(vtP[0], vtP[1])
+        # Blend texture color with base wood color
+        r = baseColor[0] * 0.5 + texColor[0] * 0.5
+        g = baseColor[1] * 0.5 + texColor[1] * 0.5
+        b = baseColor[2] * 0.5 + texColor[2] * 0.5
+    else:
+        r, g, b = baseColor
+
+    # Simulate wood grain using sine waves
+    grain = sin(vtP[1] * 10.0) * 0.1  # Adjust the frequency for grain effect
+    r = r + grain * 0.1
+    g = g + grain * 0.1
+    b = b + grain * 0.05  # Less impact on blue to maintain the wood tone
+
+    # Apply some noise for a more natural wood texture
+    noise = (u * 0.02 + v * 0.02 + w * 0.02) % 0.02
+    r = max(0, r - noise)
+    g = max(0, g - noise)
+    b = max(0, b - noise)
+
+    return [r, g, b]
