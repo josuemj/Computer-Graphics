@@ -297,3 +297,67 @@ def woodShader(**kwargs):
     b = max(0, b - noise)
 
     return [r, g, b]
+
+
+def missileShader(**kwargs):
+    A, B, C = kwargs["verts"]
+    u, v, w = kwargs["bCoords"]
+    texture = kwargs.get("texture", None)
+
+    # Define the camo colors directly within the shader
+    camoColor1 = [0.3, 0.3, 0.3]  # Dark color for camo
+    camoColor2 = [0.6, 0.6, 0.6]  # Light color for camo
+    metallicReflection = 0.6
+
+    # Interpolating texture coordinates
+    vtA, vtB, vtC = [A[3], A[4]], [B[3], B[4]], [C[3], C[4]]
+    vtP = [u * vtA[0] + v * vtB[0] + w * vtC[0], u * vtA[1] + v * vtB[1] + w * vtC[1]]
+
+    scale = 10 
+    tx = (u * A[3] + v * B[3] + w * C[3]) * scale
+    ty = (u * A[4] + v * B[4] + w * C[4]) * scale
+
+    if (int(tx) % 2) == (int(ty) % 2):
+        r, g, b = camoColor1
+    else:
+        r, g, b = camoColor2
+
+    if texture:
+        texColor = texture.getColor(vtP[0], vtP[1])
+        r *= texColor[0]
+        g *= texColor[1]
+        b *= texColor[2]
+
+    # Simulate metallic reflection
+    r = min(1.0, r * (1.0 - metallicReflection) + metallicReflection)
+    g = min(1.0, g * (1.0 - metallicReflection) + metallicReflection)
+    b = min(1.0, b * (1.0 - metallicReflection) + metallicReflection)
+
+    noise = (u * 0.02 + v * 0.02 + w * 0.02) % 0.02
+    r = max(0, r - noise)
+    g = max(0, g - noise)
+    b = max(0, b - noise)
+
+    return [r, g, b]
+
+def vertexShader(vertex, **kwargs):
+    modelMatrix = kwargs["modelMatrix"]
+    viewMatrix = kwargs["viewMatrix"]
+    projectionMatrix = kwargs["projectionMatrix"]
+    viewportMatrix = kwargs["viewportMatrix"]
+
+    if len(vertex) + 1 == len(modelMatrix):
+        vt = vertex + [1]
+    else:
+        vt = vertex
+
+    vpMatrix_projectMatrix = matrix_multiply(viewportMatrix, projectionMatrix)
+    vpMatrix_projectMatrix_viewMatrix = matrix_multiply(vpMatrix_projectMatrix, viewMatrix)
+    vpMatrix_projectMatrix_viewMatrix_model = matrix_multiply(vpMatrix_projectMatrix_viewMatrix, modelMatrix)
+
+    vt = vector_matrix_multiply(vt, vpMatrix_projectMatrix_viewMatrix_model)
+
+    if len(vt) > 3:
+        vt = [vt[0]/vt[3], vt[1]/vt[3], vt[2]/vt[3]]
+
+    return vt
