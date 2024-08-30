@@ -168,7 +168,7 @@ class RendererRT(object):
 				
 				if self.glCastRay(self.camera.translate, dir):
 					self.glPoint(x, y)
-					pygame.display.flip()
+					pygame.display.flip() # for checking each time
 					
 
 					

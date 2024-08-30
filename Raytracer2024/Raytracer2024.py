@@ -13,9 +13,10 @@ clock = pygame.time.Clock()
 
 rt =  RendererRT(screen)
 
-rt.scene.append(Sphere([0, 0, -5], -1.5))
-rt.scene.append(Sphere([-3, 2, -3], 0.5))
-rt.scene.append(Sphere([2, -3, -10], 1))
+rt.scene.append(Sphere([0, 0, -5], 1.5))
+rt.scene.append(Sphere([2, -2, -10], 1))
+
+
 
 
 rt.glRender()
