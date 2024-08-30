@@ -2,6 +2,9 @@ import struct
 from camera import Camera
 from math import tan, pi
 import numpy as np
+import pygame
+import random
+
 
 
 def char(c):
@@ -132,30 +135,40 @@ class RendererRT(object):
 		intersect = False
 		
 		for obj in self.scene:
+			
 			intersect = obj.ray_intersect(orig, direction)
+   
+			if intersect:
+				break
 			
 		return intersect
 
 
 	def glRender(self):
 		
-		for x in range(self.vpX, self.vpX + self.vpWidth):
-			for y in range(self.vpY, self.vpY + self.vpHeight):
-				if 0<=x<self.width and 0<=y<self.height:
-					# Coordenadas normalizadas
-					# Que van de -1 a 1
+		indeces = [(i,j) for i in range(self.vpWidth) for j in range(self.vpHeight)]
+		random.shuffle(indeces)
 
-					pX = ((x + 0.5 - self.vpX) / self.vpWidth) * 2 - 1
-					pY = ((y + 0.5 - self.vpY) / self.vpHeight) * 2 - 1
-					
-					pX *= self.rightEdge
-					pY *= self.topEdge
-					
-					dir = [pX, pY, -self.nearPlane]
-					dir /= np.linalg.norm(dir)
-					
-					if self.glCastRay(self.camera.translate, dir):
-						self.glPoint(x, y)
+		for i,j in indeces:
+			x = i + self.vpX
+			y = j + self.vpY
+
+			if 0<=x<self.width and 0<=y<self.height:
+				# Coordenadas normalizadas
+				# Que van de -1 a 1
+
+				pX = ((x + 0.5 - self.vpX) / self.vpWidth) * 2 - 1
+				pY = ((y + 0.5 - self.vpY) / self.vpHeight) * 2 - 1
+				
+				pX *= self.rightEdge
+				pY *= self.topEdge
+				
+				dir = [pX, pY, -self.nearPlane]
+				dir /= np.linalg.norm(dir)
+				
+				if self.glCastRay(self.camera.translate, dir):
+					self.glPoint(x, y)
+					pygame.display.flip()
 					
 
 					
