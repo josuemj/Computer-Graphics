@@ -1,17 +1,19 @@
 import numpy as np
+from intercept import Intercept
 
 class Shape(object):
-    def __init__(self, position):
+    def __init__(self, position, material):
         self.position = position
+        self.material = material
         self.type = "None"
 
     def ray_intersect(self, orig, dir):
-        return False
+        return None
 
     
 class Sphere(Shape):
-    def __init__(self, position, radius):
-        super().__init__( position)
+    def __init__(self, position, radius, material):
+        super().__init__( position, material)
         self.radius = radius
         self.type = "Sphere"
         
@@ -22,7 +24,7 @@ class Sphere(Shape):
         d = (np.linalg.norm(L) ** 2 - tca ** 2) ** 0.5
         
         if d > self.radius:
-            return False
+            return None
         
         thc = (self.radius ** 2 - d ** 2) ** 0.5
         
@@ -32,8 +34,14 @@ class Sphere(Shape):
         if t0 < 0: 
             t0 = t1 
         if t0 < 0:
-            return False
+            return None
         
         # P = orig + dir * t0
         P = np.add(orig, np.multiply(dir, t0))
-        return True        
+        normal = np.subtract(P, self.position)
+        normal /= np.linalg.norm(normal)
+        return Intercept(point = P, 
+                         normal = normal,
+                         distance = t0,
+                         obj = self
+                         )        

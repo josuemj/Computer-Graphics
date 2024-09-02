@@ -132,16 +132,14 @@ class RendererRT(object):
 					
 	def glCastRay(self, orig, direction):
 		
-		intersect = False
+		intercept = None 
+		hit = None
 		
 		for obj in self.scene:
-			
-			intersect = obj.ray_intersect(orig, direction)
-   
-			if intersect:
-				break
-			
-		return intersect
+			intercept = obj.ray_intersect(orig, direction)
+			if intercept != None:
+				hit = intercept
+		return hit
 
 
 	def glRender(self):
@@ -165,9 +163,12 @@ class RendererRT(object):
 				
 				dir = [pX, pY, -self.nearPlane]
 				dir /= np.linalg.norm(dir)
+    
+				intercept = self.glCastRay(self.camera.translate, dir)
 				
-				if self.glCastRay(self.camera.translate, dir):
-					self.glPoint(x, y)
+				if intercept != None:
+					color = intercept.obj.material.GetSurfaceColor()
+					self.glPoint(x, y, color)
 					pygame.display.flip() # for checking each time
 					
 
