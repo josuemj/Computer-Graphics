@@ -4,6 +4,7 @@ from math import tan, pi
 import numpy as np
 import pygame
 import random
+from lights import *
 
 
 
@@ -36,6 +37,8 @@ class RendererRT(object):
 		self.glClear()
 		
 		self.scene = []
+  
+		self.lights = []
 		
 
 	def glViewport(self, x, y, width, height):
@@ -132,13 +135,16 @@ class RendererRT(object):
 					
 	def glCastRay(self, orig, direction):
 		
+		depth = float('inf')
 		intercept = None 
 		hit = None
 		
 		for obj in self.scene:
 			intercept = obj.ray_intersect(orig, direction)
 			if intercept != None:
-				hit = intercept
+				if intercept.distance < depth:
+					hit = intercept
+					depth = intercept.distance
 		return hit
 
 
@@ -167,7 +173,7 @@ class RendererRT(object):
 				intercept = self.glCastRay(self.camera.translate, dir)
 				
 				if intercept != None:
-					color = intercept.obj.material.GetSurfaceColor()
+					color = intercept.obj.material.GetSurfaceColor(intercept, self)
 					self.glPoint(x, y, color)
 					pygame.display.flip() # for checking each time
 					

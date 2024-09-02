@@ -5,6 +5,8 @@ from pygame.locals import *
 from gl import RendererRT
 from figures import *
 from material import Material
+from lights import *
+
 
 width = 128
 height = 128
@@ -17,8 +19,11 @@ rt =  RendererRT(screen)
 brick = Material(difuse=[1,0.2, 0.2])
 grass = Material(difuse=[0.2, 1.0, 0.2])
 
+rt.lights.append( DirectionalLight( direction=[-1, -1, -1]) ) 
+rt.lights.append( AmbientLight( intensity= 0.1) ) 
+
+# rt.scene.append(Sphere(position = [2, -2, -10], radius= 1, material = grass))
 rt.scene.append(Sphere(position = [0, 0, -5], radius = 1.5 , material = brick))
-rt.scene.append(Sphere(position = [2, -2, -10], radius= 1, material = grass))
 
 
 rt.glRender()
