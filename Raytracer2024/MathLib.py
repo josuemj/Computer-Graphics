@@ -3,9 +3,9 @@ from math import pi, sin, cos, isclose
 
 def barycentricCoords(A, B, C, P):
 	
-	# Se saca el área de los subtriángulos y del triángulo
-	# mayor usando el Shoelace Theorem, una fórmula que permite
-	# sacar el área de un polígono de cualquier cantidad de vértices.
+	# Se saca el ï¿½rea de los subtriï¿½ngulos y del triï¿½ngulo
+	# mayor usando el Shoelace Theorem, una fï¿½rmula que permite
+	# sacar el ï¿½rea de un polï¿½gono de cualquier cantidad de vï¿½rtices.
 
 	areaPCB = abs((P[0]*C[1] + C[0]*B[1] + B[0]*P[1]) - 
 				  (P[1]*C[0] + C[1]*B[0] + B[1]*P[0]))
@@ -19,20 +19,20 @@ def barycentricCoords(A, B, C, P):
 	areaABC = abs((A[0]*B[1] + B[0]*C[1] + C[0]*A[1]) - 
 				  (A[1]*B[0] + B[1]*C[0] + C[1]*A[0]))
 
-	# Si el área del triángulo es 0, retornar nada para
-	# prevenir división por 0.
+	# Si el ï¿½rea del triï¿½ngulo es 0, retornar nada para
+	# prevenir divisiï¿½n por 0.
 	if areaABC == 0:
 		return None
 
-	# Determinar las coordenadas baricéntricas dividiendo el 
-	# área de cada subtriángulo por el área del triángulo mayor.
+	# Determinar las coordenadas baricï¿½ntricas dividiendo el 
+	# ï¿½rea de cada subtriï¿½ngulo por el ï¿½rea del triï¿½ngulo mayor.
 	u = areaPCB / areaABC
 	v = areaACP / areaABC
 	w = areaABP / areaABC
 
 
-	# Si cada coordenada está entre 0 a 1 y la suma de las tres
-	# es igual a 1, entonces son válidas.
+	# Si cada coordenada estï¿½ entre 0 a 1 y la suma de las tres
+	# es igual a 1, entonces son vï¿½lidas.
 	if 0<=u<=1 and 0<=v<=1 and 0<=w<=1:
 		return (u, v, w)
 	else:
@@ -60,7 +60,7 @@ def RotationMatrix(pitch, yaw, roll):
 	yaw *= pi/180
 	roll *= pi/180
 	
-	# Creamos la matriz de rotación para cada eje.
+	# Creamos la matriz de rotaciï¿½n para cada eje.
 	pitchMat = np.matrix([[1,0,0,0],
 						  [0,cos(pitch),-sin(pitch),0],
 						  [0,sin(pitch),cos(pitch),0],
@@ -78,3 +78,13 @@ def RotationMatrix(pitch, yaw, roll):
 	
 	return pitchMat * yawMat * rollMat
 	
+
+def reflectVector(normal, direction):
+    #R = 2 * (N . L) * N - L
+    reflect = 2 * np.dot(normal , direction)
+    #Asumiendo direcion y normal vienen normalizadas
+    reflect = np.multiply(reflect, normal)
+    reflect = np.subtract(reflect, direction)
+    
+    reflect /= np.linalg.norm(reflect)
+    return reflect
