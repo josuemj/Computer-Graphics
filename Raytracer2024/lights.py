@@ -5,6 +5,7 @@ class Light(object):
     def __init__(self, color = [1, 1, 1], intensity = 1.0, lighType = "None"):
         self.color = color
         self.intensity = intensity
+        self.lighType = lighType
         
     def GetLightColor(self, intercept = None):
         return [(i * self.intensity) for i in self.color] 

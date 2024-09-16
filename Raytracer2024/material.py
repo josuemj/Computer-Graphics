@@ -13,11 +13,17 @@ class Material(object):
         finalColor = self.difuse
         
         for light in renderer.lights:
+            shadowIntercept = None
             
-            currentLightColor = light.GetLightColor(intercept)
-            currentSpecularColor = light.GetSpecularColor(intercept, renderer.camera.translate)
-            lightColor = [(lightColor[i] + currentLightColor[i] + currentSpecularColor[i]) for i in range(3)]
+            if light.lighType == "Directional":
+                lightDir = [-i for  i in light.direction]
+                shadowIntercept = renderer.glCastRay(intercept.point, lightDir, intercept.obj)
             
+            if shadowIntercept == None:         
+                currentLightColor = light.GetLightColor(intercept)
+                currentSpecularColor = light.GetSpecularColor(intercept, renderer.camera.translate)
+                lightColor = [(lightColor[i] + currentLightColor[i] + currentSpecularColor[i]) for i in range(3)]
+                
         finalColor = [(finalColor[i] * lightColor[i]) for i in range(3)]
         finalColor = [min(1, finalColor[i]) for i in range(3)]
         return finalColor

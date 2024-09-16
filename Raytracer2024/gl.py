@@ -133,18 +133,19 @@ class RendererRT(object):
 					file.write(color)
 				
 					
-	def glCastRay(self, orig, direction):
+	def glCastRay(self, orig, direction, sceneObj = None):
 		
 		depth = float('inf')
 		intercept = None 
 		hit = None
 		
 		for obj in self.scene:
-			intercept = obj.ray_intersect(orig, direction)
-			if intercept != None:
-				if intercept.distance < depth:
-					hit = intercept
-					depth = intercept.distance
+			if obj != sceneObj:
+				intercept = obj.ray_intersect(orig, direction)
+				if intercept != None:
+					if intercept.distance < depth:
+						hit = intercept
+						depth = intercept.distance
 		return hit
 
 
