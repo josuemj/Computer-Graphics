@@ -41,6 +41,8 @@ rt.lights.append( AmbientLight(intensity=0.1))
 rt.scene.append( Sphere(position=[0, 0.6, -2.8], radius=0.3, material=snowy))
 
 rt.scene.append( Sphere(position=[0, 0, -2.9], radius=0.4, material=snowy))
+rt.scene.append( Sphere(position=[0, 0, -2.53], radius=0.05, material=button)) # middle button
+
 
 rt.scene.append( Sphere(position=[0, -0.7, -3], radius=0.5, material=snowy))
 rt.scene.append( Sphere(position=[0, -0.5, -2.6], radius=0.09, material=button))
