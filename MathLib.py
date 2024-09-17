@@ -154,3 +154,11 @@ def restar_elementos(lista1, lista2):
     if len(lista1) != len(lista2):
         raise ValueError("Las listas deben tener la misma longitud.")
     return [a - b for a, b in zip(lista1, lista2)]
+
+def suma_vectores(lista1, lista2):
+    """
+    Suma elemento a elemento dos listas de igual longitud.
+    """
+    if len(lista1) != len(lista2):
+        raise ValueError("Las listas deben tener la misma longitud.")
+    return [a + b for a, b in zip(lista1, lista2)]

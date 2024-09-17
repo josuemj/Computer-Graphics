@@ -1,5 +1,5 @@
-import numpy as np
 from intercept import Intercept
+from MathLib import *
 
 class Shape(object):
     def __init__(self, position, material):
@@ -18,10 +18,15 @@ class Sphere(Shape):
         self.type = "Sphere"
         
     def ray_intersect(self, orig, dir):
-        L = np.subtract(self.position, orig)
-        tca = np.dot(L,  dir)
+        L = restar_elementos(self.position, orig)
+        tca = dot(L,  dir)
         
-        d = (np.linalg.norm(L) ** 2 - tca ** 2) ** 0.5
+        L_norm_sq = sum([comp ** 2 for comp in L])  # ||L||^2
+        d_sq = L_norm_sq - tca ** 2
+        if d_sq < 0:
+            return None  # No intersección
+        
+        d = sqrt(d_sq)
         
         if d > self.radius:
             return None
@@ -37,11 +42,16 @@ class Sphere(Shape):
             return None
         
         # P = orig + dir * t0
-        P = np.add(orig, np.multiply(dir, t0))
-        normal = np.subtract(P, self.position)
-        normal /= np.linalg.norm(normal)
-        return Intercept(point = P, 
-                         normal = normal,
-                         distance = t0,
-                         obj = self
-                         )        
+        scaled_dir = [comp * t0 for comp in dir]  # dir * t0
+        P = suma_vectores(orig, scaled_dir)    # orig + (dir * t0)
+        
+        # normal = (P - self.position).normalize()
+        P_minus_position = restar_elementos(P, self.position)
+        normal_vector = normalize_vector(P_minus_position)
+        
+        return Intercept(
+            point=P,
+            normal=normal_vector,
+            distance=t0,
+            obj=self
+        )
