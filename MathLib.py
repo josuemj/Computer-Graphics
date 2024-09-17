@@ -88,3 +88,63 @@ def reflectVector(normal, direction):
     
     reflect /= np.linalg.norm(reflect)
     return reflect
+
+def matrix_multiply(A, B):
+    if len(A[0]) != len(B):
+        raise ValueError("Number of columns in the first matrix must be equal to the number of rows in the second matrix.")
+    
+    result = [[0 for _ in range(len(B[0]))] for _ in range(len(A))]
+
+    for i in range(len(A)):
+        for j in range(len(B[0])):
+            for k in range(len(B)):
+                result[i][j] += A[i][k] * B[k][j]
+    
+    return result
+
+def inversed_matrix(matrix):
+    
+    n = len(matrix)
+    
+    identity = [[1 if i == j else 0 for j in range(n)] for i in range(n)]
+    
+    augmented_matrix = [row + identity_row for row, identity_row in zip(matrix, identity)]
+    
+    for i in range(n):
+        pivot = augmented_matrix[i][i]
+        if pivot == 0:
+            raise ValueError("Matrix is not invertible.")
+        
+        for j in range(2 * n):
+            augmented_matrix[i][j] /= pivot
+        
+        for k in range(n):
+            if k != i:
+                factor = augmented_matrix[k][i]
+                for j in range(2 * n):
+                    augmented_matrix[k][j] -= factor * augmented_matrix[i][j]
+    
+    inverse_matrix = [row[n:] for row in augmented_matrix]
+    
+    return inverse_matrix
+
+def vector_matrix_multiply(vector, matrix):
+    if len(matrix[0]) != len(vector):
+        raise ValueError("The number of columns in the matrix must match the size of the vector.")
+    
+    result = [0] * len(matrix)
+    for i in range(len(matrix)):
+        for j in range(len(vector)):
+            result[i] += matrix[i][j] * vector[j]
+    
+    return result
+
+def normalize_vector(v):
+    magnitud = (v[0]**2 + v[1]**2 + v[2]**2) ** 0.5
+    return [v[0] / magnitud, v[1] / magnitud, v[2] / magnitud]
+
+def dot(v1, v2):
+    return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]
+
+def interpolate(valA, valB, valC, u, v, w):
+    return u * valA + v * valB + w * valC
