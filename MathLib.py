@@ -1,5 +1,4 @@
-import numpy as np
-from math import pi, sin, cos, isclose
+from math import pi, sin, cos,sqrt
 
 def barycentricCoords(A, B, C, P):
 	
@@ -41,17 +40,17 @@ def barycentricCoords(A, B, C, P):
 
 def TranslationMatrix(x, y, z):
 	
-	return np.matrix([[1, 0, 0, x],
+	return [[1, 0, 0, x],
 					  [0, 1, 0, y],
 					  [0, 0, 1, z],
-					  [0, 0, 0, 1]])
+					  [0, 0, 0, 1]]
 
 def ScaleMatrix(x, y, z):
 	
-	return np.matrix([[x, 0, 0, 0],
+	return [[x, 0, 0, 0],
 					  [0, y, 0, 0],
 					  [0, 0, z, 0],
-					  [0, 0, 0, 1]])
+					  [0, 0, 0, 1]]
 
 def RotationMatrix(pitch, yaw, roll):
 	
@@ -61,33 +60,35 @@ def RotationMatrix(pitch, yaw, roll):
 	roll *= pi/180
 	
 	# Creamos la matriz de rotaci�n para cada eje.
-	pitchMat = np.matrix([[1,0,0,0],
+	pitchMat = [[1,0,0,0],
 						  [0,cos(pitch),-sin(pitch),0],
 						  [0,sin(pitch),cos(pitch),0],
-						  [0,0,0,1]])
+						  [0,0,0,1]]
 	
-	yawMat = np.matrix([[cos(yaw),0,sin(yaw),0],
+	yawMat = [[cos(yaw),0,sin(yaw),0],
 						[0,1,0,0],
-						[-sin(yaw),0,cos(yaw),0],
-						[0,0,0,1]])
+						[-sin(yaw ),0,cos(yaw),0],
+						[0,0,0,1]]
 	
-	rollMat = np.matrix([[cos(roll),-sin(roll),0,0],
+	rollMat = [[cos(roll),-sin(roll),0,0],
 						 [sin(roll),cos(roll),0,0],
 						 [0,0,1,0],
-						 [0,0,0,1]])
+						 [0,0,0,1]]
 	
-	return pitchMat * yawMat * rollMat
+	return  matrix_multiply(matrix_multiply(pitchMat,yawMat), rollMat)
 	
 
 def reflectVector(normal, direction):
-    #R = 2 * (N . L) * N - L
-    reflect = 2 * np.dot(normal , direction)
-    #Asumiendo direcion y normal vienen normalizadas
-    reflect = np.multiply(reflect, normal)
-    reflect = np.subtract(reflect, direction)
+    # R = 2 * (N . L) * N - L
+    dot_product = dot(normal, direction)
+    scaled_normal = [2 * dot_product * n for n in normal]  # 2 * (N . L) * N
+    reflect = restar_elementos(scaled_normal, direction)  # 2 * (N . L) * N - L
     
-    reflect /= np.linalg.norm(reflect)
-    return reflect
+    # Normalizar el vector de reflexión
+    norm = sqrt(sum([comp ** 2 for comp in reflect]))
+    reflect_normalized = [comp / norm for comp in reflect]
+    
+    return reflect_normalized
 
 def matrix_multiply(A, B):
     if len(A[0]) != len(B):
@@ -148,3 +149,8 @@ def dot(v1, v2):
 
 def interpolate(valA, valB, valC, u, v, w):
     return u * valA + v * valB + w * valC
+
+def restar_elementos(lista1, lista2):
+    if len(lista1) != len(lista2):
+        raise ValueError("Las listas deben tener la misma longitud.")
+    return [a - b for a, b in zip(lista1, lista2)]
