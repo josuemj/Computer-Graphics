@@ -38,14 +38,16 @@ rt.lights.append( AmbientLight(intensity=0.1))
 # rt.scene.append( Sphere(position = [0, 0 , -5], radius = 1.5, material = brick) )
 # rt.scene.append( Sphere(position = [1, 1 , -3], radius = 0.5, material = grass) )
 
-rt.scene.append( Sphere(position=[0, 0.6, -2.8], radius=0.3, material=snowy))
+rt.scene.append( Sphere(position=[0, 0.6, -2.8], radius=0.3, material=snowy)) #head ball
 
-rt.scene.append( Sphere(position=[0, 0, -2.9], radius=0.4, material=snowy))
+
+rt.scene.append( Sphere(position=[0, 0, -2.9], radius=0.4, material=snowy)) # middle ball
+rt.scene.append( Sphere(position=[0, 0.25, -2.58], radius=0.04, material=button)) # top button
 rt.scene.append( Sphere(position=[0, 0, -2.53], radius=0.05, material=button)) # middle button
 
 
-rt.scene.append( Sphere(position=[0, -0.7, -3], radius=0.5, material=snowy))
-rt.scene.append( Sphere(position=[0, -0.5, -2.6], radius=0.09, material=button))
+rt.scene.append( Sphere(position=[0, -0.7, -3], radius=0.5, material=snowy)) #bottom snowbal
+rt.scene.append( Sphere(position=[0, -0.5, -2.6], radius=0.09, material=button)) #bottom buttom
 
 
 
