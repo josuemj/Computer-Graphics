@@ -31,14 +31,25 @@ button = Material(
     Ks=0.1                        # Low specular coefficient for a matte finish
 )
 
+orange_carrot = Material(
+    difuse = [1.0, 0.5, 0.0], 
+    spec = 32,              
+    Ks = 0.2                    
+)
+
 rt.lights.append( DirectionalLight(direction = [-1, -1, -1], intensity = 0.8) )
 rt.lights.append( DirectionalLight(direction = [0.5, -0.5, -1], intensity = 0.8, color = [1,1,1] ))
 rt.lights.append( AmbientLight(intensity=0.1))
 
-# rt.scene.append( Sphere(position = [0, 0 , -5], radius = 1.5, material = brick) )
-# rt.scene.append( Sphere(position = [1, 1 , -3], radius = 0.5, material = grass) )
-
 rt.scene.append( Sphere(position=[0, 0.6, -2.8], radius=0.3, material=snowy)) #head ball
+rt.scene.append( Sphere(position=[0, 0.5, -2.55], radius=0.06, material=orange_carrot)) # nose
+rt.scene.append( Sphere(position=[-0.04, 0.44, -2.57], radius=0.025, material=button)) # mouth
+rt.scene.append( Sphere(position=[0.04, 0.44, -2.57], radius=0.025, material=button)) # mouth
+rt.scene.append( Sphere(position=[0.11, 0.46, -2.58], radius=0.025, material=button)) # mouth
+rt.scene.append( Sphere(position=[-0.11, 0.46, -2.58], radius=0.025, material=button)) # mouth
+
+rt.scene.append( Sphere(position=[-0.09, 0.6, -2.52], radius=0.03, material=button)) # eye
+rt.scene.append( Sphere(position=[0.09, 0.6, -2.52], radius=0.03, material=button)) # eye
 
 
 rt.scene.append( Sphere(position=[0, 0, -2.9], radius=0.4, material=snowy)) # middle ball
