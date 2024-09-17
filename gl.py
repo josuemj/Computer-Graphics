@@ -1,11 +1,10 @@
 import struct
 from camera import Camera
 from math import tan, pi
-import numpy as np
 import pygame
 import random
 from lights import *
-
+from MathLib import *
 
 
 def char(c):
@@ -169,7 +168,7 @@ class RendererRT(object):
 				pY *= self.topEdge
 				
 				dir = [pX, pY, -self.nearPlane]
-				dir /= np.linalg.norm(dir)
+				dir = normalize_vector(dir)
     
 				intercept = self.glCastRay(self.camera.translate, dir)
 				
