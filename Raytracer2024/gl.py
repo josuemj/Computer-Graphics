@@ -1,6 +1,6 @@
 import struct
 from camera import Camera
-from math import tan, pi
+from math import tan, pi, atan2, acos
 import numpy as np
 import pygame
 import random
@@ -20,7 +20,7 @@ def dword(d):
 	# 4 bytes
 	return struct.pack("=l", d)
 
-
+MAX_RECURSION_DEPTH = 3
 
 class RendererRT(object):
 	def __init__(self, screen):
@@ -39,6 +39,8 @@ class RendererRT(object):
 		self.scene = []
   
 		self.lights = []
+  
+		self.envMap = None
 		
 
 	def glViewport(self, x, y, width, height):
@@ -83,7 +85,14 @@ class RendererRT(object):
 		
 		self.frameBuffer = [[self.clearColor for y in range(self.height)]
 							for x in range(self.width)]
-		
+
+	def glEnvMapColor(self, orig, dir):
+		if self.envMap:
+			x = (atan2(dir[2], dir[0]) / (2*pi) + 0.5 )
+			y = acos(-dir[1]) / pi 
+			return self.envMap.getColor(x, y)
+		return self.clearColor
+      
 
 	def glPoint(self, x, y, color = None):
 		# Pygame empieza a renderizar desde la esquina
@@ -133,7 +142,10 @@ class RendererRT(object):
 					file.write(color)
 				
 					
-	def glCastRay(self, orig, direction, sceneObj = None):
+	def glCastRay(self, orig, direction, sceneObj = None, recursion = 0):
+     
+		if recursion >= MAX_RECURSION_DEPTH:
+			return None
 		
 		depth = float('inf')
 		intercept = None 
@@ -173,10 +185,16 @@ class RendererRT(object):
     
 				intercept = self.glCastRay(self.camera.translate, dir)
 				
+				color = [0,0,0]
+    
 				if intercept != None:
 					color = intercept.obj.material.GetSurfaceColor(intercept, self)
-					self.glPoint(x, y, color)
-					pygame.display.flip() # for checking each time
+				else:
+					color = self.glEnvMapColor(self.camera.translate, dir)
+     
+				self.glPoint(x, y, color)
+				pygame.display.flip() # for checking each time
+			
 					
 
 					
