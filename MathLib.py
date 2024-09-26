@@ -1,3 +1,4 @@
+import numpy as np
 from math import pi, sin, cos, isclose
 
 def barycentricCoords(A, B, C, P):
@@ -32,111 +33,58 @@ def barycentricCoords(A, B, C, P):
 
 	# Si cada coordenada est� entre 0 a 1 y la suma de las tres
 	# es igual a 1, entonces son v�lidas.
-	if 0<=u<=1 and 0<=v<=1 and 0<=w<=1: #modified
+	if 0<=u<=1 and 0<=v<=1 and 0<=w<=1:
 		return (u, v, w)
 	else:
 		return None
 	
 
 def TranslationMatrix(x, y, z):
-    return [
-        [1, 0, 0, x],
-        [0, 1, 0, y],
-        [0, 0, 1, z],
-        [0, 0, 0, 1]
-    ]
+	
+	return np.matrix([[1, 0, 0, x],
+					  [0, 1, 0, y],
+					  [0, 0, 1, z],
+					  [0, 0, 0, 1]])
 
 def ScaleMatrix(x, y, z):
-    return [
-        [x, 0, 0, 0],
-        [0, y, 0, 0],
-        [0, 0, z, 0],
-        [0, 0, 0, 1]
-    ]
+	
+	return np.matrix([[x, 0, 0, 0],
+					  [0, y, 0, 0],
+					  [0, 0, z, 0],
+					  [0, 0, 0, 1]])
 
 def RotationMatrix(pitch, yaw, roll):
-    #convert to rads
-    pitch *= pi/180
-    yaw *= pi/180
-    roll *= pi/180
+	
+	# Convertir a radianes
+	pitch *= pi/180
+	yaw *= pi/180
+	roll *= pi/180
+	
+	# Creamos la matriz de rotaci�n para cada eje.
+	pitchMat = np.matrix([[1,0,0,0],
+						  [0,cos(pitch),-sin(pitch),0],
+						  [0,sin(pitch),cos(pitch),0],
+						  [0,0,0,1]])
+	
+	yawMat = np.matrix([[cos(yaw),0,sin(yaw),0],
+						[0,1,0,0],
+						[-sin(yaw),0,cos(yaw),0],
+						[0,0,0,1]])
+	
+	rollMat = np.matrix([[cos(roll),-sin(roll),0,0],
+						 [sin(roll),cos(roll),0,0],
+						 [0,0,1,0],
+						 [0,0,0,1]])
+	
+	return pitchMat * yawMat * rollMat
+	
 
-    pitchMat = [[1,0,0,0],
-                      [0,cos(pitch),-sin(pitch),0],
-                      [0,sin(pitch),cos(pitch),0],
-                      [0,0,0,1]]
-
-    yawMat = [[cos(yaw),0,sin(yaw),0],
-                        [0,1,0,0],
-                        [-sin(yaw),0,cos(yaw),0],
-                        [0,0,0,1]]
-
-    rollMat = [[cos(roll),-sin(roll),0,0],
-                        [sin(roll),cos(roll),0,0],
-                        [0,0,1,0],
-                        [0,0,0,1]]
+def reflectVector(normal, direction):
+    #R = 2 * (N . L) * N - L
+    reflect = 2 * np.dot(normal , direction)
+    #Asumiendo direcion y normal vienen normalizadas
+    reflect = np.multiply(reflect, normal)
+    reflect = np.subtract(reflect, direction)
     
-    return matrix_multiply(matrix_multiply(pitchMat,yawMat), rollMat)
-
-"""
-Operations
-"""
-
-def matrix_multiply(A, B):
-    if len(A[0]) != len(B):
-        raise ValueError("Number of columns in the first matrix must be equal to the number of rows in the second matrix.")
-    
-    result = [[0 for _ in range(len(B[0]))] for _ in range(len(A))]
-
-    for i in range(len(A)):
-        for j in range(len(B[0])):
-            for k in range(len(B)):
-                result[i][j] += A[i][k] * B[k][j]
-    
-    return result
-
-def inversed_matrix(matrix):
-    
-    n = len(matrix)
-    
-    identity = [[1 if i == j else 0 for j in range(n)] for i in range(n)]
-    
-    augmented_matrix = [row + identity_row for row, identity_row in zip(matrix, identity)]
-    
-    for i in range(n):
-        pivot = augmented_matrix[i][i]
-        if pivot == 0:
-            raise ValueError("Matrix is not invertible.")
-        
-        for j in range(2 * n):
-            augmented_matrix[i][j] /= pivot
-        
-        for k in range(n):
-            if k != i:
-                factor = augmented_matrix[k][i]
-                for j in range(2 * n):
-                    augmented_matrix[k][j] -= factor * augmented_matrix[i][j]
-    
-    inverse_matrix = [row[n:] for row in augmented_matrix]
-    
-    return inverse_matrix
-
-def vector_matrix_multiply(vector, matrix):
-    if len(matrix[0]) != len(vector):
-        raise ValueError("The number of columns in the matrix must match the size of the vector.")
-    
-    result = [0] * len(matrix)
-    for i in range(len(matrix)):
-        for j in range(len(vector)):
-            result[i] += matrix[i][j] * vector[j]
-    
-    return result
-
-def normalize_vector(v):
-    magnitud = (v[0]**2 + v[1]**2 + v[2]**2) ** 0.5
-    return [v[0] / magnitud, v[1] / magnitud, v[2] / magnitud]
-
-def dot(v1, v2):
-    return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]
-
-def interpolate(valA, valB, valC, u, v, w):
-    return u * valA + v * valB + w * valC
+    reflect /= np.linalg.norm(reflect)
+    return reflect
