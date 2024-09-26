@@ -8,8 +8,8 @@ from material import *
 from lights import *
 from texture import Texture
 
-width = 256
-height = 256
+width = 128
+height = 96
 
 screen = pygame.display.set_mode((width, height), pygame.SCALED )
 clock = pygame.time.Clock()
@@ -28,15 +28,31 @@ earth = Material(texture=Texture('textures/earth.bmp'))
 marble = Material(texture=Texture('textures/whiteMarble.bmp'), spec=128, Ks = 0.2, matType=REFLECTIVE)
 glass = Material(ior = 1.5, spec = 128, Ks = 0.2, matType=TRANSPARENT)
 
-
+ 
 
 rt.lights.append( DirectionalLight(direction = [-1, -1, -1], intensity = 0.8) )
 # rt.lights.append( DirectionalLight(direction = [0.5, -0.5, -1], intensity = 0.8, color = [1,1,1] ))
 rt.lights.append( AmbientLight(intensity=0.1))
 
 
-rt.scene.append( Sphere(position = [0, 0 , -5], radius = 1.5, material = glass) )
-# rt.scene.append( Sphere(position = [1, 1 , -3], radius = 0.5, material = earth) )
+rt.scene.append( Sphere(position = [0, -1 , -5], radius = 0.75, material = glass) ) #transparent glass
+rt.scene.append( Sphere(position = [2, -1, -5], radius = 0.75, material = glass) )  # reflective ruby
+rt.scene.append( Sphere(position = [-2, -1, -5], radius = 0.75, material = glass) ) # opaque earth 
+ 
+rt.scene.append( Sphere(position = [0, 1 , -5], radius = 0.75, material = glass) ) #transparent bubble
+rt.scene.append( Sphere(position = [2, 1, -5], radius = 0.75, material = glass) ) #reflective saphire
+rt.scene.append( Sphere(position = [-2, 1, -5], radius = 0.75, material = glass) ) #opaque netune
+
+
+# rt.scene.append( Sphere(position = [-2, -1 , -5], radius = 1, material = glass) )
+# rt.scene.append( Sphere(position = [2, 0 , -5], radius = 1, material = glass) )
+
+# rt.scene.append( Sphere(position = [2, 1 , -5], radius = 1, material = glass) )
+
+
+
+
+
 
 
 rt.glRender()
