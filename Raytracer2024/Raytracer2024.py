@@ -24,13 +24,19 @@ grass = Material(difuse=[0.2, 1.0, 0.2], spec=64, Ks=0.2)
 mirror = Material(difuse=[0.9, 0.9, 0.9], spec = 128, Ks = 0.2, matType = REFLECTIVE)
 bluemirror = Material(difuse=[0.5, 0.5, 1], spec = 128, Ks = 0.2, matType = REFLECTIVE)
 
+earth = Material(texture=Texture('textures/earth.bmp'))
+marble = Material(texture=Texture('textures/whiteMarble.bmp'), spec=128, Ks = 0.2, matType=REFLECTIVE)
+glass = Material(ior = 1.5, spec = 128, Ks = 0.2, matType=TRANSPARENT)
+
+
 
 rt.lights.append( DirectionalLight(direction = [-1, -1, -1], intensity = 0.8) )
-rt.lights.append( DirectionalLight(direction = [0.5, -0.5, -1], intensity = 0.8, color = [1,1,1] ))
+# rt.lights.append( DirectionalLight(direction = [0.5, -0.5, -1], intensity = 0.8, color = [1,1,1] ))
 rt.lights.append( AmbientLight(intensity=0.1))
 
-rt.scene.append( Sphere(position = [0, 0 , -5], radius = 1.5, material = mirror) )
-rt.scene.append( Sphere(position = [1, 1 , -3], radius = 0.5, material = bluemirror) )
+
+rt.scene.append( Sphere(position = [0, 0 , -5], radius = 1.5, material = glass) )
+# rt.scene.append( Sphere(position = [1, 1 , -3], radius = 0.5, material = earth) )
 
 
 rt.glRender()

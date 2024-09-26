@@ -40,10 +40,10 @@ class Sphere(Shape):
         # P = orig + dir * t0
         P = np.add(orig, np.multiply(dir, t0))
         normal = np.subtract(P, self.position)
-        normal /= np.linalg.norm(normal)
+        normal /= np.linalg.norm(      normal)
         
         u = (atan2(normal[2], normal[0]) / (2 * pi) + 0.5)
-        v = acos(normal[1]) / pi
+        v = acos(-normal[1]) / pi
         
         return Intercept(point = P, 
                          normal = normal,
