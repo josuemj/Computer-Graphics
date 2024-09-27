@@ -1,6 +1,5 @@
 from MathLib import *
 from refractionFunctions import *
-import numpy as np
 OPAQUE = 0 
 REFLECTIVE = 1
 TRANSPARENT = 2
