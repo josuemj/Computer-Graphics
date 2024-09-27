@@ -82,3 +82,23 @@ class Plane(Shape):
             rayDirection=dir,
             obj=self
         )
+    
+class Disk(Plane):
+    def __init__(self, position, normal, radius, material):
+        super().__init__(position, normal, material)
+        self.radius = radius
+        self.type = "Disk"
+    
+    def ray_intersect(self, orig, dir):
+        planeIntercept = super().ray_intersect(orig, dir)
+        
+        if planeIntercept is None:
+            return None
+        
+        contact = np.subtract(planeIntercept.point, self.position)
+        contact = np.linalg.norm(contact)
+        
+        if contact > self.radius:
+            return None
+        
+        return planeIntercept
