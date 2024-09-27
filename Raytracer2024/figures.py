@@ -52,3 +52,33 @@ class Sphere(Shape):
                          obj = self,
                          texCoords= [u, v]
                          )        
+
+class Plane(Shape):
+    def __init__(self, position, normal, material):
+        super().__init__(position, material)
+        self.normal = normal
+        self.type = "Plane"
+        
+    def ray_intersect(self, orig, dir):
+        
+        denom = np.dot(dir, self.normal)
+        
+        if abs(denom) < 0.0001:
+            return None
+        
+        num = np.dot(np.subtract(self.position, orig), self.normal)
+        
+        t = num /denom
+        
+        if t < 0:
+            return None
+        
+        P = np.add(orig, np.array(dir) * t)
+        return Intercept(
+            point=P,
+            normal=self.normal,
+            distance = t,
+            texCoords= None,
+            rayDirection=dir,
+            obj=self
+        )

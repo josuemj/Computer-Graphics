@@ -23,7 +23,7 @@ class Material(object):
         
         lightColor = [0, 0, 0]
         reflectColor = [0, 0, 0]
-        refractColor = []
+        refractColor = [0, 0, 0]
         finalColor = self.difuse
         
         if self.texture and intercept.texCoords:

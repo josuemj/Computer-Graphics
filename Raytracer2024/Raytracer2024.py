@@ -8,8 +8,8 @@ from material import *
 from lights import *
 from texture import Texture
 
-width = 256
-height = 256
+width = 64
+height = 64
 
 screen = pygame.display.set_mode((width, height), pygame.SCALED )
 clock = pygame.time.Clock()
@@ -35,8 +35,11 @@ rt.lights.append( DirectionalLight(direction = [-1, -1, -1], intensity = 0.8) )
 rt.lights.append( AmbientLight(intensity=0.1))
 
 
-rt.scene.append( Sphere(position = [0, 0 , -5], radius = 1.5, material = glass) )
+# rt.scene.append( Sphere(position = [0, 0 , -5], radius = 1.5, material = glass) )
 # rt.scene.append( Sphere(position = [1, 1 , -3], radius = 0.5, material = earth) )
+
+#planes
+rt.scene.append( Plane(position=[0,-5,-5], normal= [0,1,0], material=brick))
 
 
 rt.glRender()
