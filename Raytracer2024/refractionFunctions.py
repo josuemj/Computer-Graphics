@@ -2,20 +2,24 @@ import numpy as np
 from math import acos, asin, pi
 
 def refractVector(normal, incident, n1, n2):
-	# Snell's Law		
-	c1 = np.dot(normal, incident)
-	
-	if c1 < 0:
-		c1 = -c1
-	else:
-		normal = np.array(normal) * -1
-		n1, n2 = n2, n1
+    # Ensure normal and incident are numpy arrays
+    normal = np.array(normal)
+    incident = np.array(incident)
 
-	n = n1 / n2
-	
-	T = n * (incident + c1 * normal) - normal * (1 - n**2 * (1 - c1**2 )) ** 0.5
-	
-	return T / np.linalg.norm(T)
+    # Snell's Law
+    c1 = np.dot(normal, incident)
+    
+    if c1 < 0:
+        c1 = -c1
+    else:
+        normal = np.array(normal) * -1
+        n1, n2 = n2, n1
+
+    n = n1 / n2
+
+    T = n * (incident + c1 * normal) - normal * (1 - n**2 * (1 - c1**2 )) ** 0.5
+
+    return T / np.linalg.norm(T)
 
 
 def totalInternalReflection(normal, incident, n1, n2):
