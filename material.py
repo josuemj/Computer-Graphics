@@ -1,4 +1,4 @@
-from MathLib import reflectVector
+from MathLib import *
 from refractionFunctions import *
 import numpy as np
 OPAQUE = 0 
@@ -23,7 +23,7 @@ class Material(object):
         
         lightColor = [0, 0, 0]
         reflectColor = [0, 0, 0]
-        refractColor = []
+        refractColor = [0, 0, 0]
         finalColor = self.difuse
         
         if self.texture and intercept.texCoords:
@@ -36,7 +36,7 @@ class Material(object):
                 lightDir = [-i for  i in light.direction]
                 shadowIntercept = renderer.glCastRay(intercept.point, lightDir, intercept.obj)
             
-            if shadowIntercept == None:
+            if shadowIntercept is None:
                 
                 lightColor = [(lightColor[i] + light.GetSpecularColor(intercept, renderer.camera.translate)[i]) for i in range(3)]
 
@@ -48,14 +48,14 @@ class Material(object):
             reflect = reflectVector(intercept.normal, rayDir)
             
             reflectIntercept = renderer.glCastRay(intercept.point, reflect, intercept.obj, recursion + 1)
-            if reflectIntercept != None:
+            if reflectIntercept is not None:
                 reflectColor = reflectIntercept.obj.material.GetSurfaceColor(reflectIntercept, renderer, recursion + 1)
             else:
                 reflectColor = renderer.glEnvMapColor(intercept.point, reflect)
             
         if self.matType == TRANSPARENT:
             #Revisamos si estamos afuera
-            outside = np.dot(intercept.normal, intercept.rayDirection) < 0
+            outside = dotP(intercept.normal, intercept.rayDirection) < 0
             
             #agregar margen de error
             bias = [i * 0.001 for i in intercept.normal]
@@ -63,9 +63,9 @@ class Material(object):
             #generamos los rayos de refleccion
             rayDir = [-i for i in intercept.rayDirection]
             reflect = reflectVector(intercept.normal, rayDir)
-            reflectOrig = np.add(intercept.point, bias) if outside else np.subtract(intercept.point, bias)
+            reflectOrig = add(intercept.point, bias) if outside else substraction(intercept.point, bias)
             reflectIntercept = renderer.glCastRay(reflectOrig, reflect, None, recursion + 1)
-            if reflectIntercept != None:
+            if reflectIntercept is not None:
                 reflectColor = reflectIntercept.obj.material.GetSurfaceColor(reflectIntercept, renderer, recursion + 1)
             else:
                 reflectColor = renderer.glEnvMapColor(intercept.point, reflect)
@@ -73,9 +73,9 @@ class Material(object):
             #genreamos los rayos de refraccion
             if not totalInternalReflection(intercept.normal, intercept.rayDirection, 1.0, self.ior):
                 refract = refractVector(intercept.normal, intercept.rayDirection, 1.0, self.ior)
-                refractOrig = np.subtract(intercept.point, bias) if outside else np.add(intercept.point, bias)
+                refractOrig = substraction(intercept.point, bias) if outside else add(intercept.point, bias)
                 refractIntercept = renderer.glCastRay(refractOrig, refract, None, recursion + 1)
-                if refractIntercept != None:
+                if refractIntercept is not None:
                     refractColor = refractIntercept.obj.material.GetSurfaceColor(refractIntercept, renderer, recursion + 1)
                 else:
                     refractColor = renderer.glEnvMapColor(intercept.point, reflect)

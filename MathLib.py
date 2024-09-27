@@ -1,5 +1,5 @@
 import numpy as np
-from math import pi, sin, cos, isclose
+from math import pi, sin, cos, isclose, sqrt
 
 def barycentricCoords(A, B, C, P):
 	
@@ -37,7 +37,10 @@ def barycentricCoords(A, B, C, P):
 		return (u, v, w)
 	else:
 		return None
-	
+
+def dot(v1, v2):
+    return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]
+
 
 def TranslationMatrix(x, y, z):
 	
@@ -79,12 +82,26 @@ def RotationMatrix(pitch, yaw, roll):
 	return pitchMat * yawMat * rollMat
 	
 
-def reflectVector(normal, direction):
-    #R = 2 * (N . L) * N - L
-    reflect = 2 * np.dot(normal , direction)
-    #Asumiendo direcion y normal vienen normalizadas
-    reflect = np.multiply(reflect, normal)
-    reflect = np.subtract(reflect, direction)
+def substraction(A, B):
+    if len(A) != len(B):
+        raise ValueError("Must be same size")
+    return [a - b for a, b in zip(A, B)]
+
+def dotP(v1, v2):
+    return sum(v1[i] * v2[i] for i in range(len(v1)))
+
+def add(v1, v2):
     
-    reflect /= np.linalg.norm(reflect)
-    return reflect
+    if len(v1) != len(v2):
+        raise ValueError("Las listas deben tener la misma longitud.")
+    return [a + b for a, b in zip(v1, v2)]
+
+def reflectVector(normal, direction):
+	#R = 2 * (N . L) * N - L
+	dotp = dot(normal, direction)
+	norm_scale = [2 * dotp * comp for comp in normal]  # 2 * (N . L) * N
+	reflect_vector = substraction(norm_scale, direction)  # 2 * (N . L) * N - L
+
+    # Normalizar el vector reflejado
+	scale = sqrt(sum([comp ** 2 for comp in reflect_vector]))
+	return [comp / scale for comp in reflect_vector]
