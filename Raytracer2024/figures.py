@@ -56,11 +56,10 @@ class Sphere(Shape):
 class Plane(Shape):
     def __init__(self, position, normal, material):
         super().__init__(position, material)
-        self.normal = normal
+        self.normal = np.array(normal)
         self.type = "Plane"
         
     def ray_intersect(self, orig, dir):
-        
         denom = np.dot(dir, self.normal)
         
         if abs(denom) < 0.0001:
@@ -68,20 +67,26 @@ class Plane(Shape):
         
         num = np.dot(np.subtract(self.position, orig), self.normal)
         
-        t = num /denom
+        t = num / denom
         
         if t < 0:
             return None
         
         P = np.add(orig, np.array(dir) * t)
+
+        # Compute UV coordinates for the plane
+        u = (P[0] - self.position[0]) % 1
+        v = (P[1] - self.position[1]) % 1
+
         return Intercept(
             point=P,
             normal=self.normal,
-            distance = t,
-            texCoords= None,
+            distance=t,
+            texCoords=[u, v],
             rayDirection=dir,
             obj=self
         )
+
     
 class Disk(Plane):
     def __init__(self, position, normal, radius, material):
@@ -162,11 +167,30 @@ class AABB(Shape):
         if intercept ==  None:
             return None
         
+        u, v = 0, 0
+
+        if abs(intercept.normal[0]) > 0:  # X-axis aligned plane
+            u = (intercept.point[1] - self.boundsMin[1]) / self.sizes[1]
+            v = (intercept.point[2] - self.boundsMin[2]) / self.sizes[2]
+            
+        elif abs(intercept.normal[1]) > 0:  # Y-axis aligned plane
+            u = (intercept.point[0] - self.boundsMin[0]) / self.sizes[0]
+            v = (intercept.point[2] - self.boundsMin[2]) / self.sizes[2]
+            
+        elif abs(intercept.normal[2]) > 0:  # Z-axis aligned plane
+            u = (intercept.point[0] - self.boundsMin[0]) / self.sizes[0]
+            v = (intercept.point[1] - self.boundsMin[1]) / self.sizes[1]
+
+        u = min(0.999, max(0, u))
+        v = min(0.999, max(0, v))
+
+
+            
         return Intercept(
             point=intercept.point,
             normal=intercept.normal,
             distance=t,
-            texCoords= None,
+            texCoords= [u, v],
             rayDirection=dir,
             obj = self
         )

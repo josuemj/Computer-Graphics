@@ -49,3 +49,6 @@ class DirectionalLight(Light):
             
             
         return specColor
+    
+# class PointLight(Light):
+#     pass
