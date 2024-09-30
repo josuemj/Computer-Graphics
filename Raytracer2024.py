@@ -30,9 +30,14 @@ glass = Material(ior = 1.5, spec = 128, Ks = 0.2, matType=TRANSPARENT)
 
 woodenBox = Material( texture=Texture("textures/woodenBox.bmp"))
 
-rt.lights.append( DirectionalLight(direction = [-1, -1, -1], intensity = 0.8) )
-# rt.lights.append( DirectionalLight(direction = [0.5, -0.5, -1], intensity = 0.8, color = [1,1,1] ))
-rt.lights.append( AmbientLight(intensity=0.1))
+# rt.lights.append( DirectionalLight(direction = [-1, -1, -1], intensity = 0.8) )
+# # rt.lights.append( DirectionalLight(direction = [0.5, -0.5, -1], intensity = 0.8, color = [1,1,1] ))
+# rt.lights.append( AmbientLight(intensity=0.1))
+
+# rt.lights = []  # Reinicia las luces
+rt.lights.append(DirectionalLight(direction=[1, -1, -1], intensity=1))  # Luz direccional más fuerte y en otro ángulo
+rt.lights.append(AmbientLight(intensity=0.9))  # Aumenta la luz ambiental
+# rt.lights.append(DirectionalLight(direction=[0.5, -0.5, -1], intensity=0.5))  
 
 
 # rt.scene.append( Sphere(position = [0, 0 , -5], radius = 1, material = brick) )
@@ -77,6 +82,9 @@ rt.scene.append(left_wall)
 rt.scene.append(back_wall)
 rt.scene.append(floor)
 rt.scene.append(ceiling)
+rt.scene.append( Disk(position=[1.5, -1.9, -7], normal = [0, 1, 0], radius=1.5, material=brick))
+rt.scene.append( AABB(position = [-1.2,-1.1,-4], sizes = [1,1,1], material = brick))
+rt.scene.append( AABB(position = [1.5,-1.5,-7], sizes = [1,1,1], material = woodenBox))
 
 
 #Room planes
