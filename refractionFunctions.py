@@ -13,7 +13,6 @@ def refractVector(normal, incident, n1, n2):
 
     n = n1 / n2
 
-    # Multiplicación de vectores y escalares sin numpy
     temp_vec = scalar_multiply(normal, c1)
     incident_plus_normal = add(incident, temp_vec)
 
@@ -24,7 +23,6 @@ def refractVector(normal, incident, n1, n2):
 
     T = substraction(T1, T2)
 
-    # Normalizamos el vector T sin usar numpy
     return normalize(T)
 
 

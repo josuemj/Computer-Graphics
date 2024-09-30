@@ -1,7 +1,17 @@
-import numpy as np
 from intercept import Intercept
 from math import tan, pi, atan2, acos
+from MathLib import *
 
+class Shape(object):
+    def __init__(self, position, material):
+        self.position = position
+        self.material = material
+        self.type = "None"
+
+    def ray_intersect(self, orig, dir):
+        return None
+
+    
 class Shape(object):
     def __init__(self, position, material):
         self.position = position
@@ -19,14 +29,21 @@ class Sphere(Shape):
         self.type = "Sphere"
         
     def ray_intersect(self, orig, dir):
-        L = np.subtract(self.position, orig)
-        tca = np.dot(L,  dir)
+        L = substraction(self.position, orig)
+        tca = dotP(L,  dir)
         
-        d = (np.linalg.norm(L) ** 2 - tca ** 2) ** 0.5
+        L_norm_sq = sum([comp ** 2 for comp in L])  # ||L||^2
+        d_sq = L_norm_sq - tca ** 2
+        if d_sq < 0:
+            return None  # No intersección
+        
+        d = sqrt(d_sq)
         
         if d > self.radius:
             return None
         
+        
+
         thc = (self.radius ** 2 - d ** 2) ** 0.5
         
         t0 = tca - thc
@@ -38,41 +55,44 @@ class Sphere(Shape):
             return None
         
         # P = orig + dir * t0
-        P = np.add(orig, np.multiply(dir, t0))
-        normal = np.subtract(P, self.position)
-        normal /= np.linalg.norm(      normal)
+        scaledDir = [comp * t0 for comp in dir]  # direction * t0
+        intersectPoint = add(orig, scaledDir)  # origin + (direction * t0)
+
+        # normalVec = (PuntoIntersección - self.centro).normalize()
+        pointDiff = substraction(intersectPoint, self.position)
+        normal = normalize_vector(pointDiff)
         
         u = (atan2(normal[2], normal[0]) / (2 * pi) + 0.5)
         v = acos(-normal[1]) / pi
         
-        return Intercept(point = P, 
+        return Intercept(point = intersectPoint, 
                          normal = normal,
                          distance = t0,
                          rayDirection=dir,
                          obj = self,
                          texCoords= [u, v]
-                         )        
+                         )    
 
 class Plane(Shape):
     def __init__(self, position, normal, material):
         super().__init__(position, material)
-        self.normal = np.array(normal)
+        self.normal = normal
         self.type = "Plane"
         
     def ray_intersect(self, orig, dir):
-        denom = np.dot(dir, self.normal)
+        denom = dotP(dir, self.normal)
         
         if abs(denom) < 0.0001:
             return None
         
-        num = np.dot(np.subtract(self.position, orig), self.normal)
+        num = dotP(substraction(self.position, orig), self.normal)
         
         t = num / denom
         
         if t < 0:
             return None
         
-        P = np.add(orig, np.array(dir) * t)
+        P = add(orig, scalar_multiply(dir,t))
 
         # Compute UV coordinates for the plane
         u = (P[0] - self.position[0]) % 1
@@ -100,8 +120,8 @@ class Disk(Plane):
         if planeIntercept is None:
             return None
         
-        contact = np.subtract(planeIntercept.point, self.position)
-        contact = np.linalg.norm(contact)
+        contact = substraction(planeIntercept.point, self.position)
+        contact = norm(contact)
         
         if contact > self.radius:
             return None
