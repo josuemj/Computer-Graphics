@@ -82,7 +82,7 @@ rt.scene.append(left_wall)
 rt.scene.append(back_wall)
 rt.scene.append(floor)
 rt.scene.append(ceiling)
-rt.scene.append( Disk(position=[1.5, -1.9, -7], normal = [0, 1, 0], radius=1.5, material=brick))
+rt.scene.append( Disk(position=[1.5, -1.9, -7], normal = [0, 1, 0], radius=1.5, material=mirror))
 rt.scene.append( AABB(position = [-1.2,-1.1,-4], sizes = [1,1,1], material = brick))
 rt.scene.append( AABB(position = [1.5,-1.5,-7], sizes = [1,1,1], material = woodenBox))
 

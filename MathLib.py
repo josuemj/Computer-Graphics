@@ -88,3 +88,8 @@ def reflectVector(normal, direction):
     
     reflect /= np.linalg.norm(reflect)
     return reflect
+
+
+def normalize_vector(v):
+    magnitud = (v[0]**2 + v[1]**2 + v[2]**2) ** 0.5
+    return [v[0] / magnitud, v[1] / magnitud, v[2] / magnitud]
