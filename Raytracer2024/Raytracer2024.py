@@ -1,5 +1,3 @@
-
-
 import pygame
 from pygame.locals import *
 from gl import RendererRT
@@ -24,18 +22,24 @@ grass = Material(difuse=[0.2, 1.0, 0.2], spec=64, Ks=0.2)
 mirror = Material(difuse=[0.9, 0.9, 0.9], spec = 128, Ks = 0.2, matType = REFLECTIVE)
 bluemirror = Material(difuse=[0.5, 0.5, 1], spec = 128, Ks = 0.2, matType = REFLECTIVE)
 
-earth = Material(texture=Texture('textures/earth.bmp'))
-marble = Material(texture=Texture('textures/whiteMarble.bmp'), spec=128, Ks = 0.2, matType=REFLECTIVE)
-glass = Material(ior = 1.5, spec = 128, Ks = 0.2, matType=TRANSPARENT)
+# earth = Material(texture=Texture('textures/earth.bmp'))
+# marble = Material(texture=Texture('textures/whiteMarble.bmp'), spec=128, Ks = 0.2, matType=REFLECTIVE)
+# glass = Material(ior = 1.5, spec = 128, Ks = 0.2, matType=TRANSPARENT)
 
-woodenBox = Material( texture=Texture("textures/woodenBox.bmp"))
+# woodenBox = Material( texture=Texture("textures/woodenBox.bmp"))
 
-rt.lights.append( DirectionalLight(direction = [-1, -1, -1], intensity = 0.8) )
+# rt.lights.append( DirectionalLight(direction = [-1, -1, -1], intensity = 0.8) )
 # rt.lights.append( DirectionalLight(direction = [0.5, -0.5, -1], intensity = 0.8, color = [1,1,1] ))
 rt.lights.append( AmbientLight(intensity=0.1))
+rt.lights.append( PointLight(position=[-2,0,-5]))
+rt.lights.append( SpotLight(position=[2,0,-5]))
 
 
-# rt.scene.append( Sphere(position = [0, 0 , -5], radius = 1, material = brick) )
+
+rt.scene.append( Plane(position=[0, -1, 0], normal=[0, 1, 0], material=brick))
+
+
+
 # rt.scene.append( Sphere(position = [1, 1 , -3], radius = 0.5, material = earth) )
 
 #planes
@@ -45,10 +49,10 @@ rt.lights.append( AmbientLight(intensity=0.1))
 # rt.scene.append( Disk(position=[0, -1, -5], normal = [0, 1, 0], radius=1.5, material=mirror))
 
 #cubes
-rt.scene.append( AABB(position = [1.5,1.5,-5], sizes = [1,1,1], material = brick))
-rt.scene.append( AABB(position = [-1.5,1.5,-5], sizes = [1,1,1], material = mirror))
-rt.scene.append( AABB(position = [1.5,-1.5,-5], sizes = [1,1,1], material = woodenBox))
-rt.scene.append( AABB(position = [-1.5,-1.5,-5], sizes = [1,1,1], material = glass))
+# rt.scene.append( AABB(position = [1.5,1.5,-5], sizes = [1,1,1], material = brick))
+# rt.scene.append( AABB(position = [-1.5,1.5,-5], sizes = [1,1,1], material = mirror))
+# rt.scene.append( AABB(position = [1.5,-1.5,-5], sizes = [1,1,1], material = woodenBox))
+# rt.scene.append( AABB(position = [-1.5,-1.5,-5], sizes = [1,1,1], material = glass))
 
 rt.glRender()
 
