@@ -34,7 +34,7 @@ metal = Material(difuse=[0.8, 0.8, 0.8], spec=128, Ks=0.3, matType=OPAQUE)
 rt.lights.append( AmbientLight(intensity=1))
 
 
-cylinder = Cylinder(position=[0, 0, -5], radius=1, height=3, material=metal)
+cylinder = Cylinder(position=[0, -1, -6], radius=1, height=1, material=brick)
 rt.scene.append(cylinder)
 
 v0 = [-1, 0, -3]
