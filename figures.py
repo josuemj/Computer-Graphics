@@ -194,3 +194,115 @@ class AABB(Shape):
             rayDirection=dir,
             obj = self
         )
+
+class Triangle(Shape):
+    def __init__(self, v0, v1, v2, material):
+        super().__init__(None, material)  # No tiene una posición como tal, se definen por los vértices
+        self.v0 = np.array(v0)
+        self.v1 = np.array(v1)
+        self.v2 = np.array(v2)
+        self.type = "Triangle"
+
+        # Precalcula la normal del triángulo usando los vértices
+        self.normal = np.cross(self.v1 - self.v0, self.v2 - self.v0)
+        self.normal = self.normal / np.linalg.norm(self.normal)  # Normalizar la normal
+
+    def ray_intersect(self, orig, dir):
+        epsilon = 1e-6
+        edge1 = self.v1 - self.v0
+        edge2 = self.v2 - self.v0
+
+        # intersección del rayo con el triángulo
+        h = np.cross(dir, edge2)
+        a = np.dot(edge1, h)
+
+        if -epsilon < a < epsilon:
+            return None  # El rayo es paralelo al triángulo
+
+        f = 1.0 / a
+        s = orig - self.v0
+        u = f * np.dot(s, h)
+
+        if u < 0.0 or u > 1.0:
+            return None
+
+        q = np.cross(s, edge1)
+        v = f * np.dot(dir, q)
+
+        if v < 0.0 or u + v > 1.0:
+            return None
+
+        t = f * np.dot(edge2, q)
+
+        if t > epsilon:  # Intersección válida
+            P = orig + dir * t  # Punto de intersección
+            return Intercept(
+                point=P,
+                normal=self.normal,
+                distance=t,
+                texCoords=[u, v],  # Podemos usar (u, v) como coordenadas de textura
+                rayDirection=dir,
+                obj=self
+            )
+        else:
+            return None
+    
+class Cylinder(Shape):
+    def __init__(self, position, radius, height, material):
+        super().__init__(position, material)
+        self.radius = radius
+        self.height = height
+        self.type = "Cylinder"
+        
+        # Las tapas del cilindro están en la parte superior e inferior
+        self.top_center = np.array(position) + np.array([0, height / 2, 0])
+        self.bottom_center = np.array(position) - np.array([0, height / 2, 0])
+        
+    def ray_intersect(self, orig, dir):
+        # Intersección con la superficie lateral del cilindro
+        a = dir[0]**2 + dir[2]**2
+        b = 2 * (orig[0] * dir[0] + orig[2] * dir[2] - dir[0] * self.position[0] - dir[2] * self.position[2])
+        c = orig[0]**2 + orig[2]**2 + self.position[0]**2 + self.position[2]**2 - 2 * (orig[0] * self.position[0] + orig[2] * self.position[2]) - self.radius**2
+        
+        discriminant = b**2 - 4 * a * c
+        
+        if discriminant < 0:
+            return None  # No hay intersección con la superficie lateral
+        
+        t0 = (-b - np.sqrt(discriminant)) / (2 * a)
+        t1 = (-b + np.sqrt(discriminant)) / (2 * a)
+        
+        if t0 > t1:
+            t0, t1 = t1, t0
+        
+        # Verificar si las intersecciones están dentro de los límites del cilindro (en la dirección Y)
+        y0 = orig[1] + t0 * dir[1]
+        y1 = orig[1] + t1 * dir[1]
+        
+        if y0 < self.bottom_center[1]:
+            if y1 < self.bottom_center[1]:
+                return None
+            t0 = t1 + (t0 - t1) * (y1 - self.bottom_center[1]) / (y1 - y0)
+            y0 = self.bottom_center[1]
+        
+        if y0 > self.top_center[1]:
+            if y1 > self.top_center[1]:
+                return None
+            t0 = t1 + (t0 - t1) * (y1 - self.top_center[1]) / (y1 - y0)
+            y0 = self.top_center[1]
+        
+        P = np.add(orig, np.multiply(dir, t0))
+        normal = np.array([P[0] - self.position[0], 0, P[2] - self.position[2]])
+        normal /= np.linalg.norm(normal)
+        
+        u = (np.arctan2(normal[2], normal[0]) / (2 * np.pi) + 0.5)
+        v = (y0 - self.bottom_center[1]) / self.height
+        
+        return Intercept(
+            point=P,
+            normal=normal,
+            distance=t0,
+            texCoords=[u, v],
+            rayDirection=dir,
+            obj=self
+        )
