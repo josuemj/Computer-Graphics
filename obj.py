@@ -14,8 +14,6 @@ class Obj(object):
 			# Si la linea no cuenta con un prefijo y un valor,
 			# seguimos a la siguiente la linea
 
-			# Este comando elimina espacios en blanco innecesarios
-			# al final de un texto
 			line = line.rstrip()
 
 			try:
@@ -44,4 +42,4 @@ class Obj(object):
 				for vert in verts:
 					vert = list(map(int, vert.split("/")))
 					face.append(vert)
-				self.faces.append(face)
+				self.faces.append(face)                                                                                                                                                                                                                                                                                                                                                                                           
