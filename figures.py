@@ -253,55 +253,81 @@ class Cylinder(Shape):
         self.radius = radius
         self.height = height
         self.type = "Cylinder"
-        
-        # Las tapas del cilindro están en la parte superior e inferior
         self.top_center = np.array(position) + np.array([0, height / 2, 0])
         self.bottom_center = np.array(position) - np.array([0, height / 2, 0])
-        
+
     def ray_intersect(self, orig, dir):
-        # Intersección con la superficie lateral del cilindro
+        # First, check intersection with the infinite cylinder
         a = dir[0]**2 + dir[2]**2
-        b = 2 * (orig[0] * dir[0] + orig[2] * dir[2] - dir[0] * self.position[0] - dir[2] * self.position[2])
-        c = orig[0]**2 + orig[2]**2 + self.position[0]**2 + self.position[2]**2 - 2 * (orig[0] * self.position[0] + orig[2] * self.position[2]) - self.radius**2
-        
+        b = 2 * ((orig[0] - self.position[0]) * dir[0] + (orig[2] - self.position[2]) * dir[2])
+        c = (orig[0] - self.position[0])**2 + (orig[2] - self.position[2])**2 - self.radius**2
+
         discriminant = b**2 - 4 * a * c
-        
-        if discriminant < 0:
-            return None  # No hay intersección con la superficie lateral
-        
-        t0 = (-b - np.sqrt(discriminant)) / (2 * a)
-        t1 = (-b + np.sqrt(discriminant)) / (2 * a)
-        
-        if t0 > t1:
-            t0, t1 = t1, t0
-        
-        # Verificar si las intersecciones están dentro de los límites del cilindro (en la dirección Y)
-        y0 = orig[1] + t0 * dir[1]
-        y1 = orig[1] + t1 * dir[1]
-        
-        if y0 < self.bottom_center[1]:
-            if y1 < self.bottom_center[1]:
-                return None
-            t0 = t1 + (t0 - t1) * (y1 - self.bottom_center[1]) / (y1 - y0)
-            y0 = self.bottom_center[1]
-        
-        if y0 > self.top_center[1]:
-            if y1 > self.top_center[1]:
-                return None
-            t0 = t1 + (t0 - t1) * (y1 - self.top_center[1]) / (y1 - y0)
-            y0 = self.top_center[1]
-        
-        P = np.add(orig, np.multiply(dir, t0))
-        normal = np.array([P[0] - self.position[0], 0, P[2] - self.position[2]])
-        normal /= np.linalg.norm(normal)
-        
-        u = (np.arctan2(normal[2], normal[0]) / (2 * np.pi) + 0.5)
-        v = (y0 - self.bottom_center[1]) / self.height
-        
+        t_values = []
+
+        if discriminant >= 0:
+            sqrt_discriminant = np.sqrt(discriminant)
+            t0 = (-b - sqrt_discriminant) / (2 * a)
+            t1 = (-b + sqrt_discriminant) / (2 * a)
+
+            for t in [t0, t1]:
+                y = orig[1] + t * dir[1]
+                if self.bottom_center[1] <= y <= self.top_center[1]:
+                    if t > 0:
+                        t_values.append(t)
+
+        # Check intersection with the caps
+        if dir[1] != 0:
+            # Bottom cap
+            t_bottom = (self.bottom_center[1] - orig[1]) / dir[1]
+            if t_bottom > 0:
+                x_bottom = orig[0] + t_bottom * dir[0]
+                z_bottom = orig[2] + t_bottom * dir[2]
+                if (x_bottom - self.position[0])**2 + (z_bottom - self.position[2])**2 <= self.radius**2:
+                    t_values.append(t_bottom)
+            # Top cap
+            t_top = (self.top_center[1] - orig[1]) / dir[1]
+            if t_top > 0:
+                x_top = orig[0] + t_top * dir[0]
+                z_top = orig[2] + t_top * dir[2]
+                if (x_top - self.position[0])**2 + (z_top - self.position[2])**2 <= self.radius**2:
+                    t_values.append(t_top)
+
+        if not t_values:
+            return None
+
+        t = min(t_values)
+        P = orig + dir * t
+
+        # Determine normal and texture coordinates
+        if abs(P[1] - self.top_center[1]) < 1e-6:
+            # Intersection with top cap
+            normal = np.array([0, 1, 0])
+            u = ((P[0] - self.position[0]) / (2 * self.radius)) + 0.5
+            v = ((P[2] - self.position[2]) / (2 * self.radius)) + 0.5
+        elif abs(P[1] - self.bottom_center[1]) < 1e-6:
+            # Intersection with bottom cap
+            normal = np.array([0, -1, 0])
+            u = ((P[0] - self.position[0]) / (2 * self.radius)) + 0.5
+            v = ((P[2] - self.position[2]) / (2 * self.radius)) + 0.5
+        else:
+            # Intersection with lateral surface
+            normal = np.array([P[0] - self.position[0], 0, P[2] - self.position[2]])
+            normal_length = np.linalg.norm(normal)
+            if normal_length == 0:
+                return None  # Avoid division by zero
+            normal /= normal_length
+            u = (np.arctan2(normal[2], normal[0]) / (2 * np.pi)) + 0.5
+            v = (P[1] - self.bottom_center[1]) / self.height
+
+        # Clamp u and v to [0, 1)
+        u = u % 1.0
+        v = v % 1.0
+
         return Intercept(
             point=P,
             normal=normal,
-            distance=t0,
+            distance=t,
             texCoords=[u, v],
             rayDirection=dir,
             obj=self
