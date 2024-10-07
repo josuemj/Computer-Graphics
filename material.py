@@ -1,6 +1,7 @@
 from MathLib import reflectVector
 from refractionFunctions import *
-import numpy as np
+from MathLib import *
+
 OPAQUE = 0 
 REFLECTIVE = 1
 TRANSPARENT = 2
@@ -55,7 +56,7 @@ class Material(object):
             
         if self.matType == TRANSPARENT:
             #Revisamos si estamos afuera
-            outside = np.dot(intercept.normal, intercept.rayDirection) < 0
+            outside = dotP(intercept.normal, intercept.rayDirection) < 0
             
             #agregar margen de error
             bias = [i * 0.001 for i in intercept.normal]
@@ -63,7 +64,7 @@ class Material(object):
             #generamos los rayos de refleccion
             rayDir = [-i for i in intercept.rayDirection]
             reflect = reflectVector(intercept.normal, rayDir)
-            reflectOrig = np.add(intercept.point, bias) if outside else np.subtract(intercept.point, bias)
+            reflectOrig = add(intercept.point, bias) if outside else substraction(intercept.point, bias)
             reflectIntercept = renderer.glCastRay(reflectOrig, reflect, None, recursion + 1)
             if reflectIntercept != None:
                 reflectColor = reflectIntercept.obj.material.GetSurfaceColor(reflectIntercept, renderer, recursion + 1)
@@ -73,7 +74,7 @@ class Material(object):
             #genreamos los rayos de refraccion
             if not totalInternalReflection(intercept.normal, intercept.rayDirection, 1.0, self.ior):
                 refract = refractVector(intercept.normal, intercept.rayDirection, 1.0, self.ior)
-                refractOrig = np.subtract(intercept.point, bias) if outside else np.add(intercept.point, bias)
+                refractOrig = substraction(intercept.point, bias) if outside else add(intercept.point, bias)
                 refractIntercept = renderer.glCastRay(refractOrig, refract, None, recursion + 1)
                 if refractIntercept != None:
                     refractColor = refractIntercept.obj.material.GetSurfaceColor(refractIntercept, renderer, recursion + 1)
@@ -89,5 +90,4 @@ class Material(object):
         finalColor = [(finalColor[i] * (lightColor[i] + reflectColor[i] + refractColor[i])) for i in range(3)]
         finalColor = [min(1, finalColor[i]) for i in range(3)]
         return finalColor
-    
     
