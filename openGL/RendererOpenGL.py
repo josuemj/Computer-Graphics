@@ -13,10 +13,11 @@ clock = pygame.time.Clock()
 
 rend = Renderer(screen)
 
-#triangle positions
-triangle = [-0.5, -0.5, 0,
-            0, 0.5, 0,
-            0.5, -0.5, 0]
+#triangle positions         #color
+triangle = [-0.5, -0.5, 0,  1, 0, 0,
+            0, 0.5, 0,      0, 1, 0,
+            0.5, -0.5, 0,   0, 0, 1        
+            ]
 
 rend.scene.append(Buffer(triangle))
 
