@@ -1,0 +1,2 @@
+### Triangle
+![outputs/output.png]
