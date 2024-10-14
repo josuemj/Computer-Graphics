@@ -422,3 +422,124 @@ class Pyramid(Shape):
 
         return closest_intercept
 
+import numpy as np
+from math import pi, sin, cos, sqrt
+from numpy import linalg as LA
+
+class Torus(Shape):
+    def __init__(self, position, major_radius, minor_radius, material, pitch=0, yaw=0, roll=0):
+        super().__init__(position, material)
+        self.major_radius = major_radius  # Distance from center to the center of the tube
+        self.minor_radius = minor_radius  # Radius of the tube
+        self.type = "Torus"
+        self.pitch = pitch
+        self.yaw = yaw
+        self.roll = roll
+
+        # Precompute the rotation matrix
+        self.rotation_matrix = self.compute_rotation_matrix()
+
+        # Compute the inverse rotation matrix
+        self.inverse_rotation_matrix = LA.inv(self.rotation_matrix)
+
+    def compute_rotation_matrix(self):
+        """Computes the combined rotation matrix from pitch, yaw, and roll."""
+        # Convert degrees to radians
+        pitch_rad = self.pitch * (pi / 180)
+        yaw_rad = self.yaw * (pi / 180)
+        roll_rad = self.roll * (pi / 180)
+
+        # Rotation matrices
+        Rx = np.array([
+            [1, 0, 0],
+            [0, cos(pitch_rad), -sin(pitch_rad)],
+            [0, sin(pitch_rad), cos(pitch_rad)]
+        ])
+        Ry = np.array([
+            [cos(yaw_rad), 0, sin(yaw_rad)],
+            [0, 1, 0],
+            [-sin(yaw_rad), 0, cos(yaw_rad)]
+        ])
+        Rz = np.array([
+            [cos(roll_rad), -sin(roll_rad), 0],
+            [sin(roll_rad), cos(roll_rad), 0],
+            [0, 0, 1]
+        ])
+
+        # Combined rotation matrix: R = Rz * Ry * Rx
+        R = Rz @ Ry @ Rx
+        return R
+
+    def ray_intersect(self, orig, dir):
+        """
+        Computes the intersection of a ray with the torus.
+        The torus is defined in object space, so we need to transform
+        the ray into the torus's local coordinate system.
+        """
+        # Transform the ray into the torus's local space
+        orig_local = np.dot(self.inverse_rotation_matrix, np.subtract(orig, self.position))
+        dir_local = np.dot(self.inverse_rotation_matrix, dir)
+
+        # Ray-Torus intersection equation coefficients
+        # Based on the standard torus equation:
+        # (x^2 + y^2 + z^2 + R^2 - r^2)^2 - 4*R^2*(x^2 + y^2) = 0
+
+        G = np.dot(dir_local, dir_local)
+        H = 2 * np.dot(orig_local, dir_local)
+        I = np.dot(orig_local, orig_local) + self.major_radius**2 - self.minor_radius**2
+
+        J = orig_local[0]**2 + orig_local[1]**2
+        K = dir_local[0]**2 + dir_local[1]**2
+        L = 2 * (orig_local[0]*dir_local[0] + orig_local[1]*dir_local[1])
+
+        # Quartic equation coefficients: a*t^4 + b*t^3 + c*t^2 + d*t + e = 0
+        a = G**2
+        b = 2*G*H
+        c = H**2 + 2*G*I - 4*self.major_radius**2*K
+        d = 2*H*I - 4*self.major_radius**2*L
+        e = I**2 - 4*self.major_radius**2*J
+
+        # Solve the quartic equation
+        coeffs = [a, b, c, d, e]
+        roots = np.roots(coeffs)
+
+        # Filter real roots and positive t values
+        real_roots = [root.real for root in roots if np.isreal(root) and root.real > 0]
+        if not real_roots:
+            return None
+
+        t = min(real_roots)
+
+        # Compute the intersection point in local space
+        P_local = orig_local + t * dir_local
+
+        # Compute the normal at the intersection point in local space
+        param = self.major_radius
+        x, y, z = P_local
+        sum_squared = x**2 + y**2 + z**2
+        nx = 4 * x * (sum_squared - (param**2 + self.minor_radius**2))
+        ny = 4 * y * (sum_squared - (param**2 + self.minor_radius**2))
+        nz = 4 * z * (sum_squared - (param**2 + self.minor_radius**2) + 2 * param**2)
+
+        normal_local = np.array([nx, ny, nz])
+        normal_local = normal_local / LA.norm(normal_local)
+
+        # Transform the intersection point and normal back to world space
+        P_world = np.dot(self.rotation_matrix, P_local) + self.position
+        normal_world = np.dot(self.rotation_matrix, normal_local)
+        normal_world = normal_world / LA.norm(normal_world)
+
+        # Compute texture coordinates (u, v)
+        phi = np.arctan2(P_local[2], P_local[0])
+        theta = np.arcsin(P_local[1] / self.minor_radius)
+        u = (phi + pi) / (2 * pi)
+        v = (theta + pi/2) / pi
+
+        return Intercept(
+            point=P_world,
+            normal=normal_world,
+            distance=t,
+            texCoords=[u % 1.0, v % 1.0],
+            rayDirection=dir,
+            obj=self
+        )

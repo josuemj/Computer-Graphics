@@ -6,8 +6,8 @@ from material import *
 from lights import *
 from texture import Texture
 
-width = 256
-height = 256
+width = 512
+height = 512
 
 screen = pygame.display.set_mode((width, height), pygame.SCALED )
 clock = pygame.time.Clock()
@@ -58,7 +58,23 @@ pyramid = Pyramid(
     roll=0     # No rotation around the Z-axis
 )
 
-rt.scene.append(pyramid)
+# rt.scene.append(pyramid)
+
+# Assuming you have a material instance called 'metal'
+
+torus = Torus(
+    position=[-2.4, 2.3, -8],           # Center of the torus
+    major_radius=1,               # Major radius (distance from center to tube center)
+    minor_radius=0.3,              # Minor radius (radius of the tube)
+    material=bluemirror,
+    pitch=0,                      # Rotate 30 degrees around the X-axis    
+    yaw=-20,                        # Rotate 45 degrees around the Y-axis
+    roll=10                        # Rotate 60 degrees around the Z-axis
+)
+
+# Add the torus to your scene
+rt.scene.append(torus)
+
 
 rt.glRender()
 
