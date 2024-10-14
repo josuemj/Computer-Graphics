@@ -334,3 +334,91 @@ class Cylinder(Shape):
             rayDirection=dir,
             obj=self
         )
+        
+from math import pi, cos, sin
+
+import numpy as np
+
+
+class Pyramid(Shape):
+    def __init__(self, base_center, base_size, height, material, pitch=0, yaw=0, roll=0):
+        super().__init__(base_center, material)
+        self.base_size = base_size
+        self.height = height
+        self.pitch = pitch  # Rotation around the X-axis
+        self.yaw = yaw      # Rotation around the Y-axis
+        self.roll = roll    # Rotation around the Z-axis
+        self.type = "Pyramid"
+
+        half_size = base_size / 2.0
+
+        # Define the base vertices (square base)
+        self.v0 = np.array([base_center[0] - half_size, base_center[1], base_center[2] - half_size])  # bottom left
+        self.v1 = np.array([base_center[0] + half_size, base_center[1], base_center[2] - half_size])  # bottom right
+        self.v2 = np.array([base_center[0] + half_size, base_center[1], base_center[2] + half_size])  # top right
+        self.v3 = np.array([base_center[0] - half_size, base_center[1], base_center[2] + half_size])  # top left
+
+        # Peak of the pyramid
+        self.peak = np.array([base_center[0], base_center[1] + height, base_center[2]])
+
+        # Apply rotation to the vertices
+        self.apply_rotation()
+
+        # Create triangular faces for the pyramid
+        self.faces = [
+            Triangle(self.v0, self.v1, self.peak, material),  # Front face
+            Triangle(self.v1, self.v2, self.peak, material),  # Right face
+            Triangle(self.v2, self.v3, self.peak, material),  # Back face
+            Triangle(self.v3, self.v0, self.peak, material)   # Left face
+        ]
+
+    def apply_rotation(self):
+        """Applies rotation to the pyramid vertices."""
+        # Convert degrees to radians
+        pitch_rad = self.pitch * (pi / 180)
+        yaw_rad = self.yaw * (pi / 180)
+        roll_rad = self.roll * (pi / 180)
+
+        # Rotation matrices
+        Rx = np.array([
+            [1, 0, 0],
+            [0, cos(pitch_rad), -sin(pitch_rad)],
+            [0, sin(pitch_rad), cos(pitch_rad)]
+        ])
+        Ry = np.array([
+            [cos(yaw_rad), 0, sin(yaw_rad)],
+            [0, 1, 0],
+            [-sin(yaw_rad), 0, cos(yaw_rad)]
+        ])
+        Rz = np.array([
+            [cos(roll_rad), -sin(roll_rad), 0],
+            [sin(roll_rad), cos(roll_rad), 0],
+            [0, 0, 1]
+        ])
+
+        # Combined rotation matrix
+        # The order of multiplication matters: R = Rz * Ry * Rx
+        R = Rz @ Ry @ Rx
+
+        # Apply rotation to each vertex
+        for vertex in [self.v0, self.v1, self.v2, self.v3, self.peak]:
+            # Translate vertex to origin
+            translated_vertex = vertex - self.position
+            # Apply rotation
+            rotated_vertex = R @ translated_vertex
+            # Translate back
+            vertex[:] = rotated_vertex + self.position
+
+    def ray_intersect(self, orig, dir):
+        """Tests ray intersections with the pyramid's triangular faces."""
+        closest_intercept = None
+        min_distance = float('inf')
+
+        for face in self.faces:
+            intercept = face.ray_intersect(orig, dir)
+            if intercept and intercept.distance < min_distance:
+                closest_intercept = intercept
+                min_distance = intercept.distance
+
+        return closest_intercept
+

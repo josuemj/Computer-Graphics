@@ -9,3 +9,6 @@
 
 ## 4 AABB cubes + textured wood
 ![4 AABB cubes](outputs/output4.png)
+
+## testing a pyramid
+![pyramid](outputs/pyramid.png)
