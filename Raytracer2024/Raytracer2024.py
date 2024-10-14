@@ -22,38 +22,53 @@ grass = Material(difuse=[0.2, 1.0, 0.2], spec=64, Ks=0.2)
 mirror = Material(difuse=[0.9, 0.9, 0.9], spec = 128, Ks = 0.2, matType = REFLECTIVE)
 bluemirror = Material(difuse=[0.5, 0.5, 1], spec = 128, Ks = 0.2, matType = REFLECTIVE)
 
-# earth = Material(texture=Texture('textures/earth.bmp'))
-# marble = Material(texture=Texture('textures/whiteMarble.bmp'), spec=128, Ks = 0.2, matType=REFLECTIVE)
-# glass = Material(ior = 1.5, spec = 128, Ks = 0.2, matType=TRANSPARENT)
+earth = Material(texture=Texture('textures/earth.bmp'))
+marble = Material(texture=Texture('textures/whiteMarble.bmp'), spec=128, Ks = 0.2, matType=REFLECTIVE)
+glass = Material(ior = 1.5, spec = 128, Ks = 0.2, matType=TRANSPARENT)
+
+# woodenBox = Material( texture=Texture("textures/woodenBox.bmp"))
+
+# rt.lights.append( DirectionalLight(direction = [-1, -1, -1], intensity = 0.8) )
+
+
+cheese = Material(texture=Texture('textures/cheese.bmp'), spec=128, Ks=0.2, matType=OPAQUE) 
+pizza = Material(texture=Texture('textures/pizza.bmp'), spec=128, Ks=0.2, matType=OPAQUE) 
+redMirror = Material(texture=Texture("textures/mirror.bmp"), difuse=[1, 0, 0], spec = 128, Ks = 0.2, matType = REFLECTIVE)
 
 # woodenBox = Material( texture=Texture("textures/woodenBox.bmp"))
 
 # rt.lights.append( DirectionalLight(direction = [-1, -1, -1], intensity = 0.8) )
 # rt.lights.append( DirectionalLight(direction = [0.5, -0.5, -1], intensity = 0.8, color = [1,1,1] ))
-rt.lights.append( AmbientLight(intensity=0.1))
-rt.lights.append( PointLight(position=[-2,0,-5]))
-rt.lights.append( SpotLight(position=[2,0,-5]))
+rt.lights.append( AmbientLight(intensity=1))
 
 
+cylinder = Cylinder(position=[-1, -1, -4], radius=0.6, height=0.7, material=cheese)
+rt.scene.append(cylinder)
 
-rt.scene.append( Plane(position=[0, -1, 0], normal=[0, 1, 0], material=brick))
+cylinder2 = Cylinder(position=[1.2, -1, -5], radius=1, height=1, material=glass)
+rt.scene.append(cylinder2)
+
+cylinder3 = Cylinder(position=[1.2, 0, -5], radius=0.5, height=1, material=bluemirror)
+rt.scene.append(cylinder3)
+
+v0 = [-3, 1, -7]
+v1 = [-1, 1, -7]
+v2 = [-2, 2.5, -8]
+triangle = Triangle(v0, v1, v2, material=glass)
+rt.scene.append(triangle) 
 
 
+v3 = [3, 2, -9]
+v4 = [1.2, 2, -8]
+v5 = [2, 4, -8]
+triangle2 = Triangle(v3, v4, v5, material=pizza)
+rt.scene.append(triangle2) 
 
-# rt.scene.append( Sphere(position = [1, 1 , -3], radius = 0.5, material = earth) )
-
-#planes
-# rt.scene.append( Plane(position=[0,-5,-5], normal= [0,1,0], material=brick))
-
-#disk
-# rt.scene.append( Disk(position=[0, -1, -5], normal = [0, 1, 0], radius=1.5, material=mirror))
-
-#cubes
-# rt.scene.append( AABB(position = [1.5,1.5,-5], sizes = [1,1,1], material = brick))
-# rt.scene.append( AABB(position = [-1.5,1.5,-5], sizes = [1,1,1], material = mirror))
-# rt.scene.append( AABB(position = [1.5,-1.5,-5], sizes = [1,1,1], material = woodenBox))
-# rt.scene.append( AABB(position = [-1.5,-1.5,-5], sizes = [1,1,1], material = glass))
-
+v0 = [-2, -1.5, -3]  
+v1 = [1, -1.5, -3]   
+v2 = [-2, -1.5, -6] 
+triangle3 = Triangle(v0, v1, v2, material=redMirror)
+rt.scene.append(triangle3) 
 rt.glRender()
 
 isRunning = True

@@ -1,6 +1,8 @@
 import numpy as np
 from intercept import Intercept
 from math import tan, pi, atan2, acos
+from MathLib import *
+
 
 class Shape(object):
     def __init__(self, position, material):
@@ -193,4 +195,142 @@ class AABB(Shape):
             texCoords= [u, v],
             rayDirection=dir,
             obj = self
+        )
+
+class Triangle(Shape):
+    def __init__(self, v0, v1, v2, material):
+        super().__init__(None, material)  # No tiene una posición como tal
+        self.v0 = v0
+        self.v1 = v1
+        self.v2 = v2
+        self.type = "Triangle"
+
+        # Precalcula la normal del triángulo usando los vértices
+        edge1 = substraction(self.v1, self.v0)
+        edge2 = substraction(self.v2, self.v0)
+        self.normal = cross_product(edge1, edge2)
+        self.normal = normalize(self.normal)  # Normalizar la normal
+
+    def ray_intersect(self, orig, dir):
+        epsilon = 1e-6
+        edge1 = substraction(self.v1, self.v0)
+        edge2 = substraction(self.v2, self.v0)
+
+        # Intersección del rayo con el triángulo
+        h = cross_product(dir, edge2)
+        a = dotP(edge1, h)
+
+        if -epsilon < a < epsilon:
+            return None  # El rayo es paralelo al triángulo
+
+        f = 1.0 / a
+        s = substraction(orig, self.v0)
+        u = f * dotP(s, h)
+
+        if u < 0.0 or u > 1.0:
+            return None
+
+        q = cross_product(s, edge1)
+        v = f * dotP(dir, q)
+
+        if v < 0.0 or u + v > 1.0:
+            return None
+
+        t = f * dotP(edge2, q)
+
+        if t > epsilon:
+            P = add(orig, scalar_multiply(dir, t))  # Punto de intersección
+            return Intercept(
+                point=P,
+                normal=self.normal,
+                distance=t,
+                texCoords=[u, v],  # Podemos usar (u, v) como coordenadas de textura
+                rayDirection=dir,
+                obj=self
+            )
+        else:
+            return None
+
+
+class Cylinder(Shape):
+    def __init__(self, position, radius, height, material):
+        super().__init__(position, material)
+        self.radius = radius
+        self.height = height
+        self.type = "Cylinder"
+        self.top_center = add(position, [0, height / 2, 0])
+        self.bottom_center = substraction(position, [0, height / 2, 0])
+
+    def ray_intersect(self, orig, dir):
+        # Coeficientes para la ecuación cuadrática
+        a = dir[0]**2 + dir[2]**2
+        b = 2 * ((orig[0] - self.position[0]) * dir[0] + (orig[2] - self.position[2]) * dir[2])
+        c = (orig[0] - self.position[0])**2 + (orig[2] - self.position[2])**2 - self.radius**2
+
+        discriminant = b**2 - 4 * a * c
+        t_values = []
+
+        if discriminant >= 0:
+            sqrt_discriminant = sqrt(discriminant)
+            t0 = (-b - sqrt_discriminant) / (2 * a)
+            t1 = (-b + sqrt_discriminant) / (2 * a)
+
+            for t in [t0, t1]:
+                y = orig[1] + t * dir[1]
+                if self.bottom_center[1] <= y <= self.top_center[1]:
+                    if t > 0:
+                        t_values.append(t)
+
+        # Comprobar intersección con las tapas
+        if dir[1] != 0:
+            # Tapa inferior
+            t_bottom = (self.bottom_center[1] - orig[1]) / dir[1]
+            if t_bottom > 0:
+                x_bottom = orig[0] + t_bottom * dir[0]
+                z_bottom = orig[2] + t_bottom * dir[2]
+                if (x_bottom - self.position[0])**2 + (z_bottom - self.position[2])**2 <= self.radius**2:
+                    t_values.append(t_bottom)
+            # Tapa superior
+            t_top = (self.top_center[1] - orig[1]) / dir[1]
+            if t_top > 0:
+                x_top = orig[0] + t_top * dir[0]
+                z_top = orig[2] + t_top * dir[2]
+                if (x_top - self.position[0])**2 + (z_top - self.position[2])**2 <= self.radius**2:
+                    t_values.append(t_top)
+
+        if not t_values:
+            return None
+
+        t = min(t_values)
+        P = add(orig, scalar_multiply(dir, t))
+
+        # Determinar la normal y las coordenadas de textura
+        if modulus(P[1] - self.top_center[1]) < 1e-6:
+            # Intersección con la tapa superior
+            normal = [0, 1, 0]
+            u = ((P[0] - self.position[0]) / (2 * self.radius)) + 0.5
+            v = ((P[2] - self.position[2]) / (2 * self.radius)) + 0.5
+        elif modulus(P[1] - self.bottom_center[1]) < 1e-6:
+            # Intersección con la tapa inferior
+            normal = [0, -1, 0]
+            u = ((P[0] - self.position[0]) / (2 * self.radius)) + 0.5
+            v = ((P[2] - self.position[2]) / (2 * self.radius)) + 0.5
+        else:
+            # Intersección con la superficie lateral
+            normal = [P[0] - self.position[0], 0, P[2] - self.position[2]]
+            normal = normalize(normal)
+            u = (atan2(normal[2], normal[0]) / (2 * pi)) + 0.5
+            v = (P[1] - self.bottom_center[1]) / self.height
+
+        # Asegurar que u y v estén en el rango [0, 1)
+        u = u % 1.0
+        v = v % 1.0
+
+        return Intercept(
+            point=P,
+            normal=normal,
+            distance=t,
+            texCoords=[u, v],
+            rayDirection=dir,
+            obj=self
         )
