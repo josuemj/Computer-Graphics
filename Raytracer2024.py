@@ -29,6 +29,8 @@ redMirror = Material(texture=Texture("textures/mirror.bmp"), difuse=[1, 0, 0], s
 # earth = Material(texture=Texture('textures/earth.bmp'))
 # marble = Material(texture=Texture('textures/whiteMarble.bmp'), spec=128, Ks = 0.2, matType=REFLECTIVE)
 # woodenBox = Material( texture=Texture("textures/woodenBox.bmp"))
+white_floor_material = Material(difuse=[1.0, 1.0, 1.0], spec=1.5, Ks=0.1, )  # Blanco más brillante
+
 
 #lights
 # Add an Ambient Light
@@ -48,22 +50,43 @@ rt.lights.append(PointLight(
 ))
 
 
-pyramid = Pyramid(
-    base_center=[0, 0, -4],
-    base_size=1,
-    height=2,
+pyramid = Pyramid( #big one leftr
+    base_center=[-7, -4, -40],  # Positioned higher to ensure visibility and reflection
+    base_size=7,              # Base size of the pyramid
+    height=12,                 # Height of the pyramid
     material=bluemirror,
-    pitch=30,  # Rotate 30 degrees around the X-axis
-    yaw=45,    # Rotate 45 degrees around the Y-axis
-    roll=0     # No rotation around the Z-axis
+    pitch=0,
+    yaw=30,
+    roll=0
 )
+rt.scene.append(pyramid)
 
-# rt.scene.append(pyramid)
+pyramid2 = Pyramid( #big one leftr
+    base_center=[-1, -4, -20],  # Positioned higher to ensure visibility and reflection
+    base_size=4,              # Base size of the pyramid
+    height=4,                 # Height of the pyramid
+    material=redMirror,
+    pitch=0,
+    yaw=45,
+    roll=0
+)
+rt.scene.append(pyramid2)
+
+pyramid3 = Pyramid( #big one leftr
+    base_center=[3, -4, -30],  # Positioned higher to ensure visibility and reflection
+    base_size=3,              # Base size of the pyramid
+    height=6,                 # Height of the pyramid
+    material=mirror,
+    pitch=0,
+    yaw=45,
+    roll=0
+)
+rt.scene.append(pyramid3)
 
 # Assuming you have a material instance called 'metal'
 
 torus = Torus(
-    position=[-2.4, 2.3, -8],           # Center of the torus
+    position=[-3, 3, -8],           # Center of the torus
     major_radius=1,               # Major radius (distance from center to tube center)
     minor_radius=0.3,              # Minor radius (radius of the tube)
     material=bluemirror,
@@ -71,9 +94,12 @@ torus = Torus(
     yaw=-20,                        # Rotate 45 degrees around the Y-axis
     roll=10                        # Rotate 60 degrees around the Z-axis
 )
-
 # Add the torus to your scene
 rt.scene.append(torus)
+
+floor = Plane(position=[0, -4, 0], normal=[0, 1, 0], material=bluemirror)
+rt.scene.append(floor)
+
 
 
 rt.glRender()
