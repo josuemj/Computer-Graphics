@@ -543,3 +543,107 @@ class Torus(Shape):
             rayDirection=dir,
             obj=self
         )
+
+import numpy as np
+from figures import Shape, Triangle
+
+import numpy as np
+from figures import Shape, Triangle
+
+class Box(Shape):
+    def __init__(self, position, sizes, material, pitch=0, yaw=0, roll=0):
+        super().__init__(position, material)
+        self.sizes = sizes  # [width, height, depth]
+        self.pitch = pitch
+        self.yaw = yaw
+        self.roll = roll
+        self.type = "Box"
+
+        # Define the 8 vertices of the box
+        self.vertices = self.create_vertices()
+        self.apply_rotation()
+        self.faces = self.create_faces()
+
+    def create_vertices(self):
+        half_sizes = [s / 2.0 for s in self.sizes]
+        return np.array([
+            [self.position[0] - half_sizes[0], self.position[1] - half_sizes[1], self.position[2] - half_sizes[2]],  # Vertex 0
+            [self.position[0] + half_sizes[0], self.position[1] - half_sizes[1], self.position[2] - half_sizes[2]],  # Vertex 1
+            [self.position[0] + half_sizes[0], self.position[1] + half_sizes[1], self.position[2] - half_sizes[2]],  # Vertex 2
+            [self.position[0] - half_sizes[0], self.position[1] + half_sizes[1], self.position[2] - half_sizes[2]],  # Vertex 3
+            [self.position[0] - half_sizes[0], self.position[1] - half_sizes[1], self.position[2] + half_sizes[2]],  # Vertex 4
+            [self.position[0] + half_sizes[0], self.position[1] - half_sizes[1], self.position[2] + half_sizes[2]],  # Vertex 5
+            [self.position[0] + half_sizes[0], self.position[1] + half_sizes[1], self.position[2] + half_sizes[2]],  # Vertex 6
+            [self.position[0] - half_sizes[0], self.position[1] + half_sizes[1], self.position[2] + half_sizes[2]]   # Vertex 7
+        ])
+
+    def apply_rotation(self):
+        # Convert degrees to radians
+        pitch_rad = np.radians(self.pitch)
+        yaw_rad = np.radians(self.yaw)
+        roll_rad = np.radians(self.roll)
+
+        # Rotation matrices
+        Rx = np.array([
+            [1, 0, 0],
+            [0, np.cos(pitch_rad), -np.sin(pitch_rad)],
+            [0, np.sin(pitch_rad), np.cos(pitch_rad)]
+        ])
+        Ry = np.array([
+            [np.cos(yaw_rad), 0, np.sin(yaw_rad)],
+            [0, 1, 0],
+            [-np.sin(yaw_rad), 0, np.cos(yaw_rad)]
+        ])
+        Rz = np.array([
+            [np.cos(roll_rad), -np.sin(roll_rad), 0],
+            [np.sin(roll_rad), np.cos(roll_rad), 0],
+            [0, 0, 1]
+        ])
+
+        # Combined rotation matrix: R = Rz * Ry * Rx
+        R = Rz @ Ry @ Rx
+
+        # Apply rotation to each vertex
+        for i in range(len(self.vertices)):
+            # Translate vertex to origin
+            translated_vertex = self.vertices[i] - self.position
+            # Apply rotation
+            rotated_vertex = R @ translated_vertex
+            # Translate back
+            self.vertices[i] = rotated_vertex + self.position
+
+    def create_faces(self):
+        faces = [
+            # Front face
+            (0, 1, 2), (0, 2, 3),
+            # Back face
+            (4, 5, 6), (4, 6, 7),
+            # Left face
+            (0, 3, 7), (0, 7, 4),
+            # Right face
+            (1, 5, 6), (1, 6, 2),
+            # Top face
+            (3, 2, 6), (3, 6, 7),
+            # Bottom face
+            (0, 1, 5), (0, 5, 4)
+        ]
+
+        triangles = []
+        for face in faces:
+            v0 = self.vertices[face[0]]
+            v1 = self.vertices[face[1]]
+            v2 = self.vertices[face[2]]
+            triangles.append(Triangle(v0, v1, v2, self.material))
+        return triangles
+
+    def ray_intersect(self, orig, dir):
+        closest_intercept = None
+        min_distance = float('inf')
+
+        for face in self.faces:
+            intercept = face.ray_intersect(orig, dir)
+            if intercept and intercept.distance < min_distance:
+                closest_intercept = intercept
+                min_distance = intercept.distance
+
+        return closest_intercept

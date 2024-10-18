@@ -1,3 +1,6 @@
+## Introducing boxes to the scene
+![boxes](outputs/boxes.png)
+
 ## Cylinders, tours, pyramides
 ![of1](outputs/cylinders.png)
 

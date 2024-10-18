@@ -20,6 +20,12 @@ rt.glClear()
 #materials
 brick = Material(difuse=[1, 0.2, 0.2], spec=128, Ks=0.25)
 grass = Material(difuse=[0.2, 1.0, 0.2], spec=64, Ks=0.2)
+orange_material = Material(
+    difuse=[1.0, 0.5, 0.0],  # Orange color
+    spec=128,                # Specular exponent (same as brick)
+    Ks=0.25,
+    matType=OPAQUE# Specular coefficient (same as brick)
+)
 mirror = Material(difuse=[0.9, 0.9, 0.9], spec = 128, Ks = 0.2, matType = REFLECTIVE)
 bluemirror = Material(difuse=[0.5, 0.5, 1], spec = 128, Ks = 0.2, matType = REFLECTIVE)
 glass = Material(ior = 1.5, spec = 128, Ks = 0.2, matType=TRANSPARENT)
@@ -112,6 +118,17 @@ pyramid5 = Pyramid( #small one on line
 )
 rt.scene.append(pyramid5)
 
+pyramid6 = Pyramid( #RIGHT ONE
+    base_center=[6, -4, -15],  # Positioned higher to ensure visibility and reflection
+    base_size=3,              # Base size of the pyramid
+    height=3,                 # Height of the pyramid
+    material=metallicMaterial,
+    pitch=0,
+    yaw=45,
+    roll=0
+)
+rt.scene.append(pyramid6)
+
 cylinder1 = Cylinder(
     position=[-14, -4+(12/2), -45],   # Position of the first cylinder
     radius=3,              # Radius of the cylinder
@@ -146,7 +163,46 @@ rt.scene.append(torus)
 floor = Plane(position=[0, -4, 0], normal=[0, 1, 0], material=bluemirror)
 rt.scene.append(floor)
 
+#boxes
+box = Box( #GREE ONE TALLEST
+    position=[0.5, -4+(18/2), -50],     # Position of the box (base center at y = -1)
+    sizes=[4, 18, 5],          # Width, height, depth
+    material=grass, # Use the metallic material
+    pitch=0,                 # Rotate around the X-axis
+    yaw=45,                   # Rotate around the Y-axis
+    roll=0                    # No rotation around the Z-axis
+)
+rt.scene.append(box)
 
+box2 = Box(#LEFT ONE
+    position=[-13, -4+(3/2), -28],     # Position of the box (base center at y = -1)
+    sizes=[3, 3, 3],          # Width, height, depth
+    material=orange_material, # Use the metallic material
+    pitch=0,# Rotate around the X-axis
+    yaw=60,                   # Rotate around the Y-axis
+    roll=0                    # No rotation around the Z-axis
+)
+rt.scene.append(box2)
+
+box3 = Box(#SMALL ONE RIGHT
+    position=[2.3, -4+(1.3/2), -12],     # Position of the box (base center at y = -1)
+    sizes=[1.3, 1.3, 1.3],          # Width, height, depth
+    material=orange_material, # Use the metallic material
+    pitch=0,# Rotate around the X-axis
+    yaw=30,                   # Rotate around the Y-axis
+    roll=0                    # No rotation around the Z-axis
+)
+rt.scene.append(box3)
+
+box4 = Box(
+    position=[-4.5, -4+(1/2), -10],     # Position of the box (base center at y = -1)
+    sizes=[1, 1, 1],          # Width, height, depth
+    material=redMirror, # Use the metallic material
+    pitch=0,# Rotate around the X-axis
+    yaw=60,                   # Rotate around the Y-axis
+    roll=0                    # No rotation around the Z-axis
+)
+rt.scene.append(box4)
 
 rt.glRender()
 
