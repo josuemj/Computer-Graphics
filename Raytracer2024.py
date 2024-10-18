@@ -30,7 +30,12 @@ redMirror = Material(texture=Texture("textures/mirror.bmp"), difuse=[1, 0, 0], s
 # marble = Material(texture=Texture('textures/whiteMarble.bmp'), spec=128, Ks = 0.2, matType=REFLECTIVE)
 # woodenBox = Material( texture=Texture("textures/woodenBox.bmp"))
 white_floor_material = Material(difuse=[1.0, 1.0, 1.0], spec=1.5, Ks=0.1, )  # Blanco más brillante
-
+metallicMaterial = Material(
+difuse=[0.8, 0.8, 0.8],  
+    spec=256,                 
+    Ks=0.5,                   
+    matType=REFLECTIVE       
+)
 
 #lights
 # Add an Ambient Light
@@ -56,12 +61,12 @@ pyramid = Pyramid( #big one leftr
     height=12,                 # Height of the pyramid
     material=bluemirror,
     pitch=0,
-    yaw=30,
+    yaw=50,
     roll=0
 )
 rt.scene.append(pyramid)
 
-pyramid2 = Pyramid( #big one leftr
+pyramid2 = Pyramid( #MIDDLE RED ONE
     base_center=[-1, -4, -20],  # Positioned higher to ensure visibility and reflection
     base_size=4,              # Base size of the pyramid
     height=4,                 # Height of the pyramid
@@ -83,7 +88,48 @@ pyramid3 = Pyramid( #big one leftr
 )
 rt.scene.append(pyramid3)
 
-# Assuming you have a material instance called 'metal'
+pyramid4 = Pyramid( #MIDDLE ON LINE
+    base_center=[-7, -4, -25],  # Positioned higher to ensure visibility and reflection
+    base_size=3.5,              # Base size of the pyramid
+    height=4,                 # Height of the pyramid
+    material=metallicMaterial,
+    pitch=0,
+    yaw=45,
+    roll=0
+)
+rt.scene.append(pyramid4)
+
+
+
+pyramid5 = Pyramid( #small one on line
+    base_center=[-6.5, -4, -17],  # Positioned higher to ensure visibility and reflection
+    base_size=2,              # Base size of the pyramid
+    height=1.5,                 # Height of the pyramid
+    material=grass,
+    pitch=0,
+    yaw=45,
+    roll=0
+)
+rt.scene.append(pyramid5)
+
+cylinder1 = Cylinder(
+    position=[-14, -4+(12/2), -45],   # Position of the first cylinder
+    radius=3,              # Radius of the cylinder
+    height=12,                # Height of the cylinder
+    material=metallicMaterial # Use the metallic material
+)
+rt.scene.append(cylinder1)
+
+
+# Create the second cylinder
+cylinder2 = Cylinder(
+    position=[21, -4+(16/2), -45],    # Position of the second cylinder (to the right)
+    radius=2,              # Radius of the cylinder
+    height=16,                # Height of the cylinder
+    material=metallicMaterial # Use the metallic material
+)
+rt.scene.append(cylinder2)
+
 
 torus = Torus(
     position=[-3, 3, -8],           # Center of the torus

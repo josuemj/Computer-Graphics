@@ -1,3 +1,6 @@
+## Cylinders, tours, pyramides
+![of1](outputs/cylinders.png)
+
 ## Torus + 3 pyramids
 ![of1](outputs/torusandpyramids.png)
 
