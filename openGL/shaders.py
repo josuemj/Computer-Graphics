@@ -2,14 +2,17 @@ vertex_shader = '''
 #version 450 core
 
 layout (location = 0) in vec3 position;
-layout (location = 1) in vec3 vColor;
+layout (location = 1) in vec2 texCoords;
+layout (location = 2) in vec3 normals;
 
-out vec3 outColor;
+out vec2 outTexCoords;
+out vec3 outNormals;
 
 void main()
 {
     gl_Position = vec4(position, 1.0);
-    outColor = vColor;
+    outTexCoords = texCoords;
+    outNormals = normals;
 }
 
 '''
@@ -17,11 +20,13 @@ void main()
 fragment_shader = '''
 #version 450 core
 
-in vec3 outColor;
+in vec2 outTexCoords;
+in vec3 outNormals;
+
 out vec4 fragColor;
 
 void main()
 {
-    fragColor = vec4(outColor, 1.0);   
+    fragColor = vec4(outNormals, 1.0);   
 }
 '''
