@@ -1,3 +1,6 @@
+## Placed spheres
+![spheres](outputs/spheres.png)
+
 ## Introducing boxes to the scene
 ![boxes](outputs/boxes.png)
 

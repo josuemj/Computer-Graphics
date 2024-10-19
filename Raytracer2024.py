@@ -83,7 +83,7 @@ pyramid2 = Pyramid( #MIDDLE RED ONE
 )
 rt.scene.append(pyramid2)
 
-pyramid3 = Pyramid( #big one leftr
+pyramid3 = Pyramid( #big one right
     base_center=[3, -4, -30],  # Positioned higher to ensure visibility and reflection
     base_size=3,              # Base size of the pyramid
     height=6,                 # Height of the pyramid
@@ -129,7 +129,7 @@ pyramid6 = Pyramid( #RIGHT ONE
 )
 rt.scene.append(pyramid6)
 
-cylinder1 = Cylinder(
+cylinder1 = Cylinder( #right one
     position=[-14, -4+(12/2), -45],   # Position of the first cylinder
     radius=3,              # Radius of the cylinder
     height=12,                # Height of the cylinder
@@ -138,7 +138,7 @@ cylinder1 = Cylinder(
 rt.scene.append(cylinder1)
 
 
-# Create the second cylinder
+# left one
 cylinder2 = Cylinder(
     position=[21, -4+(16/2), -45],    # Position of the second cylinder (to the right)
     radius=2,              # Radius of the cylinder
@@ -203,6 +203,42 @@ box4 = Box(
     roll=0                    # No rotation around the Z-axis
 )
 rt.scene.append(box4)
+
+# spheres
+sphere1 = Sphere(# big one cheese biggest one
+    position = [0, -4+0.8 , -9], 
+    radius = 0.8, 
+    material = cheese
+    )
+rt.scene.append(sphere1)
+
+sphere2 = Sphere( #small bottom pizza
+    position = [-2.6, -4+0.4 , -8], 
+    radius = 0.4, 
+    material = pizza
+    )
+rt.scene.append(sphere2)
+
+sphere3 = Sphere( #small bottom pizza
+    position = [-2.4, -4+1 , -11], 
+    radius = 1, 
+    material = white_floor_material
+    )
+rt.scene.append(sphere3)
+
+sphere4 = Sphere( #small bottom pizza
+    position = [11, -4+4 , -40], 
+    radius = 4, 
+    material = white_floor_material
+    )
+rt.scene.append(sphere4)\
+    
+sphere5 = Sphere( #small bottom pizza
+    position = [3.5, -4+0.4, -9], 
+    radius = 0.4, 
+    material = white_floor_material
+    )
+rt.scene.append(sphere5)
 
 rt.glRender()
 
