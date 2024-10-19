@@ -1,3 +1,6 @@
+## Placing a tower of toroids
+![spheres](outputs/toruses.png)
+
 ## Placed spheres
 ![spheres](outputs/spheres.png)
 

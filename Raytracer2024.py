@@ -60,6 +60,7 @@ rt.lights.append(PointLight(
     position=[0, 2, -4]  # Position it above the pyramid
 ))
 
+#PYRAMIDS
 
 pyramid = Pyramid( #big one leftr
     base_center=[-7, -4, -40],  # Positioned higher to ensure visibility and reflection
@@ -129,7 +130,9 @@ pyramid6 = Pyramid( #RIGHT ONE
 )
 rt.scene.append(pyramid6)
 
-cylinder1 = Cylinder( #right one
+# CYLINDERS
+
+cylinder1 = Cylinder( #left one
     position=[-14, -4+(12/2), -45],   # Position of the first cylinder
     radius=3,              # Radius of the cylinder
     height=12,                # Height of the cylinder
@@ -138,7 +141,7 @@ cylinder1 = Cylinder( #right one
 rt.scene.append(cylinder1)
 
 
-# left one
+# right one
 cylinder2 = Cylinder(
     position=[21, -4+(16/2), -45],    # Position of the second cylinder (to the right)
     radius=2,              # Radius of the cylinder
@@ -147,7 +150,7 @@ cylinder2 = Cylinder(
 )
 rt.scene.append(cylinder2)
 
-
+#TORUS left one
 torus = Torus(
     position=[-3, 3, -8],           # Center of the torus
     major_radius=1,               # Major radius (distance from center to tube center)
@@ -157,13 +160,79 @@ torus = Torus(
     yaw=-20,                        # Rotate 45 degrees around the Y-axis
     roll=10                        # Rotate 60 degrees around the Z-axis
 )
-# Add the torus to your scene
 rt.scene.append(torus)
 
+torus2 = Torus( # first on stack
+    position=[0.5, 5, -50],           # Center of the torus
+    major_radius=7,               # Major radius (distance from center to tube center)
+    minor_radius=1,              # Minor radius (radius of the tube)
+    material=bluemirror,
+    pitch=75,                      # Rotate 30 degrees around the X-axis    
+    yaw=-0,                        # Rotate 45 degrees around the Y-axis
+    roll=0                        # Rotate 60 degrees around the Z-axis
+)
+rt.scene.append(torus2)
+
+torus3 = Torus(
+    position=[0.5, 10, -50],           # Center of the torus
+    major_radius=6,               # Major radius (distance from center to tube center)
+    minor_radius=1,              # Minor radius (radius of the tube)
+    material=white_floor_material,
+    pitch=75,                      # Rotate 30 degrees around the X-axis    
+    yaw=-0,                        # Rotate 45 degrees around the Y-axis
+    roll=0                        # Rotate 60 degrees around the Z-axis
+)
+rt.scene.append(torus3)
+
+torus4 = Torus(
+    position=[0.6, 14, -50],           # Center of the torus
+    major_radius=5,               # Major radius (distance from center to tube center)
+    minor_radius=1,              # Minor radius (radius of the tube)
+    material=orange_material,
+    pitch=75,                      # Rotate 30 degrees around the X-axis    
+    yaw=-0,                        # Rotate 45 degrees around the Y-axis
+    roll=-7                        # Rotate 60 degrees around the Z-axis
+)
+rt.scene.append(torus4) 
+
+torus5 = Torus(
+    position=[0.7, 18, -50],           # Center of the torus
+    major_radius=4,               # Major radius (distance from center to tube center)
+    minor_radius=1,              # Minor radius (radius of the tube)
+    material=bluemirror,
+    pitch=75,                      # Rotate 30 degrees around the X-axis    
+    yaw=-0,                        # Rotate 45 degrees around the Y-axis
+    roll=-15                      # Rotate 60 degrees around the Z-axis
+)
+rt.scene.append(torus5) 
+
+torus6 = Torus(
+    position=[0.8, 22, -50],           # Center of the torus
+    major_radius=3,               # Major radius (distance from center to tube center)
+    minor_radius=0.8,              # Minor radius (radius of the tube)
+    material=white_floor_material,
+    pitch=75,                      # Rotate 30 degrees around the X-axis    
+    yaw=-0,                        # Rotate 45 degrees around the Y-axis
+    roll=-15                      # Rotate 60 degrees around the Z-axis
+)
+rt.scene.append(torus6) 
+
+torus7 = Torus(
+    position=[1.3, 26, -50],           # Center of the torus
+    major_radius=1,               # Major radius (distance from center to tube center)
+    minor_radius=0.4,              # Minor radius (radius of the tube)
+    material=orange_material,
+    pitch=75,                      # Rotate 30 degrees around the X-axis    
+    yaw=-0,                        # Rotate 45 degrees around the Y-axis
+    roll=-15                      # Rotate 60 degrees around the Z-axis
+)
+rt.scene.append(torus7) 
+
+#PLANE
 floor = Plane(position=[0, -4, 0], normal=[0, 1, 0], material=bluemirror)
 rt.scene.append(floor)
 
-#boxes
+#BOXES
 box = Box( #GREE ONE TALLEST
     position=[0.5, -4+(18/2), -50],     # Position of the box (base center at y = -1)
     sizes=[4, 18, 5],          # Width, height, depth
@@ -204,7 +273,7 @@ box4 = Box(
 )
 rt.scene.append(box4)
 
-# spheres
+# SPHERES
 sphere1 = Sphere(# big one cheese biggest one
     position = [0, -4+0.8 , -9], 
     radius = 0.8, 
@@ -219,21 +288,21 @@ sphere2 = Sphere( #small bottom pizza
     )
 rt.scene.append(sphere2)
 
-sphere3 = Sphere( #small bottom pizza
+sphere3 = Sphere(
     position = [-2.4, -4+1 , -11], 
     radius = 1, 
     material = white_floor_material
     )
 rt.scene.append(sphere3)
 
-sphere4 = Sphere( #small bottom pizza
+sphere4 = Sphere( # biigest one right cylinder
     position = [11, -4+4 , -40], 
     radius = 4, 
     material = white_floor_material
     )
-rt.scene.append(sphere4)\
+rt.scene.append(sphere4)
     
-sphere5 = Sphere( #small bottom pizza
+sphere5 = Sphere( #smallest right
     position = [3.5, -4+0.4, -9], 
     radius = 0.4, 
     material = white_floor_material
