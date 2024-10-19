@@ -81,3 +81,12 @@ This scene took **1 hour** to render at a resolution of **1080 x 1080** pixels. 
 
 ## testing a torus
 ![pyramid](outputs/torus.png)
+
+# 💡 Conceptual Ideas
+
+Below is a comparison of two concepts for the scene:
+
+| **Idea 1**                               | **Idea 2**                               |
+|------------------------------------------|------------------------------------------|
+| ![Idea 1](outputs/idea1.png)              | ![Idea 2](outputs/idea2.png)              |
+
