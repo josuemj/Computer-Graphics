@@ -13,7 +13,7 @@ screen = pygame.display.set_mode((width, height), pygame.SCALED )
 clock = pygame.time.Clock()
 
 rt =  RendererRT(screen)
-rt.envMap = Texture('textures/parkingLot.bmp')
+rt.envMap = Texture('textures/space.bmp')
 rt.glClearColor(0.5, 0.0, 0.0 )
 rt.glClear()
 
@@ -32,6 +32,40 @@ redMirror = Material(texture=Texture("textures/mirror.bmp"), difuse=[1, 0, 0], s
 mirror = Material(difuse=[0.9, 0.9, 0.9], spec = 128, Ks = 0.2, matType = REFLECTIVE)
 bluemirror = Material(difuse=[0.5, 0.5, 1], spec = 128, Ks = 0.2, matType = REFLECTIVE)
 metallicMaterial = Material(difuse=[0.8, 0.8, 0.8], spec=256, Ks=0.5, matType=REFLECTIVE)
+saturnRingMaterial = Material(
+    difuse=[0.8, 0.8, 0.7],  
+    spec=256,                
+    Ks=0.3,                  
+    matType=REFLECTIVE       
+)
+
+redMirror_ = Material(
+    difuse=[1.0, 0.0, 0.0],    # Red color
+    spec=128,                  # Specular exponent
+    Ks=0.2,                    # Specular reflection coefficient
+    matType=REFLECTIVE         # Set as reflective material
+)
+
+skyBlueMirror = Material(
+    difuse=[0.53, 0.81, 0.92],  # Sky blue color
+    spec=128,                    # Specular exponent
+    Ks=0.2,                      # Specular reflection coefficient
+    matType=REFLECTIVE           # Set as reflective material
+)
+
+purpleMirror = Material(
+    difuse=[0.6, 0.2, 0.8],     # Purple color
+    spec=128,                    # Specular exponent
+    Ks=0.2,                      # Specular reflection coefficient
+    matType=REFLECTIVE           # Set as reflective material
+)
+
+pinkMirror = Material(
+    difuse=[1.0, 0.75, 0.8],    # Pink color
+    spec=128,                    # Specular exponent
+    Ks=0.2,                      # Specular reflection coefficient
+    matType=REFLECTIVE           # Set as reflective material
+)
 
 """
 OPAQUE
@@ -39,6 +73,10 @@ OPAQUE
 cheese = Material(texture=Texture('textures/cheese.bmp'), spec=128, Ks=0.2, matType=OPAQUE) 
 pizza = Material(texture=Texture('textures/pizza.bmp'), spec=128, Ks=0.2, matType=OPAQUE) 
 orange_material = Material(difuse=[1.0, 0.5, 0.0], spec=128, Ks=0.25, matType=OPAQUE)
+metalTexture = Material(ior=1.33, texture=Texture('textures/metal.bmp'), spec=128, Ks=0.2, matType=OPAQUE) 
+jupiter = Material(ior=1.33, texture=Texture('textures/jupiter.bmp'), spec=128, Ks=0.2, matType=OPAQUE) 
+saturn = Material(ior=1.33, texture=Texture('textures/saturn.bmp'), spec=128, Ks=0.2, matType=OPAQUE) 
+
 
 """
 TRANSPARENT
@@ -152,9 +190,9 @@ cylinder2 = Cylinder( #RIGHT CYLINDER
 )
 rt.scene.append(cylinder2)
 
-"""
-TOROIDS
-"""
+# """
+# TOROIDS
+# """
 torus = Torus( #ISOLATED TORUS
     position=[-3, 3, -8],           # Center of the torus
     major_radius=1,               # Major radius (distance from center to tube center)
@@ -178,9 +216,10 @@ torus2 = Torus( # (FIRST) FIRST BLUE MIRROR
 rt.scene.append(torus2)
 
 torus3 = Torus( # (SECOND) WHITE
-    position=[0.5, 10, -50],                          
+    position=[0.5, 10, -50],             
+    major_radius=6,
     minor_radius=1,              
-    material=white_floor_material,
+    material=skyBlueMirror,
     pitch=75,                          
     yaw=-0,                       
     roll=0                        
@@ -191,7 +230,7 @@ torus4 = Torus( # (THIRD) ORANGE
     position=[0.6, 14, -50],          
     major_radius=5,               
     minor_radius=1,              
-    material=orange_material,
+    material=purpleMirror,
     pitch=75,                         
     yaw=-0,                        
     roll=-7                        
@@ -202,7 +241,7 @@ torus5 = Torus( # (FOURTH) BLUE MIRROR
     position=[0.7, 18, -50],          
     major_radius=4,               
     minor_radius=1,              
-    material=bluemirror,
+    material=pinkMirror,
     pitch=75,                      
     yaw=-0,                    
     roll=-15                     
@@ -213,7 +252,7 @@ torus6 = Torus( # (FIFTH) WHITE
     position=[0.8, 22, -50],     
     major_radius=3,               
     minor_radius=0.8,              
-    material=white_floor_material,
+    material=redMirror_,
     pitch=75,                          
     yaw=-0,                       
     roll=-15                     
@@ -221,15 +260,37 @@ torus6 = Torus( # (FIFTH) WHITE
 rt.scene.append(torus6) 
 
 torus7 = Torus( # (LAST SMALLEST) ONE
-    position=[1.3, 26, -50],         
+    position=[2, 26, -50],         
     major_radius=1,               
     minor_radius=0.4,             
-    material=orange_material,
+    material=redMirror_,
     pitch=75,                         
     yaw=-0,                       
     roll=-15                     
 )
 rt.scene.append(torus7) 
+
+torus8 = Torus( # RING OF PLANET BIG
+    position=[19, 22, -60],         
+    major_radius=11,               
+    minor_radius=0.5,             
+    material=saturnRingMaterial,
+    pitch=-60,                         
+    yaw=-60,                       
+    roll=35               
+)
+rt.scene.append(torus8) 
+
+torus9 = Torus( # RING OF PLANET SMALL
+    position=[19, 22, -60],         
+    major_radius=8,               
+    minor_radius=0.5,             
+    material=saturnRingMaterial,
+    pitch=-60,                         
+    yaw=-60,                       
+    roll=35               
+)
+rt.scene.append(torus9) 
 
 """
 PLANE
@@ -307,16 +368,24 @@ rt.scene.append(sphere3)
 sphere4 = Sphere( # biigest one right cylinder
     position = [11, -4+4 , -40], 
     radius = 4, 
-    material = white_floor_material
+    material = metalTexture
     )
 rt.scene.append(sphere4)
     
-sphere5 = Sphere( #smallest right
+sphere5 = Sphere( #SMALLEST LEFT
     position = [3.5, -4+0.4, -9], 
     radius = 0.4, 
-    material = white_floor_material
+    material = jupiter
     )
 rt.scene.append(sphere5)
+
+sphere6 = Sphere( #PLANET saturn
+    position = [19, 22, -60], 
+    radius = 4, 
+    material = saturn
+    )
+rt.scene.append(sphere6)
+
 
 rt.glRender()
 

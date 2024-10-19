@@ -1,3 +1,6 @@
+## Almost completed
+![almost](outputs/almost.png)
+
 ## Placing a tower of toroids
 ![spheres](outputs/toruses.png)
 
