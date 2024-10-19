@@ -48,29 +48,24 @@ glass = Material(ior = 1.5, spec = 128, Ks = 0.2, matType=TRANSPARENT)
 # marble = Material(texture=Texture('textures/whiteMarble.bmp'), spec=128, Ks = 0.2, matType=REFLECTIVE)
 # woodenBox = Material( texture=Texture("textures/woodenBox.bmp"))
 
-
-
-#lights
+"""
+LIGHTS
+"""
 # Add an Ambient Light
 rt.lights.append(AmbientLight(intensity=0.5))
 
 # Adjust the Directional Light to better illuminate the pyramid
-rt.lights.append(DirectionalLight(
-    direction=[-1, -1, -1],  # Adjust the direction as needed
-    intensity=0.7
-))
+rt.lights.append(DirectionalLight(direction=[-1, -1, -1], intensity=0.7))
 
 # Add a Point Light near the pyramid to highlight its faces
-rt.lights.append(PointLight(
-    color=[1, 1, 1],
-    intensity=1.0,
-    position=[0, 2, -4]  # Position it above the pyramid
-))
+rt.lights.append(PointLight(color=[1, 1, 1], intensity=1.0, position=[0, 2, -4]  ))
 
-#PYRAMIDS
+"""
+PYRAMIDS
+"""
 
-pyramid = Pyramid( #big one leftr
-    base_center=[-7, -4, -40],  # Positioned higher to ensure visibility and reflection
+pyramid = Pyramid( #BLUE MIRROR BIG ONE tallest on row
+    base_center=[-7, -4, -40],  
     base_size=7,              # Base size of the pyramid
     height=12,                 # Height of the pyramid
     material=bluemirror,
@@ -80,10 +75,10 @@ pyramid = Pyramid( #big one leftr
 )
 rt.scene.append(pyramid)
 
-pyramid2 = Pyramid( #MIDDLE RED ONE
-    base_center=[-1, -4, -20],  # Positioned higher to ensure visibility and reflection
-    base_size=4,              # Base size of the pyramid
-    height=4,                 # Height of the pyramid
+pyramid2 = Pyramid( #MIDDLE RED ONE on row
+    base_center=[-1, -4, -20], 
+    base_size=4,              
+    height=4,                 
     material=redMirror,
     pitch=0,
     yaw=45,
@@ -91,10 +86,10 @@ pyramid2 = Pyramid( #MIDDLE RED ONE
 )
 rt.scene.append(pyramid2)
 
-pyramid3 = Pyramid( #big one right
-    base_center=[3, -4, -30],  # Positioned higher to ensure visibility and reflection
-    base_size=3,              # Base size of the pyramid
-    height=6,                 # Height of the pyramid
+pyramid3 = Pyramid( #RIGHT TO THE RED MIRROR PYRAMID
+    base_center=[3, -4, -30],  
+    base_size=3,              
+    height=6,                 
     material=mirror,
     pitch=0,
     yaw=45,
@@ -102,10 +97,10 @@ pyramid3 = Pyramid( #big one right
 )
 rt.scene.append(pyramid3)
 
-pyramid4 = Pyramid( #MIDDLE ON LINE
-    base_center=[-7, -4, -25],  # Positioned higher to ensure visibility and reflection
-    base_size=3.5,              # Base size of the pyramid
-    height=4,                 # Height of the pyramid
+pyramid4 = Pyramid( #MIDDLE ON ROW
+    base_center=[-7, -4, -25],
+    base_size=3.5,              
+    height=4,                 
     material=metallicMaterial,
     pitch=0,
     yaw=45,
@@ -115,10 +110,10 @@ rt.scene.append(pyramid4)
 
 
 
-pyramid5 = Pyramid( #small one on line
-    base_center=[-6.5, -4, -17],  # Positioned higher to ensure visibility and reflection
-    base_size=2,              # Base size of the pyramid
-    height=1.5,                 # Height of the pyramid
+pyramid5 = Pyramid( #SMALLEST ON LINE LEFT
+    base_center=[-6.5, -4, -17],  
+    base_size=2,              
+    height=1.5,                
     material=grass,
     pitch=0,
     yaw=45,
@@ -126,10 +121,10 @@ pyramid5 = Pyramid( #small one on line
 )
 rt.scene.append(pyramid5)
 
-pyramid6 = Pyramid( #RIGHT ONE
-    base_center=[6, -4, -15],  # Positioned higher to ensure visibility and reflection
-    base_size=3,              # Base size of the pyramid
-    height=3,                 # Height of the pyramid
+pyramid6 = Pyramid( #RIGHT ONE BIG UNIQUE ISOLATED
+    base_center=[6, -4, -15],  
+    base_size=3,              
+    height=3,                 
     material=metallicMaterial,
     pitch=0,
     yaw=45,
@@ -137,151 +132,158 @@ pyramid6 = Pyramid( #RIGHT ONE
 )
 rt.scene.append(pyramid6)
 
-# CYLINDERS
-
-cylinder1 = Cylinder( #left one
-    position=[-14, -4+(12/2), -45],   # Position of the first cylinder
-    radius=3,              # Radius of the cylinder
-    height=12,                # Height of the cylinder
-    material=metallicMaterial # Use the metallic material
+"""
+CYLINDERS
+"""
+cylinder1 = Cylinder( #LEFT CYLINDER
+    position=[-14, -4+(12/2), -45],   
+    radius=3,              
+    height=12,               
+    material=metallicMaterial 
 )
 rt.scene.append(cylinder1)
 
 
-# right one
-cylinder2 = Cylinder(
-    position=[21, -4+(16/2), -45],    # Position of the second cylinder (to the right)
-    radius=2,              # Radius of the cylinder
-    height=16,                # Height of the cylinder
-    material=metallicMaterial # Use the metallic material
+cylinder2 = Cylinder( #RIGHT CYLINDER
+    position=[21, -4+(16/2), -45],    
+    radius=2,              
+    height=16,                
+    material=metallicMaterial 
 )
 rt.scene.append(cylinder2)
 
-#TORUS left one
-torus = Torus(
+"""
+TOROIDS
+"""
+torus = Torus( #ISOLATED TORUS
     position=[-3, 3, -8],           # Center of the torus
     major_radius=1,               # Major radius (distance from center to tube center)
     minor_radius=0.3,              # Minor radius (radius of the tube)
     material=bluemirror,
-    pitch=0,                      # Rotate 30 degrees around the X-axis    
-    yaw=-20,                        # Rotate 45 degrees around the Y-axis
-    roll=10                        # Rotate 60 degrees around the Z-axis
+    pitch=0,                          
+    yaw=-20,                        
+    roll=10                        
 )
 rt.scene.append(torus)
 
-torus2 = Torus( # first on stack
+torus2 = Torus( # (FIRST) FIRST BLUE MIRROR 
     position=[0.5, 5, -50],           # Center of the torus
     major_radius=7,               # Major radius (distance from center to tube center)
     minor_radius=1,              # Minor radius (radius of the tube)
     material=bluemirror,
-    pitch=75,                      # Rotate 30 degrees around the X-axis    
-    yaw=-0,                        # Rotate 45 degrees around the Y-axis
-    roll=0                        # Rotate 60 degrees around the Z-axis
+    pitch=75,                      # Rotate around the X-axis    
+    yaw=-0,                        # Rotate around the Y-axis
+    roll=0                        # Rotate around the Z-axis
 )
 rt.scene.append(torus2)
 
-torus3 = Torus(
-    position=[0.5, 10, -50],           # Center of the torus
-    major_radius=6,               # Major radius (distance from center to tube center)
-    minor_radius=1,              # Minor radius (radius of the tube)
+torus3 = Torus( # (SECOND) WHITE
+    position=[0.5, 10, -50],                          
+    minor_radius=1,              
     material=white_floor_material,
-    pitch=75,                      # Rotate 30 degrees around the X-axis    
-    yaw=-0,                        # Rotate 45 degrees around the Y-axis
-    roll=0                        # Rotate 60 degrees around the Z-axis
+    pitch=75,                          
+    yaw=-0,                       
+    roll=0                        
 )
 rt.scene.append(torus3)
 
-torus4 = Torus(
-    position=[0.6, 14, -50],           # Center of the torus
-    major_radius=5,               # Major radius (distance from center to tube center)
-    minor_radius=1,              # Minor radius (radius of the tube)
+torus4 = Torus( # (THIRD) ORANGE
+    position=[0.6, 14, -50],          
+    major_radius=5,               
+    minor_radius=1,              
     material=orange_material,
-    pitch=75,                      # Rotate 30 degrees around the X-axis    
-    yaw=-0,                        # Rotate 45 degrees around the Y-axis
-    roll=-7                        # Rotate 60 degrees around the Z-axis
+    pitch=75,                         
+    yaw=-0,                        
+    roll=-7                        
 )
 rt.scene.append(torus4) 
 
-torus5 = Torus(
-    position=[0.7, 18, -50],           # Center of the torus
-    major_radius=4,               # Major radius (distance from center to tube center)
-    minor_radius=1,              # Minor radius (radius of the tube)
+torus5 = Torus( # (FOURTH) BLUE MIRROR
+    position=[0.7, 18, -50],          
+    major_radius=4,               
+    minor_radius=1,              
     material=bluemirror,
-    pitch=75,                      # Rotate 30 degrees around the X-axis    
-    yaw=-0,                        # Rotate 45 degrees around the Y-axis
-    roll=-15                      # Rotate 60 degrees around the Z-axis
+    pitch=75,                      
+    yaw=-0,                    
+    roll=-15                     
 )
 rt.scene.append(torus5) 
 
-torus6 = Torus(
-    position=[0.8, 22, -50],           # Center of the torus
-    major_radius=3,               # Major radius (distance from center to tube center)
-    minor_radius=0.8,              # Minor radius (radius of the tube)
+torus6 = Torus( # (FIFTH) WHITE
+    position=[0.8, 22, -50],     
+    major_radius=3,               
+    minor_radius=0.8,              
     material=white_floor_material,
-    pitch=75,                      # Rotate 30 degrees around the X-axis    
-    yaw=-0,                        # Rotate 45 degrees around the Y-axis
-    roll=-15                      # Rotate 60 degrees around the Z-axis
+    pitch=75,                          
+    yaw=-0,                       
+    roll=-15                     
 )
 rt.scene.append(torus6) 
 
-torus7 = Torus(
-    position=[1.3, 26, -50],           # Center of the torus
-    major_radius=1,               # Major radius (distance from center to tube center)
-    minor_radius=0.4,              # Minor radius (radius of the tube)
+torus7 = Torus( # (LAST SMALLEST) ONE
+    position=[1.3, 26, -50],         
+    major_radius=1,               
+    minor_radius=0.4,             
     material=orange_material,
-    pitch=75,                      # Rotate 30 degrees around the X-axis    
-    yaw=-0,                        # Rotate 45 degrees around the Y-axis
-    roll=-15                      # Rotate 60 degrees around the Z-axis
+    pitch=75,                         
+    yaw=-0,                       
+    roll=-15                     
 )
 rt.scene.append(torus7) 
 
-#PLANE
+"""
+PLANE
+"""
 floor = Plane(position=[0, -4, 0], normal=[0, 1, 0], material=bluemirror)
 rt.scene.append(floor)
 
-#BOXES
+"""
+BOXES
+"""
 box = Box( #GREE ONE TALLEST
     position=[0.5, -4+(18/2), -50],     # Position of the box (base center at y = -1)
     sizes=[4, 18, 5],          # Width, height, depth
-    material=grass, # Use the metallic material
-    pitch=0,                 # Rotate around the X-axis
-    yaw=45,                   # Rotate around the Y-axis
-    roll=0                    # No rotation around the Z-axis
+    material=grass, 
+    pitch=0,                 
+    yaw=45,                   
+    roll=0                    
 )
 rt.scene.append(box)
 
-box2 = Box(#LEFT ONE
-    position=[-13, -4+(3/2), -28],     # Position of the box (base center at y = -1)
-    sizes=[3, 3, 3],          # Width, height, depth
-    material=orange_material, # Use the metallic material
-    pitch=0,# Rotate around the X-axis
-    yaw=60,                   # Rotate around the Y-axis
-    roll=0                    # No rotation around the Z-axis
+box2 = Box(#LEEFT ONE ORANGE
+    position=[-13, -4+(3/2), -28],    
+    sizes=[3, 3, 3],          
+    material=orange_material, 
+    pitch=0,
+    yaw=60,                   
+    roll=0                    
 )
 rt.scene.append(box2)
 
-box3 = Box(#SMALL ONE RIGHT
-    position=[2.3, -4+(1.3/2), -12],     # Position of the box (base center at y = -1)
-    sizes=[1.3, 1.3, 1.3],          # Width, height, depth
-    material=orange_material, # Use the metallic material
-    pitch=0,# Rotate around the X-axis
-    yaw=30,                   # Rotate around the Y-axis
-    roll=0                    # No rotation around the Z-axis
+box3 = Box(#SMALL ONE RIGHT - ORANGE
+    position=[2.3, -4+(1.3/2), -12],     
+    sizes=[1.3, 1.3, 1.3],          
+    material=orange_material, 
+    pitch=0,
+    yaw=30,          
+    roll=0            
 )
 rt.scene.append(box3)
 
-box4 = Box(
-    position=[-4.5, -4+(1/2), -10],     # Position of the box (base center at y = -1)
-    sizes=[1, 1, 1],          # Width, height, depth
-    material=redMirror, # Use the metallic material
-    pitch=0,# Rotate around the X-axis
-    yaw=60,                   # Rotate around the Y-axis
-    roll=0                    # No rotation around the Z-axis
+box4 = Box( #RED MIRROR RIGHT BOTTOM LEFT
+    position=[-4.5, -4+(1/2), -10],     
+    sizes=[1, 1, 1],          
+    material=redMirror, 
+    pitch=0,
+    yaw=60,   
+    roll=0     
 )
 rt.scene.append(box4)
 
-# SPHERES
-sphere1 = Sphere(# big one cheese biggest one
+"""
+SPHERES
+"""
+sphere1 = Sphere(# big one cheese biggest one MIDDLE
     position = [0, -4+0.8 , -9], 
     radius = 0.8, 
     material = cheese
@@ -295,7 +297,7 @@ sphere2 = Sphere( #small bottom pizza
     )
 rt.scene.append(sphere2)
 
-sphere3 = Sphere(
+sphere3 = Sphere( #middle white between pizza and cheese
     position = [-2.4, -4+1 , -11], 
     radius = 1, 
     material = white_floor_material
