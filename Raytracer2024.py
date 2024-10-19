@@ -18,30 +18,37 @@ rt.glClearColor(0.5, 0.0, 0.0 )
 rt.glClear()
 
 #materials
+"""
+COLORS
+"""
 brick = Material(difuse=[1, 0.2, 0.2], spec=128, Ks=0.25)
 grass = Material(difuse=[0.2, 1.0, 0.2], spec=64, Ks=0.2)
-orange_material = Material(
-    difuse=[1.0, 0.5, 0.0],  # Orange color
-    spec=128,                # Specular exponent (same as brick)
-    Ks=0.25,
-    matType=OPAQUE# Specular coefficient (same as brick)
-)
+white_floor_material = Material(difuse=[1.0, 1.0, 1.0], spec=1.5, Ks=0.1, )  # Blanco más brillante
+
+"""
+REFLECTIVE
+"""
+redMirror = Material(texture=Texture("textures/mirror.bmp"), difuse=[1, 0, 0], spec = 128, Ks = 0.2, matType = REFLECTIVE)
 mirror = Material(difuse=[0.9, 0.9, 0.9], spec = 128, Ks = 0.2, matType = REFLECTIVE)
 bluemirror = Material(difuse=[0.5, 0.5, 1], spec = 128, Ks = 0.2, matType = REFLECTIVE)
-glass = Material(ior = 1.5, spec = 128, Ks = 0.2, matType=TRANSPARENT)
+metallicMaterial = Material(difuse=[0.8, 0.8, 0.8], spec=256, Ks=0.5, matType=REFLECTIVE)
+
+"""
+OPAQUE
+"""
 cheese = Material(texture=Texture('textures/cheese.bmp'), spec=128, Ks=0.2, matType=OPAQUE) 
 pizza = Material(texture=Texture('textures/pizza.bmp'), spec=128, Ks=0.2, matType=OPAQUE) 
-redMirror = Material(texture=Texture("textures/mirror.bmp"), difuse=[1, 0, 0], spec = 128, Ks = 0.2, matType = REFLECTIVE)
+orange_material = Material(difuse=[1.0, 0.5, 0.0], spec=128, Ks=0.25, matType=OPAQUE)
+
+"""
+TRANSPARENT
+"""
+glass = Material(ior = 1.5, spec = 128, Ks = 0.2, matType=TRANSPARENT)
 # earth = Material(texture=Texture('textures/earth.bmp'))
 # marble = Material(texture=Texture('textures/whiteMarble.bmp'), spec=128, Ks = 0.2, matType=REFLECTIVE)
 # woodenBox = Material( texture=Texture("textures/woodenBox.bmp"))
-white_floor_material = Material(difuse=[1.0, 1.0, 1.0], spec=1.5, Ks=0.1, )  # Blanco más brillante
-metallicMaterial = Material(
-difuse=[0.8, 0.8, 0.8],  
-    spec=256,                 
-    Ks=0.5,                   
-    matType=REFLECTIVE       
-)
+
+
 
 #lights
 # Add an Ambient Light
