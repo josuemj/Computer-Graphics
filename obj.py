@@ -1,4 +1,3 @@
-
 class Obj(object):
 	def __init__(self, filename):
 		# Asumiendo que el archivo es un formato .obj
