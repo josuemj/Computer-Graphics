@@ -38,7 +38,9 @@ class DirectionalLight(Light):
             dir_inv = scalar_multiply(self.direction, -1)
             reflect = reflectVector(intercept.normal, dir_inv)
             viewDir = normalize(substraction(viewPos, intercept.point))
-            specularity = max(0, dotP(viewDir, reflect) ** intercept.obj.material.spec)
+            # Clamp the dot product before raising to the power
+            spec_angle = max(0, dotP(viewDir, reflect))
+            specularity = spec_angle ** intercept.obj.material.spec
             specularity *= intercept.obj.material.Ks * self.intensity
             specColor = [i * specularity for i in specColor]
         return specColor
@@ -71,13 +73,14 @@ class PointLight(Light):
             dir_vec = normalize(dir_vec)
             reflect = reflectVector(intercept.normal, dir_vec)
             viewDir = normalize(substraction(viewPos, intercept.point))
-            specularity = max(0, dotP(viewDir, reflect) ** intercept.obj.material.spec)
+            # Clamp the dot product before raising to the power
+            spec_angle = max(0, dotP(viewDir, reflect))
+            specularity = spec_angle ** intercept.obj.material.spec
             specularity *= intercept.obj.material.Ks * self.intensity
             if R != 0:
                 specularity /= R ** 2
             specColor = [i * specularity for i in specColor]
         return specColor
-    
 class SpotLight(PointLight):
     def __init__(self, color=[1, 1, 1], intensity=1, position=[0, 0, 0], direction=[0, -1, 0], innerAngle=50, outerAngle=60):
         super().__init__(color, intensity, position)

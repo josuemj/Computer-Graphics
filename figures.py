@@ -1,4 +1,3 @@
-import numpy as np
 from intercept import Intercept
 from math import pi, atan2, acos, sin, sqrt
 from MathLib import *
@@ -304,7 +303,8 @@ class Pyramid(Shape):
                 min_distance = intercept.distance
 
         return closest_intercept
-from numpy import linalg as LA
+
+from math import pi, sin, cos, sqrt, atan2, acos
 
 class Torus(Shape):
     def __init__(self, position, major_radius, minor_radius, material, pitch=0, yaw=0, roll=0):
@@ -317,113 +317,98 @@ class Torus(Shape):
         self.roll = roll
 
         # Precompute the rotation matrix
-        self.rotation_matrix = self.compute_rotation_matrix()
+        self.rotation_matrix = RotationMatrix3x3(self.pitch, self.yaw, self.roll)
 
         # Compute the inverse rotation matrix
-        self.inverse_rotation_matrix = LA.inv(self.rotation_matrix)
-
-    def compute_rotation_matrix(self):
-        """Computes the combined rotation matrix from pitch, yaw, and roll."""
-        # Convert degrees to radians
-        pitch_rad = self.pitch * (pi / 180)
-        yaw_rad = self.yaw * (pi / 180)
-        roll_rad = self.roll * (pi / 180)
-
-        # Rotation matrices
-        Rx = np.array([
-            [1, 0, 0],
-            [0, cos(pitch_rad), -sin(pitch_rad)],
-            [0, sin(pitch_rad), cos(pitch_rad)]
-        ])
-        Ry = np.array([
-            [cos(yaw_rad), 0, sin(yaw_rad)],
-            [0, 1, 0],
-            [-sin(yaw_rad), 0, cos(yaw_rad)]
-        ])
-        Rz = np.array([
-            [cos(roll_rad), -sin(roll_rad), 0],
-            [sin(roll_rad), cos(roll_rad), 0],
-            [0, 0, 1]
-        ])
-
-        # Combined rotation matrix: R = Rz * Ry * Rx
-        R = Rz @ Ry @ Rx
-        return R
+        self.inverse_rotation_matrix = inversed_matrix(self.rotation_matrix)
 
     def ray_intersect(self, orig, dir):
         """
-        Computes the intersection of a ray with the torus.
-        The torus is defined in object space, so we need to transform
-        the ray into the torus's local coordinate system.
+        Computes the intersection of a ray with the torus using ray marching.
         """
         # Transform the ray into the torus's local space
-        orig_local = np.dot(self.inverse_rotation_matrix, np.subtract(orig, self.position))
-        dir_local = np.dot(self.inverse_rotation_matrix, dir)
+        orig_local = matrix_vector_multiply(self.inverse_rotation_matrix, substraction(orig, self.position))
+        dir_local = matrix_vector_multiply(self.inverse_rotation_matrix, dir)
+        dir_local = normalize(dir_local)
 
-        # Ray-Torus intersection equation coefficients
-        # Based on the standard torus equation:
-        # (x^2 + y^2 + z^2 + R^2 - r^2)^2 - 4*R^2*(x^2 + y^2) = 0
+        max_distance = 1000  # Maximum distance to march
+        distance_traveled = 0
+        max_steps = 100  # Maximum number of steps
+        epsilon = 1e-4  # Desired accuracy
 
-        G = np.dot(dir_local, dir_local)
-        H = 2 * np.dot(orig_local, dir_local)
-        I = np.dot(orig_local, orig_local) + self.major_radius**2 - self.minor_radius**2
+        point = orig_local.copy()
 
-        J = orig_local[0]**2 + orig_local[1]**2
-        K = dir_local[0]**2 + dir_local[1]**2
-        L = 2 * (orig_local[0]*dir_local[0] + orig_local[1]*dir_local[1])
+        for _ in range(max_steps):
+            # Evaluate the SDF at the current point
+            distance = self.torus_sdf(point)
+            if distance < epsilon:
+                # Intersection found
+                P_local = point
 
-        # Quartic equation coefficients: a*t^4 + b*t^3 + c*t^2 + d*t + e = 0
-        a = G**2
-        b = 2*G*H
-        c = H**2 + 2*G*I - 4*self.major_radius**2*K
-        d = 2*H*I - 4*self.major_radius**2*L
-        e = I**2 - 4*self.major_radius**2*J
+                # Compute normal
+                normal_local = self.torus_normal(P_local)
 
-        # Solve the quartic equation
-        coeffs = [a, b, c, d, e]
-        roots = np.roots(coeffs)
+                # Transform back to world space
+                P_world = add(matrix_vector_multiply(self.rotation_matrix, P_local), self.position)
+                normal_world = matrix_vector_multiply(self.rotation_matrix, normal_local)
+                normal_world = normalize(normal_world)
 
-        # Filter real roots and positive t values
-        real_roots = [root.real for root in roots if np.isreal(root) and root.real > 0]
-        if not real_roots:
-            return None
+                # Compute texture coordinates (optional)
+                circle_center = [P_local[0], P_local[1], 0]
+                center_norm = norm(circle_center)
+                if center_norm == 0:
+                    u = 0
+                else:
+                    u = (atan2(circle_center[1], circle_center[0]) + pi) / (2 * pi)
+                circle_vector = substraction(P_local, circle_center)
+                v = (atan2(circle_vector[2], norm(circle_vector[:2])) + pi) / (2 * pi)
 
-        t = min(real_roots)
+                return Intercept(
+                    point=P_world,
+                    normal=normal_world,
+                    distance=distance_traveled,
+                    texCoords=[u % 1.0, v % 1.0],
+                    rayDirection=dir,
+                    obj=self
+                )
 
-        # Compute the intersection point in local space
-        P_local = orig_local + t * dir_local
+            distance_traveled += distance
+            if distance_traveled >= max_distance:
+                break
 
-        # Compute the normal at the intersection point in local space
-        param = self.major_radius
-        x, y, z = P_local
-        sum_squared = x**2 + y**2 + z**2
-        nx = 4 * x * (sum_squared - (param**2 + self.minor_radius**2))
-        ny = 4 * y * (sum_squared - (param**2 + self.minor_radius**2))
-        nz = 4 * z * (sum_squared - (param**2 + self.minor_radius**2) + 2 * param**2)
+            # Move along the ray
+            point = add(orig_local, scalar_multiply(dir_local, distance_traveled))
 
-        normal_local = np.array([nx, ny, nz])
-        normal_local = normal_local / LA.norm(normal_local)
+        # No intersection
+        return None
 
-        # Transform the intersection point and normal back to world space
-        P_world = np.dot(self.rotation_matrix, P_local) + self.position
-        normal_world = np.dot(self.rotation_matrix, normal_local)
-        normal_world = normal_world / LA.norm(normal_world)
+    def torus_sdf(self, p):
+        """
+        Signed Distance Function for a torus centered at the origin.
+        """
+        q = [sqrt(p[0] ** 2 + p[2] ** 2) - self.major_radius, p[1]]
+        return sqrt(q[0] ** 2 + q[1] ** 2) - self.minor_radius
 
-        # Compute texture coordinates (u, v)
-        phi = np.arctan2(P_local[2], P_local[0])
-        theta = np.arcsin(P_local[1] / self.minor_radius)
-        u = (phi + pi) / (2 * pi)
-        v = (theta + pi/2) / pi
+    def torus_normal(self, p):
+        """
+        Computes the normal at point p on the torus surface using numerical gradient approximation.
+        """
+        epsilon = 1e-5
+        dx = [epsilon, 0, 0]
+        dy = [0, epsilon, 0]
+        dz = [0, 0, epsilon]
 
-        return Intercept(
-            point=P_world,
-            normal=normal_world,
-            distance=t,
-            texCoords=[u % 1.0, v % 1.0],
-            rayDirection=dir,
-            obj=self
-        )
+        sdf_p = self.torus_sdf(p)
 
+        # Approximate gradient
+        gradient = [
+            (self.torus_sdf(add(p, dx)) - sdf_p) / epsilon,
+            (self.torus_sdf(add(p, dy)) - sdf_p) / epsilon,
+            (self.torus_sdf(add(p, dz)) - sdf_p) / epsilon
+        ]
+        normal = normalize(gradient)
+        return normal
+    
 class Box(Shape):
     def __init__(self, position, sizes, material, pitch=0, yaw=0, roll=0):
         super().__init__(position, material)

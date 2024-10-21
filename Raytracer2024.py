@@ -6,8 +6,8 @@ from material import *
 from lights import *
 from texture import Texture
 
-width = 256
-height = 256
+width = 1080
+height = 1080
 
 screen = pygame.display.set_mode((width, height), pygame.SCALED )
 clock = pygame.time.Clock()
@@ -113,62 +113,62 @@ pyramid = Pyramid( #BLUE MIRROR BIG ONE tallest on row
 )
 rt.scene.append(pyramid)
 
-# pyramid2 = Pyramid( #MIDDLE RED ONE on row
-#     base_center=[-1, -4, -20], 
-#     base_size=4,              
-#     height=4,                 
-#     material=redMirror,
-#     pitch=0,
-#     yaw=45,
-#     roll=0
-# )
-# rt.scene.append(pyramid2)
+pyramid2 = Pyramid( #MIDDLE RED ONE on row
+    base_center=[-1, -4, -20], 
+    base_size=4,              
+    height=4,                 
+    material=redMirror,
+    pitch=0,
+    yaw=45,
+    roll=0
+)
+rt.scene.append(pyramid2)
 
-# pyramid3 = Pyramid( #RIGHT TO THE RED MIRROR PYRAMID
-#     base_center=[3, -4, -30],  
-#     base_size=3,              
-#     height=6,                 
-#     material=mirror,
-#     pitch=0,
-#     yaw=45,
-#     roll=0
-# )
-# rt.scene.append(pyramid3)
+pyramid3 = Pyramid( #RIGHT TO THE RED MIRROR PYRAMID
+    base_center=[3, -4, -30],  
+    base_size=3,              
+    height=6,                 
+    material=mirror,
+    pitch=0,
+    yaw=45,
+    roll=0
+)
+rt.scene.append(pyramid3)
 
-# pyramid4 = Pyramid( #MIDDLE ON ROW
-#     base_center=[-7, -4, -25],
-#     base_size=3.5,              
-#     height=4,                 
-#     material=metallicMaterial,
-#     pitch=0,
-#     yaw=45,
-#     roll=0
-# )
-# rt.scene.append(pyramid4)
+pyramid4 = Pyramid( #MIDDLE ON ROW
+    base_center=[-7, -4, -25],
+    base_size=3.5,              
+    height=4,                 
+    material=metallicMaterial,
+    pitch=0,
+    yaw=45,
+    roll=0
+)
+rt.scene.append(pyramid4)
 
 
 
-# pyramid5 = Pyramid( #SMALLEST ON LINE LEFT
-#     base_center=[-6.5, -4, -17],  
-#     base_size=2,              
-#     height=1.5,                
-#     material=grass,
-#     pitch=0,
-#     yaw=45,
-#     roll=0
-# )
-# rt.scene.append(pyramid5)
+pyramid5 = Pyramid( #SMALLEST ON LINE LEFT
+    base_center=[-6.5, -4, -17],  
+    base_size=2,              
+    height=1.5,                
+    material=grass,
+    pitch=0,
+    yaw=45,
+    roll=0
+)
+rt.scene.append(pyramid5)
 
-# pyramid6 = Pyramid( #RIGHT ONE BIG UNIQUE ISOLATED
-#     base_center=[6, -4, -15],  
-#     base_size=3,              
-#     height=3,                 
-#     material=metallicMaterial,
-#     pitch=0,
-#     yaw=45,
-#     roll=0
-# )
-# rt.scene.append(pyramid6)
+pyramid6 = Pyramid( #RIGHT ONE BIG UNIQUE ISOLATED
+    base_center=[6, -4, -15],  
+    base_size=3,              
+    height=3,                 
+    material=metallicMaterial,
+    pitch=0,
+    yaw=45,
+    roll=0
+)
+rt.scene.append(pyramid6)
 
 """
 CYLINDERS
@@ -181,14 +181,13 @@ cylinder1 = Cylinder( #LEFT CYLINDER
 )
 rt.scene.append(cylinder1)
 
-
-# cylinder2 = Cylinder( #RIGHT CYLINDER
-#     position=[21, -4+(16/2), -45],    
-#     radius=2,              
-#     height=16,                
-#     material=metallicMaterial 
-# )
-# rt.scene.append(cylinder2)
+cylinder2 = Cylinder( #RIGHT CYLINDER
+    position=[21, -4+(16/2), -45],    
+    radius=2,              
+    height=16,                
+    material=metallicMaterial 
+)
+rt.scene.append(cylinder2)
 
 # """
 # TOROIDS
@@ -198,99 +197,99 @@ torus = Torus( #ISOLATED TORUS
     major_radius=1,               # Major radius (distance from center to tube center)
     minor_radius=0.3,              # Minor radius (radius of the tube)
     material=bluemirror,
-    pitch=0,                          
+    pitch=90,                          
     yaw=-20,                        
     roll=10                        
 )
 rt.scene.append(torus)
 
-# torus2 = Torus( # (FIRST) FIRST BLUE MIRROR 
-#     position=[0.5, 5, -50],           # Center of the torus
-#     major_radius=7,               # Major radius (distance from center to tube center)
-#     minor_radius=1,              # Minor radius (radius of the tube)
-#     material=bluemirror,
-#     pitch=75,                      # Rotate around the X-axis    
-#     yaw=-0,                        # Rotate around the Y-axis
-#     roll=0                        # Rotate around the Z-axis
-# )
-# rt.scene.append(torus2)
+torus2 = Torus( # (FIRST) FIRST BLUE MIRROR 
+    position=[0.5, 5, -50],           # Center of the torus
+    major_radius=7,               # Major radius (distance from center to tube center)
+    minor_radius=1,              # Minor radius (radius of the tube)
+    material=bluemirror,
+    pitch=75+90,                      # Rotate around the X-axis    
+    yaw=-0,                        # Rotate around the Y-axis
+    roll=0                        # Rotate around the Z-axis
+)
+rt.scene.append(torus2)
 
-# torus3 = Torus( # (SECOND) WHITE
-#     position=[0.5, 10, -50],             
-#     major_radius=6,
-#     minor_radius=1,              
-#     material=skyBlueMirror,
-#     pitch=75,                          
-#     yaw=-0,                       
-#     roll=0                        
-# )
-# rt.scene.append(torus3)
+torus3 = Torus( # (SECOND) WHITE
+    position=[0.5, 10, -50],             
+    major_radius=6,
+    minor_radius=1,              
+    material=skyBlueMirror,
+    pitch=75+90,                          
+    yaw=-0,                       
+    roll=0                        
+)
+rt.scene.append(torus3)
 
-# torus4 = Torus( # (THIRD) ORANGE
-#     position=[0.6, 14, -50],          
-#     major_radius=5,               
-#     minor_radius=1,              
-#     material=purpleMirror,
-#     pitch=75,                         
-#     yaw=-0,                        
-#     roll=-7                        
-# )
-# rt.scene.append(torus4) 
+torus4 = Torus( # (THIRD) ORANGE
+    position=[0.6, 14, -50],          
+    major_radius=5,               
+    minor_radius=1,              
+    material=purpleMirror,
+    pitch=75+90,                         
+    yaw=-0,                        
+    roll=-7                        
+)
+rt.scene.append(torus4) 
 
-# torus5 = Torus( # (FOURTH) BLUE MIRROR
-#     position=[0.7, 18, -50],          
-#     major_radius=4,               
-#     minor_radius=1,              
-#     material=pinkMirror,
-#     pitch=75,                      
-#     yaw=-0,                    
-#     roll=-15                     
-# )
-# rt.scene.append(torus5) 
+torus5 = Torus( # (FOURTH) BLUE MIRROR
+    position=[0.7, 18, -50],          
+    major_radius=4,               
+    minor_radius=1,              
+    material=pinkMirror,
+    pitch=75+90,                      
+    yaw=-0,                    
+    roll=-15                     
+)
+rt.scene.append(torus5) 
 
-# torus6 = Torus( # (FIFTH) WHITE
-#     position=[0.8, 22, -50],     
-#     major_radius=3,               
-#     minor_radius=0.8,              
-#     material=redMirror_,
-#     pitch=75,                          
-#     yaw=-0,                       
-#     roll=-15                     
-# )
-# rt.scene.append(torus6) 
+torus6 = Torus( # (FIFTH) WHITE
+    position=[0.8, 22, -50],     
+    major_radius=3,               
+    minor_radius=0.8,              
+    material=redMirror_,
+    pitch=75+90,                          
+    yaw=-0,                       
+    roll=-15                     
+)
+rt.scene.append(torus6) 
 
-# torus7 = Torus( # (LAST SMALLEST) ONE
-#     position=[2, 26, -50],         
-#     major_radius=1,               
-#     minor_radius=0.4,             
-#     material=redMirror_,
-#     pitch=75,                         
-#     yaw=-0,                       
-#     roll=-15                     
-# )
-# rt.scene.append(torus7) 
+torus7 = Torus( # (LAST SMALLEST) ONE
+    position=[2, 26, -50],         
+    major_radius=1,               
+    minor_radius=0.4,             
+    material=redMirror_,
+    pitch=75+90,                         
+    yaw=-0,                       
+    roll=-15                     
+)
+rt.scene.append(torus7) 
 
-# torus8 = Torus( # RING OF PLANET BIG
-#     position=[19, 22, -60],         
-#     major_radius=11,               
-#     minor_radius=0.5,             
-#     material=saturnRingMaterial,
-#     pitch=-60,                         
-#     yaw=-60,                       
-#     roll=35               
-# )
-# rt.scene.append(torus8) 
+torus8 = Torus( # RING OF PLANET BIG
+    position=[19, 22, -60],         
+    major_radius=11,               
+    minor_radius=0.5,             
+    material=saturnRingMaterial,
+    pitch=-60+90,                         
+    yaw=-60,                       
+    roll=35               
+)
+rt.scene.append(torus8) 
 
-# torus9 = Torus( # RING OF PLANET SMALL
-#     position=[19, 22, -60],         
-#     major_radius=8,               
-#     minor_radius=0.5,             
-#     material=saturnRingMaterial,
-#     pitch=-60,                         
-#     yaw=-60,                       
-#     roll=35               
-# )
-# rt.scene.append(torus9) 
+torus9 = Torus( # RING OF PLANET SMALL
+    position=[19, 22, -60],         
+    major_radius=8,               
+    minor_radius=0.5,             
+    material=saturnRingMaterial,
+    pitch=-60+90,                         
+    yaw=-60,                       
+    roll=35               
+)
+rt.scene.append(torus9) 
 
 """
 PLANE
@@ -311,35 +310,35 @@ box = Box( #GREE ONE TALLEST
 )
 rt.scene.append(box)
 
-# box2 = Box(#LEEFT ONE ORANGE
-#     position=[-13, -4+(3/2), -28],    
-#     sizes=[3, 3, 3],          
-#     material=orange_material, 
-#     pitch=0,
-#     yaw=60,                   
-#     roll=0                    
-# )
-# rt.scene.append(box2)
+box2 = Box(#LEEFT ONE ORANGE
+    position=[-13, -4+(3/2), -28],    
+    sizes=[3, 3, 3],          
+    material=orange_material, 
+    pitch=0,
+    yaw=60,                   
+    roll=0                    
+)
+rt.scene.append(box2)
 
-# box3 = Box(#SMALL ONE RIGHT - ORANGE
-#     position=[2.3, -4+(1.3/2), -12],     
-#     sizes=[1.3, 1.3, 1.3],          
-#     material=orange_material, 
-#     pitch=0,
-#     yaw=30,          
-#     roll=0            
-# )
-# rt.scene.append(box3)
+box3 = Box(#SMALL ONE RIGHT - ORANGE
+    position=[2.3, -4+(1.3/2), -12],     
+    sizes=[1.3, 1.3, 1.3],          
+    material=orange_material, 
+    pitch=0,
+    yaw=30,          
+    roll=0            
+)
+rt.scene.append(box3)
 
-# box4 = Box( #RED MIRROR RIGHT BOTTOM LEFT
-#     position=[-4.5, -4+(1/2), -10],     
-#     sizes=[1, 1, 1],          
-#     material=redMirror, 
-#     pitch=0,
-#     yaw=60,   
-#     roll=0     
-# )
-# rt.scene.append(box4)
+box4 = Box( #RED MIRROR RIGHT BOTTOM LEFT
+    position=[-4.5, -4+(1/2), -10],     
+    sizes=[1, 1, 1],          
+    material=redMirror, 
+    pitch=0,
+    yaw=60,   
+    roll=0     
+)
+rt.scene.append(box4)
 
 """
 SPHERES
@@ -351,40 +350,40 @@ sphere1 = Sphere(# big one cheese biggest one MIDDLE
     )
 rt.scene.append(sphere1)
 
-# sphere2 = Sphere( #small bottom pizza
-#     position = [-2.6, -4+0.4 , -8], 
-#     radius = 0.4, 
-#     material = pizza
-#     )
-# rt.scene.append(sphere2)
+sphere2 = Sphere( #small bottom pizza
+    position = [-2.6, -4+0.4 , -8], 
+    radius = 0.4, 
+    material = pizza
+    )
+rt.scene.append(sphere2)
 
-# sphere3 = Sphere( #middle white between pizza and cheese
-#     position = [-2.4, -4+1 , -11], 
-#     radius = 1, 
-#     material = white_floor_material
-#     )
-# rt.scene.append(sphere3)
+sphere3 = Sphere( #middle white between pizza and cheese
+    position = [-2.4, -4+1 , -11], 
+    radius = 1, 
+    material = white_floor_material
+    )
+rt.scene.append(sphere3)
 
-# sphere4 = Sphere( # biigest one right cylinder
-#     position = [11, -4+4 , -40], 
-#     radius = 4, 
-#     material = metalTexture
-#     )
-# rt.scene.append(sphere4)
+sphere4 = Sphere( # biigest one right cylinder
+    position = [11, -4+4 , -40], 
+    radius = 4, 
+    material = metalTexture
+    )
+rt.scene.append(sphere4)
     
-# sphere5 = Sphere( #SMALLEST LEFT
-#     position = [3.5, -4+0.4, -9], 
-#     radius = 0.4, 
-#     material = jupiter
-#     )
-# rt.scene.append(sphere5)
+sphere5 = Sphere( #SMALLEST LEFT
+    position = [3.5, -4+0.4, -9], 
+    radius = 0.4, 
+    material = jupiter
+    )
+rt.scene.append(sphere5)
 
-# sphere6 = Sphere( #PLANET saturn
-#     position = [19, 22, -60], 
-#     radius = 4, 
-#     material = saturn
-#     )
-# rt.scene.append(sphere6)
+sphere6 = Sphere( #PLANET saturn
+    position = [19, 22, -60], 
+    radius = 4, 
+    material = saturn
+    )
+rt.scene.append(sphere6)
 
 
 rt.glRender()

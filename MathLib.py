@@ -204,143 +204,173 @@ def matrix_vector_multiply(matrix, vector):
         result.append(sum(row[i] * vector[i] for i in range(len(vector))))
     return result
 
-def solve_quadratic(a, b, c):
+def solve_quartic(coeffs):
     """
-    Solves the quadratic equation a*t^2 + b*t + c = 0.
+    Solves a quartic equation of the form:
+    a*x^4 + b*x^3 + c*x^2 + d*x + e = 0
     Returns a list of real roots.
     """
+    a, b, c, d, e = coeffs
+
     if a == 0:
-        if b != 0:
-            return [-c / b]
-        else:
-            return []
-    else:
-        discriminant = b**2 - 4 * a * c
-        if discriminant > 0:
-            sqrt_discriminant = sqrt(discriminant)
-            t1 = (-b + sqrt_discriminant) / (2 * a)
-            t2 = (-b - sqrt_discriminant) / (2 * a)
-            return [t1, t2]
-        elif discriminant == 0:
-            t = -b / (2 * a)
-            return [t]
-        else:
-            return []
-    
-def sqrt(x):
-    """Computes the square root of x."""
-    if x >= 0:
-        return x ** 0.5
-    else:
-        return complex(0, (-x) ** 0.5)
+        # Degenerates to a cubic equation
+        return solve_cubic([b, c, d, e])
 
-def cube_root(x):
-    """Computes the cube root of x."""
-    if x >= 0:
-        return x ** (1/3)
-    else:
-        return -(-x) ** (1/3)
-
-def is_real(x):
-    """Checks if a number is real (not complex)."""
-    return isinstance(x, float) or (isinstance(x, complex) and x.imag == 0)
-
-
-def solve_quartic(a, b, c, d, e):
-    """
-    Solves the quartic equation a*t^4 + b*t^3 + c*t^2 + d*t + e = 0.
-    Returns a list of real roots.
-    """
     # Normalize coefficients
-    if a == 0:
-        # It's actually a cubic equation
-        return solve_cubic(b, c, d, e)
-    else:
-        b /= a
-        c /= a
-        d /= a
-        e /= a
+    a = float(a)
+    b /= a
+    c /= a
+    d /= a
+    e /= a
 
-    # Depressed quartic: t^4 + p t^2 + q t + r = 0
-    p = c - (3 * b**2) / 8
-    q = b**3 / 8 - b * c / 2 + d
-    r = -3 * b**4 / 256 + b**2 * c / 16 - b * d / 4 + e
+    # Depressed quartic: y^4 + p*y^2 + q*y + r = 0
+    p = c - (3 * b ** 2) / 8
+    q = b ** 3 / 8 - (b * c) / 2 + d
+    r = -3 * b ** 4 / 256 + (b ** 2 * c) / 16 - (b * d) / 4 + e
 
     # Solve the resolvent cubic
-    cubic_coeffs = [1, -p / 2, -r, (r * p - q**2 / 4)]
-    y_solutions = solve_cubic(*cubic_coeffs)
+    cubic_coeffs = [1, -p / 2, -r, (p * r - q ** 2 / 4)]
+    y_roots = solve_cubic(cubic_coeffs)
+    if not y_roots:
+        return []
 
-    # Select one real solution
-    y = None
-    for sol in y_solutions:
-        if sol.imag == 0:
-            y = sol.real
-            break
-
-    if y is None:
-        return []  # No real roots
-
-    # Compute parameters
-    W = sqrt(0.25 * b**2 - c + y)
-    if W == 0:
-        D = sqrt(3 * b**2 / 4 - 2 * c + 2 * sqrt(y**2 - 4 * e))
-        E = sqrt(3 * b**2 / 4 - 2 * c - 2 * sqrt(y**2 - 4 * e))
-    else:
-        D = sqrt(0.75 * b**2 - W**2 - 2 * c + (0.25 * (4 * b * c - 8 * d - b**3)) / W)
-        E = sqrt(0.75 * b**2 - W**2 - 2 * c - (0.25 * (4 * b * c - 8 * d - b**3)) / W)
-
-    # Possible roots
     roots = []
-    for sign_W in [1, -1]:
-        for sign_D in [1, -1]:
-            t = -b / 4 + sign_W * W / 2 + sign_D * D / 2
-            if is_real(t):
-                roots.append(t)
+    for y in y_roots:
+        # Compute W
+        W_square = 0.25 * b ** 2 - c + y
+        if W_square < 0:
+            continue  # Skip complex roots
+        W = sqrt(W_square)
 
-    return roots
+        # Compute D and E
+        denom = W if W != 0 else 1e-10  # Avoid division by zero
+        D_square = 2 * y - p - q / denom
+        E_square = 2 * y - p + q / denom
 
-def solve_cubic(a, b, c, d):
+        valid_D = D_square >= 0
+        valid_E = E_square >= 0
+
+        if not valid_D and not valid_E:
+            continue  # Both D and E lead to complex numbers; skip
+
+        D = sqrt(D_square) if valid_D else 0
+        E = sqrt(E_square) if valid_E else 0
+
+        for sign_W in [1, -1]:
+            W_val = sign_W * W
+            if valid_D:
+                for sign_D in [1, -1]:
+                    root = -b / 4 + (W_val + sign_D * D) / 2
+                    roots.append(root)
+            if valid_E:
+                for sign_E in [1, -1]:
+                    root = -b / 4 + (W_val + sign_E * E) / 2
+                    roots.append(root)
+
+    # Filter real roots
+    real_roots = []
+    for root in roots:
+        if isinstance(root, complex):
+            if abs(root.imag) < 1e-6:
+                real_roots.append(root.real)
+        else:
+            real_roots.append(root)
+
+    # Remove duplicates
+    unique_roots = []
+    for root in real_roots:
+        if not any(abs(root - r) < 1e-6 for r in unique_roots):
+            unique_roots.append(root)
+
+    return unique_roots
+
+def solve_cubic(coeffs):
+    """
+    Solves a cubic equation of the form:
+    a*x^3 + b*x^2 + c*x + d = 0
+    Returns a list of real roots.
+    """
+    a, b, c, d = coeffs
+
     if a == 0:
-        # It's actually a quadratic equation
-        return solve_quadratic(b, c, d)
-    else:
-        b /= a
-        c /= a
-        d /= a
+        # Degenerates to a quadratic equation
+        return solve_quadratic([b, c, d])
 
-    # Depressed cubic: t^3 + p t + q = 0
-    p = c - b**2 / 3
-    q = 2 * b**3 / 27 - b * c / 3 + d
+    # Normalize coefficients
+    a = float(a)
+    b /= a
+    c /= a
+    d /= a
 
-    # Discriminant
-    discriminant = (q / 2)**2 + (p / 3)**3
+    # Depressed cubic t^3 + pt + q = 0
+    p = c - b ** 2 / 3
+    q = (2 * b ** 3) / 27 - (b * c) / 3 + d
+
+    discriminant = (q / 2) ** 2 + (p / 3) ** 3
 
     roots = []
     if discriminant > 0:
         # One real root
-        u = cube_root(-q / 2 + sqrt(discriminant))
-        v = cube_root(-q / 2 - sqrt(discriminant))
-        t = u + v - b / 3
-        roots.append(t)
+        A = (-q / 2 + sqrt(discriminant)) ** (1 / 3)
+        B = (-q / 2 - sqrt(discriminant)) ** (1 / 3)
+        root = A + B - b / 3
+        roots.append(root)
     elif discriminant == 0:
-        # Triple root or one real and a double root
-        u = cube_root(-q / 2)
-        t1 = 2 * u - b / 3
-        t2 = -u - b / 3
-        roots.extend([t1, t2])
+        # Triple root or two real roots
+        if q == 0:
+            root = -b / 3
+            roots.append(root)
+        else:
+            A = (-q / 2) ** (1 / 3)
+            root1 = 2 * A - b / 3
+            root2 = -A - b / 3
+            roots.extend([root1, root2])
     else:
         # Three real roots
-        r = sqrt(-p**3 / 27)
+        r = sqrt(-p ** 3 / 27)
         phi = acos(-q / (2 * r))
-        r = cube_root(r)
-        t1 = 2 * r * cos(phi / 3) - b / 3
-        t2 = 2 * r * cos((phi + 2 * pi) / 3) - b / 3
-        t3 = 2 * r * cos((phi + 4 * pi) / 3) - b / 3
-        roots.extend([t1, t2, t3])
+        r = sqrt(-p / 3)
+        for k in range(3):
+            angle = (phi + 2 * pi * k) / 3
+            root = 2 * r * cos(angle) - b / 3
+            roots.append(root)
+    # Filter real roots
+    real_roots = []
+    for root in roots:
+        if isinstance(root, complex):
+            if abs(root.imag) < 1e-6:
+                real_roots.append(root.real)
+        else:
+            real_roots.append(root)
+    return real_roots
 
-    return roots
+def solve_quadratic(coeffs):
+    """
+    Solves a quadratic equation of the form:
+    a*x^2 + b*x + c = 0
+    Returns a list of real roots.
+    """
+    a, b, c = coeffs
 
+    if a == 0:
+        # Linear equation
+        if b == 0:
+            return []
+        else:
+            return [-c / b]
 
+    discriminant = b ** 2 - 4 * a * c
+
+    if discriminant > 0:
+        sqrt_disc = sqrt(discriminant)
+        root1 = (-b + sqrt_disc) / (2 * a)
+        root2 = (-b - sqrt_disc) / (2 * a)
+        return [root1, root2]
+    elif discriminant == 0:
+        return [-b / (2 * a)]
+    else:
+        # Discriminant is negative; no real roots
+        return []
 
 
 
