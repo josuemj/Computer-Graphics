@@ -1,9 +1,19 @@
 import numpy as np
 from intercept import Intercept
-from math import tan, pi, atan2, acos
+from math import pi, atan2, acos, sin, sqrt
 from MathLib import *
 
 
+class Shape(object):
+    def __init__(self, position, material):
+        self.position = position
+        self.material = material
+        self.type = "None"
+
+    def ray_intersect(self, orig, dir):
+        return None
+
+    
 class Shape(object):
     def __init__(self, position, material):
         self.position = position
@@ -21,14 +31,21 @@ class Sphere(Shape):
         self.type = "Sphere"
         
     def ray_intersect(self, orig, dir):
-        L = np.subtract(self.position, orig)
-        tca = np.dot(L,  dir)
+        L = substraction(self.position, orig)
+        tca = dotP(L,  dir)
         
-        d = (np.linalg.norm(L) ** 2 - tca ** 2) ** 0.5
+        L_norm_sq = sum([comp ** 2 for comp in L])  # ||L||^2
+        d_sq = L_norm_sq - tca ** 2
+        if d_sq < 0:
+            return None  # No intersección
+        
+        d = sqrt(d_sq)
         
         if d > self.radius:
             return None
         
+        
+
         thc = (self.radius ** 2 - d ** 2) ** 0.5
         
         t0 = tca - thc
@@ -40,41 +57,44 @@ class Sphere(Shape):
             return None
         
         # P = orig + dir * t0
-        P = np.add(orig, np.multiply(dir, t0))
-        normal = np.subtract(P, self.position)
-        normal /= np.linalg.norm(      normal)
+        scaledDir = [comp * t0 for comp in dir]  # direction * t0
+        intersectPoint = add(orig, scaledDir)  # origin + (direction * t0)
+
+        # normalVec = (PuntoIntersección - self.centro).normalize()
+        pointDiff = substraction(intersectPoint, self.position)
+        normal = normalize_vector(pointDiff)
         
         u = (atan2(normal[2], normal[0]) / (2 * pi) + 0.5)
         v = acos(-normal[1]) / pi
         
-        return Intercept(point = P, 
+        return Intercept(point = intersectPoint, 
                          normal = normal,
                          distance = t0,
                          rayDirection=dir,
                          obj = self,
                          texCoords= [u, v]
-                         )        
+                         )    
 
 class Plane(Shape):
     def __init__(self, position, normal, material):
         super().__init__(position, material)
-        self.normal = np.array(normal)
+        self.normal = normal
         self.type = "Plane"
         
     def ray_intersect(self, orig, dir):
-        denom = np.dot(dir, self.normal)
+        denom = dotP(dir, self.normal)
         
         if abs(denom) < 0.0001:
             return None
         
-        num = np.dot(np.subtract(self.position, orig), self.normal)
+        num = dotP(substraction(self.position, orig), self.normal)
         
         t = num / denom
         
         if t < 0:
             return None
         
-        P = np.add(orig, np.array(dir) * t)
+        P = add(orig, scalar_multiply(dir,t))
 
         # Compute UV coordinates for the plane
         u = (P[0] - self.position[0]) % 1
@@ -88,115 +108,7 @@ class Plane(Shape):
             rayDirection=dir,
             obj=self
         )
-
     
-class Disk(Plane):
-    def __init__(self, position, normal, radius, material):
-        super().__init__(position, normal, material)
-        self.radius = radius
-        self.type = "Disk"
-    
-    def ray_intersect(self, orig, dir):
-        planeIntercept = super().ray_intersect(orig, dir)
-        
-        if planeIntercept is None:
-            return None
-        
-        contact = np.subtract(planeIntercept.point, self.position)
-        contact = np.linalg.norm(contact)
-        
-        if contact > self.radius:
-            return None
-        
-        return planeIntercept
-
-class AABB(Shape):
-    #Axis Aligned Bounding Box (cube)
-    def __init__(self, position, sizes, material):
-        super().__init__(position, material)
-        self.sizes = sizes
-        self.type = "AABB"
-        
-        self.planes = []
-        
-        rightPlane = Plane( [position[0] + sizes[0]/2, position[1], position[2]], [ 1,0,0], material)
-        leftPlane = Plane( [position[0] - sizes[0]/2, position[1], position[2]], [-1,0,0], material)
-
-        upPlane = Plane( [position[0], position[1] + sizes[1]/2, position[2]], [0, 1,0], material)
-        downPlane = Plane( [position[0], position[1] - sizes[1]/2, position[2]], [0,-1,0], material)
-
-        frontPlane = Plane( [position[0], position[1], position[2] + sizes[2]/2], [0,0, 1], material)
-        backPlane = Plane ( [position[0], position[1], position[2] - sizes[2]/2], [0,0,-1], material)
-        
-        self.planes.append(rightPlane)
-        self.planes.append(leftPlane)
-        self.planes.append(upPlane)
-        self.planes.append(downPlane)
-        self.planes.append(frontPlane)
-        self.planes.append(backPlane)
-        
-        #Bounds
-
-        self.boundsMin = [0, 0, 0]
-        self.boundsMax = [0, 0, 0]
-        
-        epsilon = 0.001 # like bias
-        
-        for i in  range(3):
-            self.boundsMin[i] = position[i] - (epsilon + sizes[i]/2)
-            self.boundsMax[i] = position[i] + (epsilon + sizes[i]/2)
-    
-    def ray_intersect(self, orig, dir):
-        intercept = None
-        t = float("inf")
-        for plane in self.planes:
-            
-            planeIntercept = plane.ray_intersect(orig, dir)
-            
-            if planeIntercept is not None:
-                planePoint = planeIntercept.point
-                
-                if self.boundsMin[0] <= planePoint[0] <= self.boundsMax[0]:
-                    
-                    if self.boundsMin[1] <= planePoint[1] <= self.boundsMax[1]:
-                        
-                        if self.boundsMin[2] <= planePoint[2] <= self.boundsMax[2]:
-                            
-                            if planeIntercept.distance < t:
-                                
-                                t = planeIntercept.distance
-                                intercept = planeIntercept
-        if intercept ==  None:
-            return None
-        
-        u, v = 0, 0
-
-        if abs(intercept.normal[0]) > 0:  # X-axis aligned plane
-            u = (intercept.point[1] - self.boundsMin[1]) / self.sizes[1]
-            v = (intercept.point[2] - self.boundsMin[2]) / self.sizes[2]
-            
-        elif abs(intercept.normal[1]) > 0:  # Y-axis aligned plane
-            u = (intercept.point[0] - self.boundsMin[0]) / self.sizes[0]
-            v = (intercept.point[2] - self.boundsMin[2]) / self.sizes[2]
-            
-        elif abs(intercept.normal[2]) > 0:  # Z-axis aligned plane
-            u = (intercept.point[0] - self.boundsMin[0]) / self.sizes[0]
-            v = (intercept.point[1] - self.boundsMin[1]) / self.sizes[1]
-
-        u = min(0.999, max(0, u))
-        v = min(0.999, max(0, v))
-
-
-            
-        return Intercept(
-            point=intercept.point,
-            normal=intercept.normal,
-            distance=t,
-            texCoords= [u, v],
-            rayDirection=dir,
-            obj = self
-        )
-
 class Triangle(Shape):
     def __init__(self, v0, v1, v2, material):
         super().__init__(None, material)  # No tiene una posición como tal
@@ -250,7 +162,6 @@ class Triangle(Shape):
             )
         else:
             return None
-
 
 class Cylinder(Shape):
     def __init__(self, position, radius, height, material):
@@ -334,11 +245,6 @@ class Cylinder(Shape):
             rayDirection=dir,
             obj=self
         )
-        
-from math import pi, cos, sin
-
-import numpy as np
-
 
 class Pyramid(Shape):
     def __init__(self, base_center, base_size, height, material, pitch=0, yaw=0, roll=0):
@@ -353,13 +259,13 @@ class Pyramid(Shape):
         half_size = base_size / 2.0
 
         # Define the base vertices (square base)
-        self.v0 = np.array([base_center[0] - half_size, base_center[1], base_center[2] - half_size])  # bottom left
-        self.v1 = np.array([base_center[0] + half_size, base_center[1], base_center[2] - half_size])  # bottom right
-        self.v2 = np.array([base_center[0] + half_size, base_center[1], base_center[2] + half_size])  # top right
-        self.v3 = np.array([base_center[0] - half_size, base_center[1], base_center[2] + half_size])  # top left
+        self.v0 = [base_center[0] - half_size, base_center[1], base_center[2] - half_size]  # Bottom left
+        self.v1 = [base_center[0] + half_size, base_center[1], base_center[2] - half_size]  # Bottom right
+        self.v2 = [base_center[0] + half_size, base_center[1], base_center[2] + half_size]  # Top right
+        self.v3 = [base_center[0] - half_size, base_center[1], base_center[2] + half_size]  # Top left
 
         # Peak of the pyramid
-        self.peak = np.array([base_center[0], base_center[1] + height, base_center[2]])
+        self.peak = [base_center[0], base_center[1] + height, base_center[2]]
 
         # Apply rotation to the vertices
         self.apply_rotation()
@@ -374,40 +280,17 @@ class Pyramid(Shape):
 
     def apply_rotation(self):
         """Applies rotation to the pyramid vertices."""
-        # Convert degrees to radians
-        pitch_rad = self.pitch * (pi / 180)
-        yaw_rad = self.yaw * (pi / 180)
-        roll_rad = self.roll * (pi / 180)
-
-        # Rotation matrices
-        Rx = np.array([
-            [1, 0, 0],
-            [0, cos(pitch_rad), -sin(pitch_rad)],
-            [0, sin(pitch_rad), cos(pitch_rad)]
-        ])
-        Ry = np.array([
-            [cos(yaw_rad), 0, sin(yaw_rad)],
-            [0, 1, 0],
-            [-sin(yaw_rad), 0, cos(yaw_rad)]
-        ])
-        Rz = np.array([
-            [cos(roll_rad), -sin(roll_rad), 0],
-            [sin(roll_rad), cos(roll_rad), 0],
-            [0, 0, 1]
-        ])
-
-        # Combined rotation matrix
-        # The order of multiplication matters: R = Rz * Ry * Rx
-        R = Rz @ Ry @ Rx
+        # Get the rotation matrix (3x3)
+        R = RotationMatrix3x3(self.pitch, self.yaw, self.roll)
 
         # Apply rotation to each vertex
         for vertex in [self.v0, self.v1, self.v2, self.v3, self.peak]:
             # Translate vertex to origin
-            translated_vertex = vertex - self.position
+            translated_vertex = substraction(vertex, self.position)
             # Apply rotation
-            rotated_vertex = R @ translated_vertex
+            rotated_vertex = matrix_vector_multiply(R, translated_vertex)
             # Translate back
-            vertex[:] = rotated_vertex + self.position
+            vertex[:] = add(rotated_vertex, self.position)
 
     def ray_intersect(self, orig, dir):
         """Tests ray intersections with the pyramid's triangular faces."""
@@ -421,9 +304,6 @@ class Pyramid(Shape):
                 min_distance = intercept.distance
 
         return closest_intercept
-
-import numpy as np
-from math import pi, sin, cos, sqrt
 from numpy import linalg as LA
 
 class Torus(Shape):
@@ -544,12 +424,6 @@ class Torus(Shape):
             obj=self
         )
 
-import numpy as np
-from figures import Shape, Triangle
-
-import numpy as np
-from figures import Shape, Triangle
-
 class Box(Shape):
     def __init__(self, position, sizes, material, pitch=0, yaw=0, roll=0):
         super().__init__(position, material)
@@ -566,7 +440,7 @@ class Box(Shape):
 
     def create_vertices(self):
         half_sizes = [s / 2.0 for s in self.sizes]
-        return np.array([
+        return [
             [self.position[0] - half_sizes[0], self.position[1] - half_sizes[1], self.position[2] - half_sizes[2]],  # Vertex 0
             [self.position[0] + half_sizes[0], self.position[1] - half_sizes[1], self.position[2] - half_sizes[2]],  # Vertex 1
             [self.position[0] + half_sizes[0], self.position[1] + half_sizes[1], self.position[2] - half_sizes[2]],  # Vertex 2
@@ -575,44 +449,23 @@ class Box(Shape):
             [self.position[0] + half_sizes[0], self.position[1] - half_sizes[1], self.position[2] + half_sizes[2]],  # Vertex 5
             [self.position[0] + half_sizes[0], self.position[1] + half_sizes[1], self.position[2] + half_sizes[2]],  # Vertex 6
             [self.position[0] - half_sizes[0], self.position[1] + half_sizes[1], self.position[2] + half_sizes[2]]   # Vertex 7
-        ])
+        ]
 
     def apply_rotation(self):
-        # Convert degrees to radians
-        pitch_rad = np.radians(self.pitch)
-        yaw_rad = np.radians(self.yaw)
-        roll_rad = np.radians(self.roll)
-
-        # Rotation matrices
-        Rx = np.array([
-            [1, 0, 0],
-            [0, np.cos(pitch_rad), -np.sin(pitch_rad)],
-            [0, np.sin(pitch_rad), np.cos(pitch_rad)]
-        ])
-        Ry = np.array([
-            [np.cos(yaw_rad), 0, np.sin(yaw_rad)],
-            [0, 1, 0],
-            [-np.sin(yaw_rad), 0, np.cos(yaw_rad)]
-        ])
-        Rz = np.array([
-            [np.cos(roll_rad), -np.sin(roll_rad), 0],
-            [np.sin(roll_rad), np.cos(roll_rad), 0],
-            [0, 0, 1]
-        ])
-
-        # Combined rotation matrix: R = Rz * Ry * Rx
-        R = Rz @ Ry @ Rx
+        # Get the rotation matrix (3x3)
+        R = RotationMatrix3x3(self.pitch, self.yaw, self.roll)
 
         # Apply rotation to each vertex
         for i in range(len(self.vertices)):
             # Translate vertex to origin
-            translated_vertex = self.vertices[i] - self.position
+            translated_vertex = substraction(self.vertices[i], self.position)
             # Apply rotation
-            rotated_vertex = R @ translated_vertex
+            rotated_vertex = matrix_vector_multiply(R, translated_vertex)
             # Translate back
-            self.vertices[i] = rotated_vertex + self.position
+            self.vertices[i] = add(rotated_vertex, self.position)
 
     def create_faces(self):
+        """Create triangular faces from vertices."""
         faces = [
             # Front face
             (0, 1, 2), (0, 2, 3),
