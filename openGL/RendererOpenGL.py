@@ -5,8 +5,8 @@ from buffer import Buffer
 from shaders import *
 from model import Model
 
-width = 1000
-height = 1000
+width = 960
+height = 540
 
 pygame.init()
 
@@ -25,8 +25,13 @@ rend.SetShaders(vertex_shader, fragment_shader)
 
 faceModel = Model("models/model.obj")
 faceModel.AddTexture("textures/model.bmp")
+faceModel.translation.z = -5
+faceModel.scale.x = 2
+faceModel.scale.y = 2
+faceModel.scale.z = 2
 rend.scene.append(faceModel)
-faceModel.rotation.y = 180
+
+
 isRunnig = True
 
 while isRunnig:
@@ -55,6 +60,20 @@ while isRunnig:
         
     if keys[K_RIGHT]:
         faceModel.rotation.y += 40 * deltaTime
+        
+    #camera
+    if keys[K_a]:
+        rend.camera.position.x -= 1 * deltaTime #1m/s
+    
+    if keys[K_d]:
+        rend.camera.position.x += 1 * deltaTime #1m/s
+    
+    if keys[K_w]:
+        rend.camera.position.y += 1 * deltaTime #1m/s
+    
+    if keys[K_s]:
+        rend.camera.position.y -= 1 * deltaTime #1m/s
+    
     
     rend.time += deltaTime
     

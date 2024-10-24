@@ -1,3 +1,6 @@
+## Model + camera + perspective
+![outputs/models](outputs/rotation_perspective_camera.gif)
+
 ## Model rotation
 ![outputs/models](outputs/model-rotation.gif)
 
