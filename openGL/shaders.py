@@ -23,10 +23,12 @@ fragment_shader = '''
 in vec2 outTexCoords;
 in vec3 outNormals;
 
+uniform sampler2D tex;
+
 out vec4 fragColor;
 
 void main()
 {
-    fragColor = vec4(outNormals, 1.0);   
+    fragColor = texture(tex, outTexCoords);   
 }
 '''

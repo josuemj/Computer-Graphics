@@ -24,6 +24,7 @@ rend.SetShaders(vertex_shader, fragment_shader)
 # rend.scene.append(Buffer(triangle))
 
 faceModel = Model("models/model.obj")
+faceModel.AddTexture("textures/model.bmp")
 rend.scene.append(faceModel)
 
 isRunnig = True

@@ -1,5 +1,8 @@
 from obj import Obj
 from buffer import Buffer
+from pygame import image
+from OpenGL.GL import *
+
 
 class Model(object):
     def __init__(self, filename):
@@ -9,6 +12,8 @@ class Model(object):
         self.texCoords = objFile.texcoords
         self.normals = objFile.normals
         self.faces = objFile.faces
+        
+        self.texture = None
     
         self.buffer = Buffer(self.BuildBuffer())
     
@@ -50,6 +55,33 @@ class Model(object):
                 for value in faceVerts[3]: data.append(value)
         return data
 
+    def AddTexture(self, textureFileName):
+        self.textureSurface = image.load(textureFileName) # can also be png, jpg etc
+        self.textureData = image.tostring(self.textureSurface, "RGB", True)
+        self.texture = glGenTextures(1)
+        
     def Render(self):
+        
+        #Dara la textura
+        
+        if self.texture is not None: 
+            glActiveTexture(GL_TEXTURE0)
+            glBindTexture(GL_TEXTURE_2D, self.texture)
+            
+            glTexImage2D(
+                GL_TEXTURE_2D, #Texture type
+                0, #Positions
+                GL_RGB, #format
+                self.textureSurface.get_width(), #Width
+                self.textureSurface.get_height(), #Height
+                0, # Border
+                GL_RGB, # format
+                GL_UNSIGNED_BYTE, # Type
+                self.textureData #data
+            )
+            
+            glGenerateMipmap(GL_TEXTURE_2D)
+            
         self.buffer.Render()
                 
+    
