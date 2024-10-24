@@ -30,4 +30,9 @@ class Renderer(object):
             glUseProgram(self.active_shaders)
             
         for obj in self.scene:
+            
+            if self.active_shaders is not None:
+                glUniformMatrix4fv( glGetUniformLocation(self.active_shaders, "modelMatrix"), 1, GL_FALSE, glm.value_ptr(obj.GetModelMatrix()))
+
+            
             obj.Render()

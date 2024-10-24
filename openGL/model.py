@@ -2,7 +2,7 @@ from obj import Obj
 from buffer import Buffer
 from pygame import image
 from OpenGL.GL import *
-
+import glm
 
 class Model(object):
     def __init__(self, filename):
@@ -16,6 +16,10 @@ class Model(object):
         self.texture = None
     
         self.buffer = Buffer(self.BuildBuffer())
+        
+        self.translation = glm.vec3(0,0,0)
+        self.rotation = glm.vec3(0,0,0)
+        self.scale = glm.vec3(1,1,1)
     
     def BuildBuffer(self):
         data = []
@@ -59,8 +63,24 @@ class Model(object):
         self.textureSurface = image.load(textureFileName) # can also be png, jpg etc
         self.textureData = image.tostring(self.textureSurface, "RGB", True)
         self.texture = glGenTextures(1)
+    
+    def GetModelMatrix(self):
+        identity = glm.mat4(1)
+        translateMat = glm.translate(identity, self.translation)
         
+        pitchMat = glm.rotate(identity, glm.radians(self.rotation.x), glm.vec3(1,0,0))
+        yawMat   = glm.rotate(identity, glm.radians(self.rotation.y), glm.vec3(0,1,0))
+        rollMat  = glm.rotate(identity, glm.radians(self.rotation.z), glm.vec3(0,0,1))
+        
+        rotationMat = pitchMat * yawMat * rollMat
+        
+        scaleMat = glm.scale(identity, self.scale)
+        
+        return translateMat * rotationMat * scaleMat
+
+     
     def Render(self):
+        
         
         #Dara la textura
         

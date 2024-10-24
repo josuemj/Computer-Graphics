@@ -1,3 +1,6 @@
+## Model rotation
+![outputs/models](outputs/model-rotation.gif)
+
 ## Model with texture
 ![outputs/output1.png](outputs/texture.png)
 
