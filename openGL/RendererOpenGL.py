@@ -41,6 +41,13 @@ while isRunnig:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 isRunnig = False
+            
+            elif event.key == pygame.K_1:
+                rend.FilledMode()
+            
+            elif event.key == pygame.K_2:
+                rend.WireframeMode()
+                
     # print(deltaTime)
 
     if keys[K_LEFT]:
@@ -48,6 +55,8 @@ while isRunnig:
         
     if keys[K_RIGHT]:
         faceModel.rotation.y += 40 * deltaTime
+    
+    rend.time += deltaTime
     
     rend.Render()
     pygame.display.flip()

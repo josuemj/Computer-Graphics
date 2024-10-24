@@ -8,11 +8,12 @@ layout (location = 2) in vec3 normals;
 out vec2 outTexCoords;
 out vec3 outNormals;
 
+uniform  float time;
 uniform mat4 modelMatrix;
 
 void main()
 {
-    gl_Position = modelMatrix * vec4(position, 1.0);
+    gl_Position = modelMatrix * vec4(position + normals * sin(time * 3) / 10, 1.0);
     outTexCoords = texCoords;
     outNormals = normals;
 }

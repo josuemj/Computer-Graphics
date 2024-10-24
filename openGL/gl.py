@@ -14,8 +14,17 @@ class Renderer(object):
         glEnable(GL_DEPTH_TEST)
         glViewport(0, 0, self.width, self.height)
         
+        self.time = 0
+        self.value = 0
+        
         self.scene = []
         self.active_shaders = None
+    
+    def FilledMode(self):
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+        
+    def WireframeMode(self):
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
     
     def SetShaders(self, vShader, fShader):
         if vShader is not None and fShader is not None:
@@ -28,6 +37,8 @@ class Renderer(object):
         
         if self.active_shaders is not None:
             glUseProgram(self.active_shaders)
+            
+            glUniform1f(glGetUniformLocation(self.active_shaders, "time"), self.time)
             
         for obj in self.scene:
             
