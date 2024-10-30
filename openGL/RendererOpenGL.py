@@ -52,6 +52,15 @@ while isRunnig:
             
             elif event.key == pygame.K_2:
                 rend.WireframeMode()
+            
+            elif event.key == pygame.K_3:
+                rend.SetShaders(vertex_shader, fragment_shader)
+            
+            elif event.key == pygame.K_4:
+                rend.SetShaders(fat_shader, fragment_shader)
+            
+            elif event.key == pygame.K_5:
+                rend.SetShaders(water_shader, fragment_shader)
                 
     # print(deltaTime)
 
@@ -76,6 +85,8 @@ while isRunnig:
     
     
     rend.time += deltaTime
+    
+    # rend.camera.LookAt(faceModel.translation)
     
     rend.Render()
     pygame.display.flip()

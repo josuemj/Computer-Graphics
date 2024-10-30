@@ -37,3 +37,51 @@ void main()
     fragColor = texture(tex, outTexCoords);   
 }
 '''
+
+fat_shader = '''
+#version 450 core
+
+layout (location = 0) in vec3 position;
+layout (location = 1) in vec2 texCoords;
+layout (location = 2) in vec3 normals;
+
+out vec2 outTexCoords;
+out vec3 outNormals;
+
+uniform  float time;
+uniform mat4 modelMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 projectionMatrix;
+
+void main()
+{
+    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position + normals * sin(time) / 10, 1.0);
+    outTexCoords = texCoords;
+    outNormals = normals;
+}
+
+'''
+
+water_shader = '''
+#version 450 core
+
+layout (location = 0) in vec3 position;
+layout (location = 1) in vec2 texCoords;
+layout (location = 2) in vec3 normals;
+
+out vec2 outTexCoords;
+out vec3 outNormals;
+
+uniform  float time;
+uniform mat4 modelMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 projectionMatrix;
+
+void main()
+{
+    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position + vec3(0,1,0) * sin(time * position.x) /10, 1.0);
+    outTexCoords = texCoords;
+    outNormals = normals;
+}
+
+'''
