@@ -48,19 +48,22 @@ while isRunnig:
                 isRunnig = False
             
             elif event.key == pygame.K_1:
-                rend.FilledMode()
+                rend.SetShaders(grayscale_vertex_shader, grayscale_shader)
             
             elif event.key == pygame.K_2:
-                rend.WireframeMode()
+                rend.SetShaders(edge_detection_vertex_shader, grayscale_shader)
             
             elif event.key == pygame.K_3:
-                rend.SetShaders(vertex_shader, fragment_shader)
+                rend.SetShaders(toon_vertex_shader, rainbow_shader)
             
             elif event.key == pygame.K_4:
-                rend.SetShaders(fat_shader, fragment_shader)
+                rend.SetShaders(rainbow_vertex_shader, rainbow_shader)
             
             elif event.key == pygame.K_5:
-                rend.SetShaders(water_shader, fragment_shader)
+                rend.SetShaders(bounce_vertex_shader, orange_fragment_shader)
+            
+            elif event.key == pygame.K_6:
+                rend.SetShaders(pulse_vertex_shader, orange_fragment_shader)
                 
     # print(deltaTime)
 
