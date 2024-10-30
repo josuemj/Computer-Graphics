@@ -23,12 +23,14 @@ rend.SetShaders(vertex_shader, fragment_shader)
 
 # rend.scene.append(Buffer(triangle))
 
-faceModel = Model("models/model.obj")
-faceModel.AddTexture("textures/model.bmp")
+faceModel = Model("models/LionSculpture.obj")
+faceModel.AddTexture("textures/ModelTexture.bmp")
 faceModel.translation.z = -5
-faceModel.scale.x = 2
-faceModel.scale.y = 2
-faceModel.scale.z = 2
+faceModel.translation.y = -1
+
+faceModel.scale.x = 3
+faceModel.scale.y = 3
+faceModel.scale.z = 3
 rend.scene.append(faceModel)
 
 
