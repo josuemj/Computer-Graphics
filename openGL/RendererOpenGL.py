@@ -8,8 +8,11 @@ from model import Model
 width = 960
 height = 540
 
+
 pygame.init()
 
+camDistance = 5
+camAngle = 0
 screen = pygame.display.set_mode((width, height), pygame.OPENGL | pygame.DOUBLEBUF)
 clock = pygame.time.Clock()
 
@@ -71,20 +74,34 @@ while isRunnig:
         faceModel.rotation.y += 40 * deltaTime
         
     #camera
-    if keys[K_a]:
-        rend.camera.position.x -= 1 * deltaTime #1m/s
+    # if keys[K_a]:
+    #     rend.camera.position.x -= 1 * deltaTime #1m/s
     
+    # if keys[K_d]:
+    #     rend.camera.position.x += 1 * deltaTime #1m/s
+    
+    # if keys[K_w]:
+    #     rend.camera.position.y += 1 * deltaTime #1m/s
+    
+    # if keys[K_s]:
+    #     rend.camera.position.y -= 1 * deltaTime #1m/s
+    
+    if keys[K_a]:
+        camAngle -= 45 * deltaTime
+        
     if keys[K_d]:
-        rend.camera.position.x += 1 * deltaTime #1m/s
+        camAngle += 45 * deltaTime
     
     if keys[K_w]:
-        rend.camera.position.y += 1 * deltaTime #1m/s
+        camDistance -= 2 * deltaTime
     
     if keys[K_s]:
-        rend.camera.position.y -= 1 * deltaTime #1m/s
-    
-    
+        camDistance += 2 * deltaTime
+        
     rend.time += deltaTime
+    
+    rend.camera.LookAt(faceModel.translation)
+    rend.camera.Orbit(faceModel.translation, camDistance, camAngle)
     
     # rend.camera.LookAt(faceModel.translation)
     
