@@ -13,6 +13,9 @@ pygame.init()
 
 camDistance = 5
 camAngle = 0
+minCamDistance = 2
+maxCamDistance = 10
+
 screen = pygame.display.set_mode((width, height), pygame.OPENGL | pygame.DOUBLEBUF)
 clock = pygame.time.Clock()
 
@@ -122,10 +125,14 @@ while isRunnig:
         camAngle += 60 * deltaTime
     
     if keys[K_w]:
-        camDistance -= 2 * deltaTime
+        camDistance -= 6 * deltaTime
+        if camDistance < minCamDistance:
+            camDistance = minCamDistance
     
     if keys[K_s]:
-        camDistance += 2 * deltaTime
+        camDistance += 6 * deltaTime
+        if camDistance > maxCamDistance:
+            camDistance = maxCamDistance
         
     rend.time += deltaTime
     
