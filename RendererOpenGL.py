@@ -26,6 +26,14 @@ skyboxTextures = [
 "skybox/front.jpg",
 "skybox/back.jpg"]
 
+# skyboxTextures = [
+# "citybox/right.png",
+# "citybox/left.png",
+# "citybox/up.png",
+# "citybox/down.png",
+# "citybox/front.png",
+# "citybox/back.png"]
+
 rend.CreateSkyBox(skyboxTextures, skybox_vertex_shader, skybox_fragment_shader)
 
 rend.SetShaders(vertex_shader, fragment_shader)
@@ -37,13 +45,23 @@ rend.SetShaders(vertex_shader, fragment_shader)
 
 # rend.scene.append(Buffer(triangle))
 
-faceModel = Model("models/model.obj")
-faceModel.AddTexture("textures/model.bmp")
-faceModel.translation.z = -5
-faceModel.scale.x = 2
-faceModel.scale.y = 2
-faceModel.scale.z = 2
-rend.scene.append(faceModel)
+# faceModel = Model("models/model.obj")
+# faceModel.AddTexture("textures/model.bmp")
+# faceModel.translation.z = -5
+# faceModel.scale.x = 2
+# faceModel.scale.y = 2
+# faceModel.scale.z = 2
+# rend.scene.append(faceModel)
+
+dinoModel = Model("models/dino.obj")
+dinoModel.AddTexture("textures/dino.bmp")
+dinoModel.translation.z = -5
+dinoModel.scale.x = 0.7
+dinoModel.scale.y = 0.7
+dinoModel.scale.z = 0.7
+dinoModel.rotation.x -=90
+rend.scene.append(dinoModel)
+
 
 
 isRunnig = True
@@ -79,10 +97,10 @@ while isRunnig:
     # print(deltaTime)
 
     if keys[K_LEFT]:
-        faceModel.rotation.y -= 40 * deltaTime
+        dinoModel.rotation.y -= 40 * deltaTime
         
     if keys[K_RIGHT]:
-        faceModel.rotation.y += 40 * deltaTime
+        dinoModel.rotation.y += 40 * deltaTime
         
     #camera
     # if keys[K_a]:
@@ -98,10 +116,10 @@ while isRunnig:
     #     rend.camera.position.y -= 1 * deltaTime #1m/s
     
     if keys[K_a]:
-        camAngle -= 45 * deltaTime
+        camAngle -= 60 * deltaTime
         
     if keys[K_d]:
-        camAngle += 45 * deltaTime
+        camAngle += 60 * deltaTime
     
     if keys[K_w]:
         camDistance -= 2 * deltaTime
@@ -111,8 +129,8 @@ while isRunnig:
         
     rend.time += deltaTime
     
-    rend.camera.LookAt(faceModel.translation)
-    rend.camera.Orbit(faceModel.translation, camDistance, camAngle)
+    rend.camera.LookAt(dinoModel.translation)
+    rend.camera.Orbit(dinoModel.translation, camDistance, camAngle)
     
     # rend.camera.LookAt(faceModel.translation)
     
