@@ -1,3 +1,13 @@
+# Combined movements 
+
+- Zoom in and out
+- Up and down
+- Orbit
+
+![outputs/models](outputs/combined.gif)
+
+# Individual movements
+
 ## Movement around model
 
 - A key -> left 
