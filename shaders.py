@@ -1,224 +1,121 @@
-from MathLib import *
+vertex_shader = '''
+#version 450 core
 
-def vertexShader(vertex, **kwargs):
-    modelMatrix = kwargs["modelMatrix"]
-    viewMatrix = kwargs["viewMatrix"]
-    projectionMatrix = kwargs["projectionMatrix"]
-    viewportMatrix = kwargs["viewportMatrix"]
+layout (location = 0) in vec3 position;
+layout (location = 1) in vec2 texCoords;
+layout (location = 2) in vec3 normals;
 
-    if len(vertex) + 1 == len(modelMatrix):
-        vt = vertex + [1]
-    else:
-        vt = vertex
+out vec2 outTexCoords;
+out vec3 outNormals;
 
+uniform  float time;
+uniform mat4 modelMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 projectionMatrix;
 
-    vpMatrix_projectMatrix = matrix_multiply(viewportMatrix, projectionMatrix)
+void main()
+{
+    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
+    outTexCoords = texCoords;
+    outNormals = normals;
+}
 
-    vpMatrix_projectMatrix_viewMatrix = matrix_multiply(vpMatrix_projectMatrix, viewMatrix)
+'''
 
-    vpMatrix_projectMatrix_viewMatrix_model = matrix_multiply(vpMatrix_projectMatrix_viewMatrix, modelMatrix)
+fragment_shader = '''
+#version 450 core
 
-    vt = vector_matrix_multiply(vt, vpMatrix_projectMatrix_viewMatrix_model)
+in vec2 outTexCoords;
+in vec3 outNormals;
 
-    if len(vt) > 3:
-        vt = [vt[0]/vt[3], vt[1]/vt[3], vt[2]/vt[3]]
+uniform sampler2D tex;
 
-    return vt
+out vec4 fragColor;
 
+void main()
+{
+    fragColor = texture(tex, outTexCoords);   
+}
+'''
 
-def fragmentShader(**kwargs):
-    # Se lleva a cabo por cada pixel individual
-    
-    # Obtenemos la informacion requeridavt 
-    A, B, C = kwargs["verts"]
-    u, v, w = kwargs["bCoords"]
-    texture = kwargs["texture"]
-    dirLight = kwargs["dirLight"]
+fat_shader = '''
+#version 450 core
 
-    #sabiendo que las coordenadas de textura estan en 4 y quinta posicion del indice del vertice
-    #las obtenemos y guardamos
+layout (location = 0) in vec3 position;
+layout (location = 1) in vec2 texCoords;
+layout (location = 2) in vec3 normals;
 
-    vtA = [A[3], A[4]]
-    vtB = [B[3], B[4]]
-    vtC = [C[3], C[4]]
+out vec2 outTexCoords;
+out vec3 outNormals;
 
-    nA = [A[5], A[6], A[7]]
-    nB = [B[5], B[6], B[7]]
-    nB = [C[5], C[6], C[7]]
+uniform  float time;
+uniform mat4 modelMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 projectionMatrix;
 
-    r = 1
-    g = 1
-    b = 1
+void main()
+{
+    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position + normals * sin(time) / 10, 1.0);
+    outTexCoords = texCoords;
+    outNormals = normals;
+}
 
-      #P = uA + vV + wC
-    vtP = [ u * vtA[0] + v * vtB[0] + w * vtC[0],
-           u * vtA[1] + v * vtB[1] + w * vtC[1]]
-    
-    if texture:
-        texColor = texture.getColor(vtP[0], vtP[1])
-        r *= texColor[0]
-        g *= texColor[1]
-        b *= texColor[2]
+'''
 
-    # Se regresa el color
-    return [r,g,b]
+water_shader = '''
+#version 450 core
 
-def flatShader(**kwargs):
-    # Se lleva a cabo por cada pixel individual
-    
-    # Obtenemos la informacion requeridavt 
-    A, B, C = kwargs["verts"]
-    u, v, w = kwargs["bCoords"]
-    texture = kwargs["texture"]
-    dirLight = kwargs["dirLight"]
+layout (location = 0) in vec3 position;
+layout (location = 1) in vec2 texCoords;
+layout (location = 2) in vec3 normals;
 
-    #sabiendo que las coordenadas de textura estan en 4 y quinta posicion del indice del vertice
-    #las obtenemos y guardamos
+out vec2 outTexCoords;
+out vec3 outNormals;
 
-    vtA = [A[3], A[4]]
-    vtB = [B[3], B[4]]
-    vtC = [C[3], C[4]]
+uniform  float time;
+uniform mat4 modelMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 projectionMatrix;
 
-    nA = [A[5], A[6], A[7]]
-    nB = [B[5], B[6], B[7]]
-    nB = [C[5], C[6], C[7]]
+void main()
+{
+    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position + vec3(0,1,0) * sin(time * position.x) /10, 1.0);
+    outTexCoords = texCoords;
+    outNormals = normals;
+}
 
-    r = 1
-    g = 1
-    b = 1
+'''
 
-      #P = uA + vV + wC
-    vtP = [ u * vtA[0] + v * vtB[0] + w * vtC[0],
-           u * vtA[1] + v * vtB[1] + w * vtC[1]]
-    
-    if texture:
-        texColor = texture.getColor(vtP[0], vtP[1])
-        r *= texColor[0]
-        g *= texColor[1]
-        b *= texColor[2]
+skybox_vertex_shader = '''
+#version 450 core
 
-    # Se regresa el color
-    return [r,g,b]
+layout (location = 0) in vec3 inPosition;
 
-def vintageYellowShader(**kwargs):
-    A, B, C = kwargs["verts"]
-    u, v, w = kwargs["bCoords"]
-    texture = kwargs["texture"]
-    dirLight = kwargs["dirLight"]
+uniform mat4 viewMatrix;
+uniform mat4 projectionMatrix;
 
-    vtA, vtB, vtC = [A[3], A[4]], [B[3], B[4]], [C[3], C[4]]
-    nA, nB, nC = A[5:], B[5:], C[5:]
+out vec3 texCoords;
 
-    # Interpolación de las coordenadas de textura y las normales
-    vtP = [u * vtA[0] + v * vtB[0] + w * vtC[0], u * vtA[1] + v * vtB[1] + w * vtC[1]]
-    nP = [u * nA[0] + v * nB[0] + w * nC[0], u * nA[1] + v * nB[1] + w * nC[1], u * nA[2] + v * nB[2] + w * nC[2]]
+void main()
+{
+    texCoords = inPosition;
+    gl_Position = projectionMatrix * viewMatrix * vec4(inPosition, 1.0);
+}
 
-    # Normalización de la normal interpolada
-    norm_length = (nP[0]**2 + nP[1]**2 + nP[2]**2)**0.5
-    nP = [nP[0]/norm_length, nP[1]/norm_length, nP[2]/norm_length]
+'''
 
-    # Calculamos la componente difusa de la iluminación
-    diffuse = max(0, nP[0] * dirLight[0] + nP[1] * dirLight[1] + nP[2] * dirLight[2])
+skybox_fragment_shader = '''
+#version 450 core
 
-    if texture:
-        texColor = texture.getColor(vtP[0], vtP[1])
-        # Aplicar filtro amarillo y ajustar por iluminación difusa
-        r = min(1.0, (texColor[0] * 0.9 + 0.1) * diffuse)  # ligeramente rojizo
-        g = texColor[1] * diffuse * 0.85  # dominante amarillo
-        b = texColor[2] * diffuse * 0.2  # reducir azules
-    else:
-        r = 0.9 * diffuse  # suave amarillo
-        g = 0.85 * diffuse  # dominante amarillo
-        b = 0.2 * diffuse  # casi nulo azul
+uniform samplerCube skybox;
 
-    return [r, g, b]
+in vec3 texCoords;
 
-def checkerShader(**kwargs):
-    A, B, C = kwargs["verts"]
-    u, v, w = kwargs["bCoords"]
+out vec4 fragColor;
 
-    scale = 15 #square sacal
-    tx = (u * A[3] + v * B[3] + w * C[3]) * scale
-    ty = (u * A[4] + v * B[4] + w * C[4]) * scale
+void main()
+{
+    fragColor = texture(skybox, texCoords);
+}
 
-    # Compute the checker pattern
-    if (int(tx) % 2) == (int(ty) % 2):
-        return [1, 1, 1]  # White
-    else:
-        return [0, 0, 0]  # Black
-
-def blueGrayShader(**kwargs):
-    A, B, C = kwargs["verts"]
-    u, v, w = kwargs["bCoords"]
-    texture = kwargs["texture"]
-    dirLight = kwargs["dirLight"]
-
-    vtA, vtB, vtC = [A[3], A[4]], [B[3], B[4]], [C[3], C[4]]
-    nA, nB, nC = A[5:], B[5:], C[5:]
-
-    # Interpolación de las coordenadas de textura y las normales
-    vtP = [u * vtA[0] + v * vtB[0] + w * vtC[0], u * vtA[1] + v * vtB[1] + w * vtC[1]]
-    nP = [u * nA[0] + v * nB[0] + w * nC[0], u * nA[1] + v * nB[1] + w * nC[1], u * nA[2] + v * nB[2] + w * nC[2]]
-
-    # Normalización de la normal interpolada
-    norm_length = (nP[0]**2 + nP[1]**2 + nP[2]**2)**0.5
-    nP = [nP[0]/norm_length, nP[1]/norm_length, nP[2]/norm_length]
-
-    # Calculamos la componente difusa de la iluminación
-    diffuse = max(0, nP[0] * dirLight[0] + nP[1] * dirLight[1] + nP[2] * dirLight[2])
-
-    if texture:
-        texColor = texture.getColor(vtP[0], vtP[1])
-        # Aplicar filtro azul y ajustar por iluminación difusa
-        r = texColor[0] * diffuse * 0.1  # reducir rojos
-        g = texColor[1] * diffuse * 0.2  # reducir verdes
-        b = min(1.0, (texColor[2] * 0.9 + 0.1) * diffuse)  # dominante azul
-    else:
-        # Si no hay textura, aplicamos un color azul-gris
-        r = 0.1 * diffuse  # casi nulo rojo
-        g = 0.2 * diffuse  # bajo verde
-        b = 0.9 * diffuse  # fuerte azul
-
-    return [r, g, b]
-
-def greenShadow(**kwargs):
-    A, B, C = kwargs["verts"]
-    u, v, w = kwargs["bCoords"]  
-    textura = kwargs["texture"]  
-    dirLight = kwargs["dirLight"]  
-
-    dirLight = normalize_vector(dirLight)
- 
-    intensidadA = max(0, dot(A[5:8], dirLight))
-    intensidadB = max(0, dot(B[5:8], dirLight))
-    intensidadC = max(0, dot(C[5:8], dirLight))
-
-    # Interpolar intensidades
-    intensidad = interpolate(intensidadA, intensidadB, intensidadC, u, v, w)
-
-    # Interpolar coordenadas de textura
-    vtP = [interpolate(A[3], B[3], C[3], u, v, w),
-           interpolate(A[4], B[4], C[4], u, v, w)]
-
-    # Obtener el color de la textura
-    if textura:
-        texColor = textura.getColor(vtP[0], vtP[1])
-        r, g, b = texColor[0], texColor[1], texColor[2]
-    else:
-        r, g, b = 1, 1, 1
-
-    r *= intensidad
-    g *= intensidad
-    b *= intensidad
-
-    verde_r = r * 0.4 + g * 0.6  # Reducir el rojo, mezclar con verde
-    verde_g = g * 0.9 + r * 0.1  # Aumentar ligeramente el verde
-    verde_b = b * 0.4 + g * 0.6  # Reducir el azul, mezclar con verde
-
-    # Asegurarse de que los colores estén dentro del rango válido
-    verde_r = min(1, max(0, verde_r))
-    verde_g = min(1, max(0, verde_g))
-    verde_b = min(1, max(0, verde_b))
-
-    # Devolver el color sombreado con tema verde
-    return [verde_r, verde_g, verde_b]
+'''
