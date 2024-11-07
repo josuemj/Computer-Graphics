@@ -1,3 +1,6 @@
+## Skybox + zoom and orbit
+![outputs/models](outputs/skyBoxDemo.gif)
+
 ## Model + camera + perspective
 ![outputs/models](outputs/rotation_perspective_camera.gif)
 

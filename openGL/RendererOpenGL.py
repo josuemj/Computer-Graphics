@@ -17,6 +17,17 @@ screen = pygame.display.set_mode((width, height), pygame.OPENGL | pygame.DOUBLEB
 clock = pygame.time.Clock()
 
 rend = Renderer(screen)
+
+skyboxTextures = [
+"skybox/right.jpg",
+"skybox/left.jpg",
+"skybox/top.jpg",
+"skybox/bottom.jpg",
+"skybox/front.jpg",
+"skybox/back.jpg"]
+
+rend.CreateSkyBox(skyboxTextures, skybox_vertex_shader, skybox_fragment_shader)
+
 rend.SetShaders(vertex_shader, fragment_shader)
 #triangle positions         #color
 # triangle = [-0.5, -0.5, 0,  1, 0, 0,

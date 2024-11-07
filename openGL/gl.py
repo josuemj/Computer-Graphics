@@ -4,7 +4,7 @@ from OpenGL.GL import *
 from OpenGL.GL.shaders import compileProgram, compileShader
 from camera import Camera
 
-
+from skybox import Skybox
 class Renderer(object):
     def __init__(self, screen):
         self.screen = screen
@@ -22,6 +22,14 @@ class Renderer(object):
         
         self.scene = []
         self.active_shaders = None
+        
+        #skybox
+        self.skybox = None
+    
+    def CreateSkyBox(self, textureList, vShader, fShader):
+        self.skybox = Skybox(textureList, vShader, fShader)
+        
+        
     
     def FilledMode(self):
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
@@ -37,6 +45,10 @@ class Renderer(object):
     
     def Render(self):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT) #clear frame buffer color and depth information
+        
+        if self.skybox is not None:
+            self.skybox.Render(self.camera.GetViewMaTrix(), self.camera.GetProjectionMatrix())
+            
         
         if self.active_shaders is not None:
             glUseProgram(self.active_shaders)
