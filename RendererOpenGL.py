@@ -13,6 +13,8 @@ pygame.init()
 
 camDistance = 5
 camAngle = 0
+camVerticalAngle = 0
+
 minCamDistance = 2
 maxCamDistance = 10
 
@@ -105,6 +107,14 @@ while isRunnig:
     if keys[K_RIGHT]:
         dinoModel.rotation.y += 40 * deltaTime
         
+    if keys[K_UP]:
+        camVerticalAngle += 30 * deltaTime  
+
+
+    if keys[K_DOWN]:
+        camVerticalAngle -= 30 * deltaTime
+    
+            
     #camera
     # if keys[K_a]:
     #     rend.camera.position.x -= 1 * deltaTime #1m/s
@@ -119,25 +129,25 @@ while isRunnig:
     #     rend.camera.position.y -= 1 * deltaTime #1m/s
     
     if keys[K_a]:
-        camAngle -= 60 * deltaTime
+        camAngle -= 30 * deltaTime
         
     if keys[K_d]:
-        camAngle += 60 * deltaTime
+        camAngle += 30 * deltaTime
     
     if keys[K_w]:
-        camDistance -= 6 * deltaTime
+        camDistance -= 3 * deltaTime
         if camDistance < minCamDistance:
             camDistance = minCamDistance
     
     if keys[K_s]:
-        camDistance += 6 * deltaTime
+        camDistance += 3 * deltaTime
         if camDistance > maxCamDistance:
             camDistance = maxCamDistance
         
     rend.time += deltaTime
     
     rend.camera.LookAt(dinoModel.translation)
-    rend.camera.Orbit(dinoModel.translation, camDistance, camAngle)
+    rend.camera.Orbit(dinoModel.translation, camDistance, camAngle, camVerticalAngle)
     
     # rend.camera.LookAt(faceModel.translation)
     
