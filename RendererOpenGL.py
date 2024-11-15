@@ -16,7 +16,7 @@ camAngle = 0
 camVerticalAngle = 0
 
 minCamDistance = 2
-maxCamDistance = 10
+maxCamDistance = 50
 
 screen = pygame.display.set_mode((width, height), pygame.OPENGL | pygame.DOUBLEBUF)
 clock = pygame.time.Clock()
@@ -42,31 +42,26 @@ skyboxTextures = [
 rend.CreateSkyBox(skyboxTextures, skybox_vertex_shader, skybox_fragment_shader)
 
 rend.SetShaders(vertex_shader, fragment_shader)
-#triangle positions         #color
-# triangle = [-0.5, -0.5, 0,  1, 0, 0,
-#             0, 0.5, 0,      0, 1, 0,
-#             0.5, -0.5, 0,   0, 0, 1        
-#             ]
 
-# rend.scene.append(Buffer(triangle))
+snowGround = Model("models/snow.obj")
+snowGround.AddTexture("textures/snow.bmp")    
+snowGround.translation.z = -5
+snowGround.scale.x = 5
+snowGround.scale.y = 5
+snowGround.scale.z = 5
+# dinoModel.rotation.x -=90
 
-# faceModel = Model("models/model.obj")
-# faceModel.AddTexture("textures/model.bmp")
-# faceModel.translation.z = -5
-# faceModel.scale.x = 2
-# faceModel.scale.y = 2
-# faceModel.scale.z = 2
-# rend.scene.append(faceModel)
+rend.scene.append(snowGround)
 
-dinoModel = Model("models/dino.obj")
-dinoModel.AddTexture("textures/dino.bmp")
-dinoModel.translation.z = -5
-dinoModel.scale.x = 0.7
-dinoModel.scale.y = 0.7
-dinoModel.scale.z = 0.7
-dinoModel.rotation.x -=90
-rend.scene.append(dinoModel)
-
+polar = Model("models/polar.obj")
+polar.AddTexture("textures/polar.bmp")
+polar.translation.z = -5
+# polar.translation.x = 1.4
+polar.scale.x = 0.5
+polar.scale.y = 0.5
+polar.scale.z = 0.5
+polar.translation.y = 0.4
+rend.scene.append(polar)
 
 
 isRunnig = True
@@ -102,10 +97,10 @@ while isRunnig:
     # print(deltaTime)
 
     if keys[K_LEFT]:
-        dinoModel.rotation.y -= 40 * deltaTime
+        snowGround.rotation.y -= 40 * deltaTime
         
     if keys[K_RIGHT]:
-        dinoModel.rotation.y += 40 * deltaTime
+        snowGround.rotation.y += 40 * deltaTime
         
     if keys[K_UP]:
         camVerticalAngle += 30 * deltaTime  
@@ -146,8 +141,8 @@ while isRunnig:
         
     rend.time += deltaTime
     
-    rend.camera.LookAt(dinoModel.translation)
-    rend.camera.Orbit(dinoModel.translation, camDistance, camAngle, camVerticalAngle)
+    rend.camera.LookAt(snowGround.translation)
+    rend.camera.Orbit(snowGround.translation, camDistance, camAngle, camVerticalAngle)
     
     # rend.camera.LookAt(faceModel.translation)
     
