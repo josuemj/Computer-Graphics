@@ -46,9 +46,9 @@ rend.SetShaders(vertex_shader, fragment_shader)
 snowGround = Model("models/snow.obj")
 snowGround.AddTexture("textures/snow.bmp")    
 snowGround.translation.z = -5
-snowGround.scale.x = 5
-snowGround.scale.y = 5
-snowGround.scale.z = 5
+snowGround.scale.x = 10
+snowGround.scale.y = 10
+snowGround.scale.z = 10
 # dinoModel.rotation.x -=90
 
 rend.scene.append(snowGround)
@@ -63,6 +63,17 @@ polar.scale.z = 0.5
 polar.translation.y = 0.4
 rend.scene.append(polar)
 
+lionBall = Model("models/nuclearwaste.obj")
+lionBall.AddTexture("textures/nuclearwaste.bmp")
+lionBall.translation.z = -5
+lionBall.scale.x = 0.7
+lionBall.scale.y = 0.7
+lionBall.scale.z = 0.7
+lionBall.translation.y = 0.09
+lionBall.translation.x = 2
+
+
+rend.scene.append(lionBall)
 
 isRunnig = True
 
