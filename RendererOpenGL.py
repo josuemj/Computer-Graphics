@@ -8,7 +8,7 @@ from model import Model
 width = 960
 height = 540
 
-
+zoom_speed = 0.2
 pygame.init()
 
 camDistance = 5
@@ -211,6 +211,13 @@ while isRunnig:
     if keys[K_s]:
         camDistance += 3 * deltaTime
         if camDistance > maxCamDistance:
+            camDistance = maxCamDistance
+    
+    elif event.type == pygame.MOUSEWHEEL:
+        camDistance -= event.y * zoom_speed  # Adjusted zoom speed
+        if camDistance < minCamDistance:
+            camDistance = minCamDistance
+        elif camDistance > maxCamDistance:
             camDistance = maxCamDistance
         
     rend.time += deltaTime
