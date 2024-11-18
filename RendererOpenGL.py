@@ -71,9 +71,17 @@ lionBall.scale.y = 0.7
 lionBall.scale.z = 0.7
 lionBall.translation.y = 0.09
 lionBall.translation.x = 2
-
-
 rend.scene.append(lionBall)
+
+stormtrooper = Model("models/stormtrooper.obj")
+stormtrooper.AddTexture("textures/stormtrooper.bmp")
+stormtrooper.translation.z = -5
+stormtrooper.scale.x = 0.7
+stormtrooper.scale.y = 0.7
+stormtrooper.scale.z = 0.7
+stormtrooper.translation.y = 0.09
+stormtrooper.translation.x = 2
+rend.scene.append(stormtrooper)
 
 isRunnig = True
 
