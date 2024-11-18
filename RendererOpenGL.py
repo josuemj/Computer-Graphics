@@ -57,22 +57,44 @@ polar = Model("models/polar.obj")
 polar.AddTexture("textures/polar.bmp")
 polar.translation.z = -5
 # polar.translation.x = 1.4
-polar.scale.x = 0.5
-polar.scale.y = 0.5
-polar.scale.z = 0.5
-polar.translation.y = 0.4
+polar.scale.x = 1.2
+polar.scale.y = 1.2
+polar.scale.z = 1.2
+polar.translation.y = 0.95
 rend.scene.append(polar)
 
-lionBall = Model("models/nuclearwaste.obj")
-lionBall.AddTexture("textures/nuclearwaste.bmp")
-lionBall.translation.z = -5
-lionBall.scale.x = 0.7
-lionBall.scale.y = 0.7
-lionBall.scale.z = 0.7
-lionBall.translation.y = 0.09
-lionBall.translation.x = 2
-rend.scene.append(lionBall)
+nuclearWaste = Model("models/nuclearwaste.obj")
+nuclearWaste.AddTexture("textures/nuclearwaste.bmp")
+nuclearWaste.translation.z = -5
+nuclearWaste.scale.x = 0.7
+nuclearWaste.scale.y = 0.7
+nuclearWaste.scale.z = 0.7
+nuclearWaste.translation.y = 0.09
+nuclearWaste.translation.x = 4
+rend.scene.append(nuclearWaste)
 
+nuclearWaste = Model("models/nuclearwaste.obj")
+nuclearWaste.AddTexture("textures/nuclearwaste.bmp")
+nuclearWaste.translation.z = -3
+nuclearWaste.scale.x = 0.7
+nuclearWaste.scale.y = 0.7
+nuclearWaste.scale.z = 0.7
+nuclearWaste.translation.y = 0.5
+nuclearWaste.translation.x = 4
+nuclearWaste.rotation.x += 90
+rend.scene.append(nuclearWaste)
+
+nuclearWaste = Model("models/nuclearwaste.obj")
+nuclearWaste.AddTexture("textures/nuclearwaste.bmp")
+nuclearWaste.translation.z = -3
+nuclearWaste.scale.x = 0.7
+nuclearWaste.scale.y = 0.7
+nuclearWaste.scale.z = 0.7
+nuclearWaste.translation.y = 0.5
+nuclearWaste.translation.x = -1
+nuclearWaste.rotation.x += 90
+nuclearWaste.rotation.z += 90
+rend.scene.append(nuclearWaste)
 
 stormtrooper = Model("models/stormtrooper.obj")
 stormtrooper.AddTexture("textures/stormtrooper.bmp")
