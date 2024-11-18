@@ -39,6 +39,16 @@ skyboxTextures = [
 "skybox/front.jpg",
 "skybox/back.jpg"]
 
+
+skyboxSnow = [
+"skybox/negz.jpg",
+"skybox/posz.jpg",
+"skybox/posy.jpg",
+"skybox/negy.jpg",
+"skybox/posx.jpg",
+"skybox/negx.jpg"]
+
+
 # skyboxTextures = [
 # "citybox/right.png",
 # "citybox/left.png",
@@ -47,7 +57,7 @@ skyboxTextures = [
 # "citybox/front.png",
 # "citybox/back.png"]
 
-rend.CreateSkyBox(skyboxTextures, skybox_vertex_shader, skybox_fragment_shader)
+rend.CreateSkyBox(skyboxSnow, skybox_vertex_shader, skybox_fragment_shader)
 
 rend.SetShaders(vertex_shader, fragment_shader)
 
