@@ -73,15 +73,48 @@ lionBall.translation.y = 0.09
 lionBall.translation.x = 2
 rend.scene.append(lionBall)
 
+
 stormtrooper = Model("models/stormtrooper.obj")
 stormtrooper.AddTexture("textures/stormtrooper.bmp")
-stormtrooper.translation.z = -5
+stormtrooper.translation.z = -5 + 5
 stormtrooper.scale.x = 0.7
 stormtrooper.scale.y = 0.7
 stormtrooper.scale.z = 0.7
 stormtrooper.translation.y = 0.09
-stormtrooper.translation.x = 2
+stormtrooper.translation.x = 5
 rend.scene.append(stormtrooper)
+
+stormtrooper = Model("models/stormtrooper.obj")
+stormtrooper.AddTexture("textures/stormtrooper.bmp")
+stormtrooper.translation.z = -5 -2
+stormtrooper.scale.x = 0.7
+stormtrooper.scale.y = 0.7
+stormtrooper.scale.z = 0.7
+stormtrooper.translation.y = 0.09
+stormtrooper.translation.x = 5
+rend.scene.append(stormtrooper)
+
+stormtrooper2 = Model("models/stormtrooper.obj")
+stormtrooper2.AddTexture("textures/stormtrooper.bmp")
+stormtrooper2.translation.z = -5 + 5
+stormtrooper2.scale.x = 0.7
+stormtrooper2.scale.y = 0.7
+stormtrooper2.scale.z = 0.7
+stormtrooper2.translation.y = 0.09
+stormtrooper2.translation.x = -2
+rend.scene.append(stormtrooper2)
+
+stormtrooper2 = Model("models/stormtrooper.obj")
+stormtrooper2.AddTexture("textures/stormtrooper.bmp")
+stormtrooper2.translation.z = -5 - 2
+stormtrooper2.scale.x = 0.7
+stormtrooper2.scale.y = 0.7
+stormtrooper2.scale.z = 0.7
+stormtrooper2.translation.y = 0.09
+stormtrooper2.translation.x = -2
+rend.scene.append(stormtrooper2)
+
+
 
 isRunnig = True
 
