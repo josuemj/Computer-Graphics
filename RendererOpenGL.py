@@ -9,6 +9,14 @@ width = 960
 height = 540
 
 zoom_speed = 0.2
+mouse_sensitivity_x = 0.2  # Horizontal rotation sensitivity
+mouse_sensitivity_y = 0.2  # Vertical rotation sensitivity
+
+is_rotating = False
+last_mouse_x = 0
+last_mouse_y = 0
+
+
 pygame.init()
 
 camDistance = 5
@@ -167,6 +175,8 @@ while isRunnig:
             
             elif event.key == pygame.K_5:
                 rend.SetShaders(water_shader, fragment_shader)
+            
+    
                 
     # print(deltaTime)
 
@@ -213,13 +223,37 @@ while isRunnig:
         if camDistance > maxCamDistance:
             camDistance = maxCamDistance
     
+    #zoom
     elif event.type == pygame.MOUSEWHEEL:
-        camDistance -= event.y * zoom_speed  # Adjusted zoom speed
-        if camDistance < minCamDistance:
-            camDistance = minCamDistance
-        elif camDistance > maxCamDistance:
-            camDistance = maxCamDistance
+        camDistance -= event.y * zoom_speed
+        camDistance = max(minCamDistance, min(camDistance, maxCamDistance))
         
+    elif event.type == pygame.MOUSEBUTTONDOWN:
+        if event.button == 1:  # Left mouse button
+            is_rotating = True
+            last_mouse_x, last_mouse_y = event.pos
+
+    elif event.type == pygame.MOUSEBUTTONUP:
+        if event.button == 1:  # Left mouse button
+            is_rotating = False
+
+        
+    if is_rotating:
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        delta_x = mouse_x - last_mouse_x
+        delta_y = mouse_y - last_mouse_y
+
+        # Adjust horizontal and vertical angles based on mouse movement
+        camAngle -= delta_x * mouse_sensitivity_x
+        camVerticalAngle -= delta_y * mouse_sensitivity_y
+
+        # Clamp the vertical angle to prevent flipping
+        camVerticalAngle = max(-80, min(80, camVerticalAngle))
+
+        # Update last mouse position
+        last_mouse_x = mouse_x
+        last_mouse_y = mouse_y
+            
     rend.time += deltaTime
     
     rend.camera.LookAt(snowGround.translation)
